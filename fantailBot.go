@@ -15,10 +15,10 @@ import (
 const (
 	//commands
 	yostart_command = "/start"
-	yobg_command    = "/yobg"
-	yolow_command   = "/yolow"
-	yomove_command  = "/yomove"
-	yofood_command  = "/yofood"
+	yobg_command    = "/bg"
+	yolow_command   = "/low"
+	yomove_command  = "/move"
+	yofood_command  = "/food"
 
 	typing_action = "typing"
 
@@ -132,58 +132,61 @@ func main() {
 
 	messages := make(chan telebot.Message)
 
-	go fBot.bot.Listen(messages, 1*time.Second)
+	fBot.bot.Listen(messages, 1*time.Second)
 
-	for msg := range messages {
+	go func() {
 
-		log.Println("incomming msg", msg.Text)
-		if fBot.process != nil {
-			log.Println("running process ", fBot.process.runningName())
+		for msg := range messages {
+
+			log.Println("incoming msg", msg.Text)
+			if fBot.process != nil {
+				log.Println("running process ", fBot.process.runningName())
+			}
+			if strings.Contains(msg.Text, yostart_command) {
+				//show all options
+				b := newBasics(fBot, yostart_command)
+				b.options(msg)
+			} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
+				if strings.Contains(msg.Text, yobg_command) {
+					b := newBasics(fBot, yobg_command)
+					b.addPart(&part{fn: b.bg, toRun: true})
+					b.addPart(&part{fn: b.bgFeedback, toRun: true})
+					b.addPart(&part{fn: b.seeYou, toRun: true})
+					fBot.setProcess(b)
+				}
+
+				fBot.process.run(msg)
+			} else if strings.Contains(msg.Text, yomove_command) || fBot.isCurrentlyRunning(yomove_command) {
+				if strings.Contains(msg.Text, yomove_command) {
+					b := newBasics(fBot, yomove_command)
+					b.addPart(&part{fn: b.yoMove, toRun: true})
+					b.addPart(&part{fn: b.seeYou, toRun: true})
+					fBot.setProcess(b)
+				}
+
+				fBot.process.run(msg)
+			} else if strings.Contains(msg.Text, yofood_command) || fBot.isCurrentlyRunning(yofood_command) {
+				if strings.Contains(msg.Text, yofood_command) {
+					b := newBasics(fBot, yofood_command)
+					b.addPart(&part{fn: b.yoFood, toRun: true})
+					b.addPart(&part{fn: b.seeYou, toRun: true})
+					fBot.setProcess(b)
+				}
+
+				fBot.process.run(msg)
+			} else if strings.Contains(msg.Text, yolow_command) || fBot.isCurrentlyRunning(yolow_command) {
+				if strings.Contains(msg.Text, yolow_command) {
+					b := newBasics(fBot, yolow_command)
+					b.addPart(&part{fn: b.low, toRun: true})
+					b.addPart(&part{fn: b.lowFeedBack, toRun: true})
+					b.addPart(&part{fn: b.seeYou, toRun: true})
+					fBot.setProcess(b)
+				}
+				fBot.process.run(msg)
+			}
+
 		}
-		if strings.Contains(msg.Text, yostart_command) {
-			//show all options
-			b := newBasics(fBot, yostart_command)
-			b.options(msg)
-		} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
-			if strings.Contains(msg.Text, yobg_command) {
-				b := newBasics(fBot, yobg_command)
-				b.addPart(&part{fn: b.bg, toRun: true})
-				b.addPart(&part{fn: b.bgFeedback, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
-				fBot.setProcess(b)
-			}
-
-			fBot.process.run(msg)
-		} else if strings.Contains(msg.Text, yomove_command) || fBot.isCurrentlyRunning(yomove_command) {
-			if strings.Contains(msg.Text, yomove_command) {
-				b := newBasics(fBot, yomove_command)
-				b.addPart(&part{fn: b.yoMove, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
-				fBot.setProcess(b)
-			}
-
-			fBot.process.run(msg)
-		} else if strings.Contains(msg.Text, yofood_command) || fBot.isCurrentlyRunning(yofood_command) {
-			if strings.Contains(msg.Text, yofood_command) {
-				b := newBasics(fBot, yofood_command)
-				b.addPart(&part{fn: b.yoFood, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
-				fBot.setProcess(b)
-			}
-
-			fBot.process.run(msg)
-		} else if strings.Contains(msg.Text, yolow_command) || fBot.isCurrentlyRunning(yolow_command) {
-			if strings.Contains(msg.Text, yolow_command) {
-				b := newBasics(fBot, yolow_command)
-				b.addPart(&part{fn: b.low, toRun: true})
-				b.addPart(&part{fn: b.lowFeedBack, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
-				fBot.setProcess(b)
-			}
-			fBot.process.run(msg)
-		}
-
-	}
+	}()
 }
 
 type basics struct {
