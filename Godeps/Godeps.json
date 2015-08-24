@@ -1,0 +1,14 @@
+{
+	"ImportPath": "github.com/jh-bate/fantail-bot",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/tucnak/telebot",
+			"Comment": "v1.0-4-g89fca71",
+			"Rev": "89fca7105543d4140a0b27ff7494cf260a5eab77"
+		}
+	]
+}

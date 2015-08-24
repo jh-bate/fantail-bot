@@ -1,0 +1,63 @@
+{
+  "yes": ["Yeah"],
+  "no": ["Nope"],
+  "greet" : ["Hey","Good to see you","Hello"],
+  "goodbye": ["See ya","Bye","Later","Cioa"],
+  "bg": {
+    "comment": "Nice work! ",
+    "question": "And your BG was ... ",
+  	"above": {
+      "text": "Above what I would like",
+      "feedback":["Hydrate!","Say bye to high!","Just remember it happens to the nbest of us"],
+       "followUp" :["Has it been high for a while?"]
+    },
+  	"in": {
+      "text": "About right",
+      "feedback":["That is awesome","Never as easy as its made out","How does it feel to be perfect :)"],
+      "followUp" :["Did you feel you could do this again and again?"]
+    },
+  	"below":{
+      "text": "Below what I would like",
+      "feedback":["Lets say no to low!","Damn lows","Hope you keep your low supplies stocked up"],
+      "followUp" :["Do you have any idea why you went low?"]
+    },
+    "thank":"Thanks for that - it all counts"
+  },
+  "food": {
+    "comment": "Mmmmm food :)",
+    "question": "Was it a ...",
+    "snack":"Snack",
+    "meal":"Meal",
+    "other":"None of your business",
+    "thank":"Are you on dishes then?"
+  },
+  "move": {
+    "comment": "Ahhh movement is happiness!",
+    "question": "Did you ...",
+    "typeOne":"Run ... like you stole it",
+    "typeTwo":"Bike ... like mike",
+    "typeThree":"Walk ... like an egyptian",
+    "typeFour":"I moved ... what more can I say",
+    "thank":"Back to it aye ... or maybe you can kick back for a while"
+  },
+  "low": {
+    "comment": "Stink! Hope your with it now :)",
+    "question": "How did you cope with it?",
+    "good":{
+      "text":"OK",
+      "feedback":["Well done! Lows are a pain to great to hear that you knocked it on the head"],
+      "followUp" :["Do you have any idea why you went low?"]
+    },
+    "notGood":{
+      "text":"Not that well",
+      "feedback":["Sometimes the temptation is to rush things ... it pays to slow down sometimes"],
+      "followUp" :["Do you have an idea of how you would better deal with it next time?","Do you have any idea why you went low?"]
+    },
+    "other":{
+      "text":"You know how it goes",
+      "feedback":["Yeap, sure do!","Remember sharing is caring :)"],
+      "followUp" :["Maybe next time?"]
+    },
+    "thank":"Lets plan on no more of those to deal with for a while!"
+  }
+}
