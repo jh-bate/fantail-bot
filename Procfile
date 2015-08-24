@@ -1,1 +1,1 @@
-worker: fantail-bot
+web: fantail-bot
