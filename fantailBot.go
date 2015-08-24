@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"os"
 	"path"
 	"runtime"
 	"strings"
@@ -77,10 +78,6 @@ type (
 		FollowUp []string `json:"followUp"`
 	}
 
-	botConfig struct {
-		BotToken string `json:"botToken"`
-	}
-
 	fantailBot struct {
 		process
 		bot *telebot.Bot
@@ -100,21 +97,6 @@ type (
 	}
 )
 
-func loadConfig() *botConfig {
-	_, filename, _, _ := runtime.Caller(1)
-	configFile, err := ioutil.ReadFile(path.Join(path.Dir(filename), "botConfig.json"))
-
-	if err != nil {
-		log.Panic("could not load config file ", err.Error())
-	}
-	var conf botConfig
-	err = json.Unmarshal(configFile, &conf)
-	if err != nil {
-		log.Panic("could not unmarshal config ", err.Error())
-	}
-	return &conf
-}
-
 func loadLanguage() *lang {
 	_, filename, _, _ := runtime.Caller(1)
 	configFile, err := ioutil.ReadFile(path.Join(path.Dir(filename), "languageConfig.json"))
@@ -131,8 +113,13 @@ func loadLanguage() *lang {
 }
 
 func getfBot() *fantailBot {
-	botConfig := loadConfig()
-	bot, err := telebot.NewBot(botConfig.BotToken)
+	botToken := os.Getenv("BOT_TOKEN")
+
+	if botToken == "" {
+		log.Fatal("$BOT_TOKEN must be set")
+	}
+
+	bot, err := telebot.NewBot(botToken)
 	if err != nil {
 		return nil
 	}
@@ -232,7 +219,7 @@ func (this *basics) seeYou(msg telebot.Message) {
 					[]string{this.getLanguage().Goodbyes[rand.Intn(len(this.getLanguage().Goodbyes))]},
 				},
 				ResizeKeyboard:  true,
-				OneTimeKeyboard: false,
+				OneTimeKeyboard: true,
 			},
 		})
 	return
