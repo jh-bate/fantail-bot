@@ -193,7 +193,7 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("./languageConfig.json"))))
+	log.Fatal(http.ListenAndServe(port, http.FileServer(http.Dir("./languageConfig.json"))))
 
 }
 
