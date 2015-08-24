@@ -3,12 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
-	"path"
-	"runtime"
 	"strings"
 	"time"
 
@@ -98,16 +95,13 @@ type (
 )
 
 func loadLanguage() *lang {
-	_, filename, _, _ := runtime.Caller(1)
-	configFile, err := ioutil.ReadFile(path.Join(path.Dir(filename), "languageConfig.json"))
 
-	if err != nil {
-		log.Panic("could not load language file ", err.Error())
-	}
+	file, _ := os.Open("languageConfig.json")
+	decoder := json.NewDecoder(file)
 	var language lang
-	err = json.Unmarshal(configFile, &language)
+	err := decoder.Decode(&language)
 	if err != nil {
-		log.Panic("could not unmarshal language ", err.Error())
+		log.Panic("could not load language ", err.Error())
 	}
 	return &language
 }
