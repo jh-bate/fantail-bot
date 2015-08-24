@@ -1,19 +1,19 @@
 {
-  "yes": ["Yeah"],
-  "no": ["Nope"],
+  "yes": ["Yeah","OK","Sure thing"],
+  "no": ["Nope","No Thanks","I will pass thanks"],
   "greet" : ["Hey","Good to see you","Hello"],
   "goodbye": ["See ya","Bye","Later","Cioa"],
   "bg": {
     "comment": "Nice work! ",
-    "question": "And your BG was ... ",
+    "question": "So your last bloodsugar was ... ",
   	"above": {
       "text": "Above what I would like",
-      "feedback":["Hydrate!","Say bye to high!","Just remember it happens to the nbest of us"],
+      "feedback":["Hydrate!","Say bye to high!","Just remember it happens to the best of us"],
        "followUp" :["Has it been high for a while?"]
     },
   	"in": {
       "text": "About right",
-      "feedback":["That is awesome","Never as easy as its made out","How does it feel to be perfect :)"],
+      "feedback":["Awesome work!!","Its never as easy as its made out aye :)","How does it feel to be perfect :)"],
       "followUp" :["Did you feel you could do this again and again?"]
     },
   	"below":{
@@ -42,7 +42,7 @@
   },
   "low": {
     "comment": "Stink! Hope your with it now :)",
-    "question": "How did you cope with it?",
+    "question": "So how do you feel you coped with the low?",
     "good":{
       "text":"OK",
       "feedback":["Well done! Lows are a pain to great to hear that you knocked it on the head"],
@@ -55,7 +55,7 @@
     },
     "other":{
       "text":"You know how it goes",
-      "feedback":["Yeap, sure do!","Remember sharing is caring :)"],
+      "feedback":["Yeap, we sure do!","Just remember sharing is caring :)"],
       "followUp" :["Maybe next time?"]
     },
     "thank":"Lets plan on no more of those to deal with for a while!"

@@ -15,7 +15,7 @@ import (
 
 const (
 	//commands
-	yostart_command = "/start"
+	yostart_command = "/hey"
 	yobg_command    = "/bg"
 	yolow_command   = "/low"
 	yomove_command  = "/move"
@@ -148,9 +148,9 @@ func main() {
 		} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
 			if strings.Contains(msg.Text, yobg_command) {
 				b := newBasics(fBot, yobg_command)
-				b.addPart(&part{fn: b.bg, toRun: true})
-				b.addPart(&part{fn: b.bgFeedback, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
+				b.addPart(&part{fn: b.Bg, toRun: true})
+				b.addPart(&part{fn: b.BgFeedback, toRun: true})
+				b.addPart(&part{fn: b.SeeYou, toRun: true})
 				fBot.setProcess(b)
 			}
 
@@ -158,8 +158,8 @@ func main() {
 		} else if strings.Contains(msg.Text, yomove_command) || fBot.isCurrentlyRunning(yomove_command) {
 			if strings.Contains(msg.Text, yomove_command) {
 				b := newBasics(fBot, yomove_command)
-				b.addPart(&part{fn: b.yoMove, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
+				b.addPart(&part{fn: b.Move, toRun: true})
+				b.addPart(&part{fn: b.SeeYou, toRun: true})
 				fBot.setProcess(b)
 			}
 
@@ -167,8 +167,8 @@ func main() {
 		} else if strings.Contains(msg.Text, yofood_command) || fBot.isCurrentlyRunning(yofood_command) {
 			if strings.Contains(msg.Text, yofood_command) {
 				b := newBasics(fBot, yofood_command)
-				b.addPart(&part{fn: b.yoFood, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
+				b.addPart(&part{fn: b.Food, toRun: true})
+				b.addPart(&part{fn: b.SeeYou, toRun: true})
 				fBot.setProcess(b)
 			}
 
@@ -176,9 +176,9 @@ func main() {
 		} else if strings.Contains(msg.Text, yolow_command) || fBot.isCurrentlyRunning(yolow_command) {
 			if strings.Contains(msg.Text, yolow_command) {
 				b := newBasics(fBot, yolow_command)
-				b.addPart(&part{fn: b.low, toRun: true})
-				b.addPart(&part{fn: b.lowFeedBack, toRun: true})
-				b.addPart(&part{fn: b.seeYou, toRun: true})
+				b.addPart(&part{fn: b.Low, toRun: true})
+				b.addPart(&part{fn: b.LowFeedBack, toRun: true})
+				b.addPart(&part{fn: b.SeeYou, toRun: true})
 				fBot.setProcess(b)
 			}
 			fBot.process.run(msg)
@@ -186,6 +186,7 @@ func main() {
 
 	}
 
+	//HACK
 	port := os.Getenv("PORT")
 
 	if port == "" {
@@ -212,7 +213,7 @@ func (this *fantailBot) setProcess(p *basics) {
 	return
 }
 
-func (this *basics) seeYou(msg telebot.Message) {
+func (this *basics) SeeYou(msg telebot.Message) {
 	this.getBot().SendMessage(
 		msg.Chat,
 		this.getLanguage().Goodbyes[rand.Intn(len(this.getLanguage().Goodbyes))],
@@ -220,7 +221,7 @@ func (this *basics) seeYou(msg telebot.Message) {
 			ReplyMarkup: telebot.ReplyMarkup{
 				ForceReply: true,
 				CustomKeyboard: [][]string{
-					[]string{this.getLanguage().Goodbyes[rand.Intn(len(this.getLanguage().Goodbyes))]},
+					[]string{fmt.Sprintf("%s %s", this.getLanguage().Goodbyes[rand.Intn(len(this.getLanguage().Goodbyes))], msg.Chat.FirstName)},
 				},
 				ResizeKeyboard:  true,
 				OneTimeKeyboard: true,
@@ -231,7 +232,7 @@ func (this *basics) seeYou(msg telebot.Message) {
 
 func (this *basics) pause(msg telebot.Message) {
 	this.getBot().SendChatAction(msg.Chat, typing_action)
-	time.Sleep(2 * time.Second)
+	time.Sleep(3 * time.Second)
 	return
 }
 
@@ -302,8 +303,15 @@ func (this *basics) yesNoOpts() *telebot.SendOptions {
 	}
 }
 
-func (this *basics) bg(msg telebot.Message) {
-	this.getBot().SendMessage(msg.Chat,
+func (this *basics) Bg(msg telebot.Message) {
+	this.getBot().SendMessage(
+		msg.Chat,
+		this.getLanguage().Bg.Comment,
+		nil,
+	)
+	this.pause(msg)
+	this.getBot().SendMessage(
+		msg.Chat,
 		this.getLanguage().Bg.Question,
 		&telebot.SendOptions{
 			ReplyMarkup: telebot.ReplyMarkup{
@@ -320,7 +328,7 @@ func (this *basics) bg(msg telebot.Message) {
 	return
 }
 
-func (this *basics) bgFeedback(msg telebot.Message) {
+func (this *basics) BgFeedback(msg telebot.Message) {
 	switch {
 	case msg.Text == this.getLanguage().Bg.Above.Text:
 		this.getBot().SendMessage(
@@ -353,7 +361,13 @@ func (this *basics) bgFeedback(msg telebot.Message) {
 	return
 }
 
-func (this *basics) low(msg telebot.Message) {
+func (this *basics) Low(msg telebot.Message) {
+	this.getBot().SendMessage(
+		msg.Chat,
+		this.getLanguage().Low.Comment,
+		nil,
+	)
+	this.pause(msg)
 	this.getBot().SendMessage(msg.Chat,
 		this.getLanguage().Low.Question,
 		&telebot.SendOptions{
@@ -371,7 +385,7 @@ func (this *basics) low(msg telebot.Message) {
 	return
 }
 
-func (this *basics) lowFeedBack(msg telebot.Message) {
+func (this *basics) LowFeedBack(msg telebot.Message) {
 	switch {
 	case msg.Text == this.getLanguage().Low.Good.Text:
 		this.getBot().SendMessage(
@@ -416,7 +430,13 @@ func (this *basics) lowFeedBack(msg telebot.Message) {
 	return
 }
 
-func (this *basics) yoFood(msg telebot.Message) {
+func (this *basics) Food(msg telebot.Message) {
+	this.getBot().SendMessage(
+		msg.Chat,
+		this.getLanguage().Food.Comment,
+		nil,
+	)
+	this.pause(msg)
 	this.getBot().SendMessage(msg.Chat,
 		this.getLanguage().Food.Question,
 		&telebot.SendOptions{
@@ -434,7 +454,13 @@ func (this *basics) yoFood(msg telebot.Message) {
 	return
 }
 
-func (this *basics) yoMove(msg telebot.Message) {
+func (this *basics) Move(msg telebot.Message) {
+	this.getBot().SendMessage(
+		msg.Chat,
+		this.getLanguage().Move.Comment,
+		nil,
+	)
+	this.pause(msg)
 	this.getBot().SendMessage(msg.Chat,
 		this.getLanguage().Move.Question,
 		&telebot.SendOptions{
