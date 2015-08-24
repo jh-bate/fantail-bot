@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -134,59 +135,65 @@ func main() {
 
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	go func() {
+	for msg := range messages {
 
-		for msg := range messages {
-
-			log.Println("incoming msg", msg.Text)
-			if fBot.process != nil {
-				log.Println("running process ", fBot.process.runningName())
-			}
-			if strings.Contains(msg.Text, yostart_command) {
-				//show all options
-				b := newBasics(fBot, yostart_command)
-				b.options(msg)
-			} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
-				if strings.Contains(msg.Text, yobg_command) {
-					b := newBasics(fBot, yobg_command)
-					b.addPart(&part{fn: b.bg, toRun: true})
-					b.addPart(&part{fn: b.bgFeedback, toRun: true})
-					b.addPart(&part{fn: b.seeYou, toRun: true})
-					fBot.setProcess(b)
-				}
-
-				fBot.process.run(msg)
-			} else if strings.Contains(msg.Text, yomove_command) || fBot.isCurrentlyRunning(yomove_command) {
-				if strings.Contains(msg.Text, yomove_command) {
-					b := newBasics(fBot, yomove_command)
-					b.addPart(&part{fn: b.yoMove, toRun: true})
-					b.addPart(&part{fn: b.seeYou, toRun: true})
-					fBot.setProcess(b)
-				}
-
-				fBot.process.run(msg)
-			} else if strings.Contains(msg.Text, yofood_command) || fBot.isCurrentlyRunning(yofood_command) {
-				if strings.Contains(msg.Text, yofood_command) {
-					b := newBasics(fBot, yofood_command)
-					b.addPart(&part{fn: b.yoFood, toRun: true})
-					b.addPart(&part{fn: b.seeYou, toRun: true})
-					fBot.setProcess(b)
-				}
-
-				fBot.process.run(msg)
-			} else if strings.Contains(msg.Text, yolow_command) || fBot.isCurrentlyRunning(yolow_command) {
-				if strings.Contains(msg.Text, yolow_command) {
-					b := newBasics(fBot, yolow_command)
-					b.addPart(&part{fn: b.low, toRun: true})
-					b.addPart(&part{fn: b.lowFeedBack, toRun: true})
-					b.addPart(&part{fn: b.seeYou, toRun: true})
-					fBot.setProcess(b)
-				}
-				fBot.process.run(msg)
-			}
-
+		log.Println("incoming msg", msg.Text)
+		if fBot.process != nil {
+			log.Println("running process ", fBot.process.runningName())
 		}
-	}()
+		if strings.Contains(msg.Text, yostart_command) {
+			//show all options
+			b := newBasics(fBot, yostart_command)
+			b.options(msg)
+		} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
+			if strings.Contains(msg.Text, yobg_command) {
+				b := newBasics(fBot, yobg_command)
+				b.addPart(&part{fn: b.bg, toRun: true})
+				b.addPart(&part{fn: b.bgFeedback, toRun: true})
+				b.addPart(&part{fn: b.seeYou, toRun: true})
+				fBot.setProcess(b)
+			}
+
+			fBot.process.run(msg)
+		} else if strings.Contains(msg.Text, yomove_command) || fBot.isCurrentlyRunning(yomove_command) {
+			if strings.Contains(msg.Text, yomove_command) {
+				b := newBasics(fBot, yomove_command)
+				b.addPart(&part{fn: b.yoMove, toRun: true})
+				b.addPart(&part{fn: b.seeYou, toRun: true})
+				fBot.setProcess(b)
+			}
+
+			fBot.process.run(msg)
+		} else if strings.Contains(msg.Text, yofood_command) || fBot.isCurrentlyRunning(yofood_command) {
+			if strings.Contains(msg.Text, yofood_command) {
+				b := newBasics(fBot, yofood_command)
+				b.addPart(&part{fn: b.yoFood, toRun: true})
+				b.addPart(&part{fn: b.seeYou, toRun: true})
+				fBot.setProcess(b)
+			}
+
+			fBot.process.run(msg)
+		} else if strings.Contains(msg.Text, yolow_command) || fBot.isCurrentlyRunning(yolow_command) {
+			if strings.Contains(msg.Text, yolow_command) {
+				b := newBasics(fBot, yolow_command)
+				b.addPart(&part{fn: b.low, toRun: true})
+				b.addPart(&part{fn: b.lowFeedBack, toRun: true})
+				b.addPart(&part{fn: b.seeYou, toRun: true})
+				fBot.setProcess(b)
+			}
+			fBot.process.run(msg)
+		}
+
+	}
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
+	log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("./languageConfig.json"))))
+
 }
 
 type basics struct {
@@ -316,12 +323,24 @@ func (this *basics) bg(msg telebot.Message) {
 func (this *basics) bgFeedback(msg telebot.Message) {
 	switch {
 	case msg.Text == this.getLanguage().Bg.Above.Text:
-		this.getBot().SendMessage(msg.Chat, this.getLanguage().Bg.Above.Feedback[rand.Intn(len(this.getLanguage().Bg.Above.Feedback))], nil)
+		this.getBot().SendMessage(
+			msg.Chat,
+			this.getLanguage().Bg.Above.Feedback[rand.Intn(len(this.getLanguage().Bg.Above.Feedback))],
+			nil,
+		)
 		this.pause(msg)
-		this.getBot().SendMessage(msg.Chat, this.getLanguage().Bg.Above.FollowUp[rand.Intn(len(this.getLanguage().Bg.Above.FollowUp))], this.yesNoOpts())
+		this.getBot().SendMessage(
+			msg.Chat,
+			this.getLanguage().Bg.Above.FollowUp[rand.Intn(len(this.getLanguage().Bg.Above.FollowUp))],
+			this.yesNoOpts(),
+		)
 		return
 	case msg.Text == this.getLanguage().Bg.In.Text:
-		this.getBot().SendMessage(msg.Chat, this.getLanguage().Bg.In.Feedback[rand.Intn(len(this.getLanguage().Bg.In.Feedback))], nil)
+		this.getBot().SendMessage(
+			msg.Chat,
+			this.getLanguage().Bg.In.Feedback[rand.Intn(len(this.getLanguage().Bg.In.Feedback))],
+			nil,
+		)
 		this.pause(msg)
 		this.getBot().SendMessage(msg.Chat, this.getLanguage().Bg.In.FollowUp[rand.Intn(len(this.getLanguage().Bg.In.FollowUp))], this.yesNoOpts())
 		return
