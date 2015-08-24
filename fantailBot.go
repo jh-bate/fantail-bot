@@ -131,7 +131,8 @@ func main() {
 	fBot = getfBot()
 
 	messages := make(chan telebot.Message)
-	fBot.bot.Listen(messages, 1*time.Second)
+
+	go fBot.bot.Listen(messages, 1*time.Second)
 
 	for msg := range messages {
 
