@@ -1,10 +1,10 @@
 {
-  "yes": ["Yeah","OK","Sure thing"],
-  "no": ["Nope","No Thanks","I will pass thanks"],
+  "yes": ["Yeah","Yes","Sure thing"],
+  "no": ["Nope","No"],
   "greet" : ["Hey","Good to see you","Hello"],
   "goodbye": ["See ya","Bye","Later","Cioa"],
   "bg": {
-    "comment": "Nice work! ",
+    "comment": "Cool lets get that done for you then.",
     "question": "So your last bloodsugar was ... ",
   	"above": {
       "text": "Above what I would like",
@@ -25,7 +25,7 @@
   },
   "food": {
     "comment": "Mmmmm food :)",
-    "question": "Was it a ...",
+    "question": "So that food you had, was it a ...",
     "snack":"Snack",
     "meal":"Meal",
     "other":"None of your business",
@@ -33,15 +33,15 @@
   },
   "move": {
     "comment": "Ahhh movement is happiness!",
-    "question": "Did you ...",
-    "typeOne":"Run ... like you stole it",
-    "typeTwo":"Bike ... like mike",
-    "typeThree":"Walk ... like an egyptian",
+    "question": "So how did you get moving then?",
+    "typeOne":"Ran ... like you stole it",
+    "typeTwo":"Biked ... like mike",
+    "typeThree":"Walked ... like an egyptian",
     "typeFour":"I moved ... what more can I say",
     "thank":"Back to it aye ... or maybe you can kick back for a while"
   },
   "low": {
-    "comment": "Stink! Hope your with it now :)",
+    "comment": "Stink! We hope back on track now.",
     "question": "So how do you feel you coped with the low?",
     "good":{
       "text":"OK",
