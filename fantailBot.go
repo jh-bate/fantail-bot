@@ -95,7 +95,6 @@ type (
 )
 
 func loadLanguage() *lang {
-
 	file, _ := os.Open("./languageConfig.json")
 	decoder := json.NewDecoder(file)
 	var language lang
