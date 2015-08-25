@@ -106,7 +106,7 @@ func loadLanguage() *lang {
 	return &language
 }
 
-func getfBot() *fantailBot {
+func NewFantailBot() *fantailBot {
 	botToken := os.Getenv("BOT_TOKEN")
 
 	if botToken == "" {
@@ -129,7 +129,7 @@ func (this *fantailBot) isCurrentlyRunning(processName string) bool {
 
 func main() {
 
-	fBot = getfBot()
+	fBot = NewFantailBot()
 
 	messages := make(chan telebot.Message)
 
@@ -144,7 +144,7 @@ func main() {
 		if strings.Contains(msg.Text, yostart_command) {
 			//show all options
 			b := newBasics(fBot, yostart_command)
-			b.options(msg)
+			b.ShowOptionsKeyboard(msg)
 		} else if strings.Contains(msg.Text, yobg_command) || fBot.isCurrentlyRunning(yobg_command) {
 			if strings.Contains(msg.Text, yobg_command) {
 				b := newBasics(fBot, yobg_command)
@@ -182,18 +182,25 @@ func main() {
 				fBot.setProcess(b)
 			}
 			fBot.process.run(msg)
+		} else {
+			b := newBasics(fBot, yostart_command)
+			b.SayHey(msg)
 		}
 
 	}
 
 	//HACK
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
 
-	log.Fatal(http.ListenAndServe(port, http.FileServer(http.Dir("./languageConfig.json"))))
+	log.Println("lets kick this off on ", port)
+
+	err := http.ListenAndServe(port, http.FileServer(http.Dir("./languageConfig.json")))
+	if err != nil {
+		log.Fatal("WTF !!! ", err.Error())
+	}
 
 }
 
@@ -270,7 +277,24 @@ func (this *basics) getLanguage() *lang {
 	return this.fBot.lang
 }
 
-func (this *basics) options(msg telebot.Message) {
+func (this *basics) SayHey(msg telebot.Message) {
+	this.getBot().SendMessage(
+		msg.Chat,
+		this.getLanguage().Greetings[rand.Intn(len(this.getLanguage().Greetings))],
+		&telebot.SendOptions{
+			ReplyMarkup: telebot.ReplyMarkup{
+				ForceReply: false,
+				CustomKeyboard: [][]string{
+					[]string{yostart_command},
+				},
+				ResizeKeyboard:  false,
+				OneTimeKeyboard: false,
+			},
+		})
+	return
+}
+
+func (this *basics) ShowOptionsKeyboard(msg telebot.Message) {
 	this.getBot().SendMessage(msg.Chat,
 		fmt.Sprintf("%s %s! What can we do for you?", this.getLanguage().Greetings[rand.Intn(len(this.getLanguage().Greetings))], msg.Chat.FirstName),
 		&telebot.SendOptions{
@@ -378,7 +402,7 @@ func (this *basics) Low(msg telebot.Message) {
 					[]string{this.getLanguage().Low.NotGood.Text},
 					[]string{this.getLanguage().Low.Other.Text},
 				},
-				ResizeKeyboard:  true,
+				ResizeKeyboard:  false,
 				OneTimeKeyboard: true,
 			},
 		})
@@ -447,7 +471,7 @@ func (this *basics) Food(msg telebot.Message) {
 					[]string{this.getLanguage().Food.Meal},
 					[]string{this.getLanguage().Food.Other},
 				},
-				ResizeKeyboard:  true,
+				ResizeKeyboard:  false,
 				OneTimeKeyboard: true,
 			},
 		})
@@ -472,7 +496,7 @@ func (this *basics) Move(msg telebot.Message) {
 					[]string{this.getLanguage().Move.Ex3},
 					[]string{this.getLanguage().Move.Ex4},
 				},
-				ResizeKeyboard:  true,
+				ResizeKeyboard:  false,
 				OneTimeKeyboard: true,
 			},
 		})
