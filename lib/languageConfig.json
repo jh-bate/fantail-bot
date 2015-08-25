@@ -26,9 +26,20 @@
   "food": {
     "comment": "Mmmmm food :)",
     "question": "So that food you had, was it a ...",
-    "snack":"Snack",
-    "meal":"Meal",
-    "other":"None of your business",
+    "snack" : {
+      "text": "Snack",
+      "feedback":[""],
+      "followUp" :["Would you like to add a picture for context?"]
+    },
+    "meal": {
+      "text": "Meal",
+      "feedback":[""],
+      "followUp" :["Would you like to add a picture for context?"]
+    },
+    "other" : {
+      "text": "None of your business",
+      "feedback":["Maybe as we get to know each other this will change?","Your on dishes then!"],
+    },
     "thank":"Are you on dishes then?"
   },
   "move": {
@@ -41,7 +52,7 @@
     "thank":"Back to it aye ... or maybe you can kick back for a while"
   },
   "low": {
-    "comment": "Stink! We hope back on track now.",
+    "comment": "Stink! We hope you are back on track now.",
     "question": "So how do you feel you coped with the low?",
     "good":{
       "text":"OK",
