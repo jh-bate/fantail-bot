@@ -82,6 +82,8 @@ func Run(m telebot.Message, p Parts) {
 			p[i].ToBeRun = false
 			p[i].Func(m)
 			log.Println("all done ", i)
+			return
 		}
 	}
+	return
 }
