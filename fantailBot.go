@@ -77,8 +77,26 @@ func (this *fantailBot) setRunning(p lib.Parts, n string) {
 	return
 }
 
-func (this *fantailBot) isRunning(name string) bool {
-	return this.running != nil && this.running.Name == name
+func (this *fantailBot) isRunning() bool {
+	return this.running != nil && len(this.running.Parts) > 0
+}
+
+func (this *fantailBot) startLow(usr telebot.User) {
+	log.Println("init LOW setup")
+	this.running = nil
+	this.setRunning(
+		lib.NewLow(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
+		yolow_command,
+	)
+}
+
+func (this *fantailBot) startBg(usr telebot.User) {
+	log.Println("init BG setup")
+	this.running = nil
+	this.setRunning(
+		lib.NewBg(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
+		yobg_command,
+	)
 }
 
 func main() {
@@ -91,24 +109,13 @@ func main() {
 
 		log.Println("incoming ...", msg.Text)
 
-		if strings.Contains(msg.Text, yobg_command) || fBot.isRunning(yobg_command) {
-			if fBot.isRunning(yobg_command) == false {
-				fBot.setRunning(
-					lib.NewBg(&lib.Details{Bot: fBot.bot, User: msg.Chat}).GetParts(),
-					yobg_command,
-				)
-			}
+		if strings.Contains(msg.Text, yobg_command) {
+			fBot.startBg(msg.Chat)
+		} else if strings.Contains(msg.Text, yolow_command) {
+			fBot.startLow(msg.Chat)
+		}
+		if fBot.isRunning() {
 			lib.Run(msg, fBot.running.Parts)
-		} else if strings.Contains(msg.Text, yolow_command) || fBot.isRunning(yolow_command) {
-			if fBot.isRunning(yolow_command) == false {
-				fBot.setRunning(
-					lib.NewLow(&lib.Details{Bot: fBot.bot, User: msg.Chat}).GetParts(),
-					yolow_command,
-				)
-			}
-			lib.Run(msg, fBot.running.Parts)
-		} else {
-			fBot.showOptions(msg.Chat)
 		}
 	}
 
