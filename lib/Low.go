@@ -77,21 +77,21 @@ func (this *Low) partTwo(msg telebot.Message) {
 	switch {
 	case msg.Text == this.lang.Good.Text:
 		this.Details.send(getLangText(this.lang.Good.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.Good.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.Good.FollowUpQuestion), makeKeyBoard("Yeah I think so", "No not really"))
 		return
 	case msg.Text == this.lang.NotGood.Text:
 		this.Details.send(getLangText(this.lang.NotGood.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.NotGood.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.NotGood.FollowUpQuestion), makeKeyBoard("Yeah I think so", "No not really"))
 		return
 	case msg.Text == this.lang.Other.Text:
 		this.Details.send(getLangText(this.lang.Other.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.Other.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.Other.FollowUpQuestion), makeKeyBoard("Yeah OK", "We will see"))
 		return
 	}
 	return
 }
 
 func (this *Low) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(bye_text))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(fmt.Sprintf(bye_text, msg.Chat.FirstName)))
 	return
 }

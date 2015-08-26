@@ -11,7 +11,7 @@ import (
 const (
 	yes_text = "Yeah"
 	no_text  = "Nope"
-	bye_text = "See you"
+	bye_text = "See you %s"
 
 	typing_action = "typing"
 )

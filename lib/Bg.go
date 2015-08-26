@@ -24,25 +24,25 @@ type Bg struct {
 func (this *Bg) loadLanguage() {
 
 	encoded := `{
-	  "comment": "Cool lets get that done for you then.",
-	  "question": "So your last bloodsugar was ... ",
-		"above": {
-	    "text": "Above what I would like",
-	    "feedback":["Hydrate!","Say bye to high!","Just remember it happens to the best of us"],
-	     "followUp" :["Has it been high for a while?"]
-	  },
-		"in": {
-	    "text": "About right",
-	    "feedback":["Awesome work!!","Its never as easy as its made out aye :)","How does it feel to be perfect :)"],
-	    "followUp" :["Did you feel you could do this again and again?"]
-	  },
-		"below":{
-	    "text": "Below what I would like",
-	    "feedback":["Lets say no to low!","Damn lows","Hope you keep your low supplies stocked up"],
-	    "followUp" :["Do you have any idea why you went low?"]
-	  },
-	  "thank":"Thanks for that - it all counts"
-	}`
+        "comment": "Cool lets get that blood sugar remebered for you then.",
+        "question": "So your last blood sugar was ... ",
+        "above": {
+            "text": "Above what I would like",
+            "feedback":["Remember to keep your fuilds up","Just remember it happens to the best of us"],
+            "followUp" :["Has it been high for a while?"]
+        },
+        "in": {
+            "text": "About right",
+            "feedback":["Awesome work!!","Its never as easy as its made out aye :)","How does it feel to be perfect :)"],
+            "followUp" :["Did you feel you could do this again and again?"]
+        },
+        "below":{
+            "text": "Below what I would like",
+            "feedback":["Damn lows, they always happen at the wrost time.","I Hope you keep your low supplies stocked up!!"],
+            "followUp" :["Do you have any idea why you went low?"]
+        },
+        "thank":"Thanks for that - it all counts"
+    }`
 
 	err := json.Unmarshal([]byte(encoded), &this.lang)
 	if err != nil {
@@ -76,21 +76,21 @@ func (this *Bg) partTwo(msg telebot.Message) {
 	switch {
 	case msg.Text == this.lang.Above.Text:
 		this.Details.send(getLangText(this.lang.Above.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard("Sure has", "Nope"))
 		return
 	case msg.Text == this.lang.In.Text:
 		this.Details.send(getLangText(this.lang.In.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.In.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.In.FollowUpQuestion), makeKeyBoard("Totally!", "Not so sure"))
 		return
 	case msg.Text == this.lang.Below.Text:
 		this.Details.send(getLangText(this.lang.Below.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard(yes_text, no_text))
+		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeap I have a hunch", "No, I just don't get it"))
 		return
 	}
 	return
 }
 
 func (this *Bg) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(bye_text))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(fmt.Sprintf(bye_text, msg.Chat.FirstName)))
 	return
 }
