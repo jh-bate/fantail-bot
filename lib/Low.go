@@ -1,6 +1,11 @@
 package lib
 
-import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+import (
+	"encoding/json"
+	"log"
+
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+)
 
 type Low struct {
 	Details *Details
@@ -17,7 +22,7 @@ type Low struct {
 
 func NewLow(d *Details) *Low {
 	low := &Low{Details: d}
-	loadLanguage(low.lang)
+	low.loadLanguage()
 	low.Parts = append(
 		low.Parts,
 		&Part{Func: low.partOne, ToBeRun: true},
@@ -25,6 +30,35 @@ func NewLow(d *Details) *Low {
 		&Part{Func: low.partThree, ToBeRun: true},
 	)
 	return low
+}
+
+func (this *Low) loadLanguage() {
+
+	encoded := `{
+	  "comment": "Stink! We hope you are back on track now.",
+	  "question": "So how do you feel you coped with the low?",
+	  "good":{
+	    "text":"OK",
+	    "feedback":["Well done! Lows are a pain to great to hear that you knocked it on the head"],
+	    "followUp" :["Do you have any idea why you went low?"]
+	  },
+	  "notGood":{
+	    "text":"Not that well",
+	    "feedback":["Sometimes the temptation is to rush things ... it pays to slow down sometimes"],
+	    "followUp" :["Do you have an idea of how you would better deal with it next time?","Do you have any idea why you went low?"]
+	  },
+	  "other":{
+	    "text":"You know how it goes",
+	    "feedback":["Yeap, we sure do!","Just remember sharing is caring :)"],
+	    "followUp" :["Maybe next time?"]
+	  },
+	  "thank":"Lets plan on no more of those to deal with for a while!"
+	}`
+
+	err := json.Unmarshal([]byte(encoded), &this.lang)
+	if err != nil {
+		log.Panic("could not load LOW language ", err.Error())
+	}
 }
 
 func (this *Low) GetParts() Parts {

@@ -23,7 +23,7 @@ const (
 type (
 	fantailBot struct {
 		bot *telebot.Bot
-		running
+		*running
 	}
 
 	running struct {
@@ -36,8 +36,7 @@ func newFantailBot() *fantailBot {
 	botToken := os.Getenv("BOT_TOKEN")
 
 	if botToken == "" {
-		//log.Fatal("$BOT_TOKEN must be set")
-		botToken = "116039882:AAE_sctG9_z4eEmTB40KRWt3est72zYSHQ4"
+		log.Fatal("$BOT_TOKEN must be set")
 	}
 
 	bot, err := telebot.NewBot(botToken)
@@ -66,12 +65,12 @@ func (this *fantailBot) showOptions(usr telebot.User) {
 }
 
 func (this *fantailBot) setRunning(p lib.Parts, n string) {
-	this.running = running{Parts: p, Name: n}
+	this.running = &running{Parts: p, Name: n}
 	return
 }
 
 func (this *fantailBot) isRunning(name string) bool {
-	return this.running.Name == name
+	return this.running != nil && this.running.Name == name
 }
 
 func main() {
@@ -86,7 +85,6 @@ func main() {
 
 		if strings.Contains(msg.Text, yostart_command) {
 			fBot.showOptions(msg.Chat)
-			return
 		} else if strings.Contains(msg.Text, yobg_command) || fBot.isRunning(yobg_command) {
 			if fBot.isRunning(yobg_command) == false {
 				fBot.setRunning(
@@ -95,7 +93,6 @@ func main() {
 				)
 			}
 			lib.Run(msg, fBot.running.Parts)
-			return
 		} else if strings.Contains(msg.Text, yolow_command) || fBot.isRunning(yolow_command) {
 			if fBot.isRunning(yolow_command) == false {
 				fBot.setRunning(
@@ -104,9 +101,7 @@ func main() {
 				)
 			}
 			lib.Run(msg, fBot.running.Parts)
-			return
 		}
-		log.Println("hmmm")
 	}
 
 }

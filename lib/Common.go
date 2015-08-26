@@ -1,10 +1,8 @@
 package lib
 
 import (
-	"encoding/json"
 	"log"
 	"math/rand"
-	"os"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
@@ -37,18 +35,6 @@ type (
 		GetParts() Parts
 	}
 )
-
-func loadLanguage(lang interface{}) {
-	file, _ := os.Open("./languageConfig.json")
-	decoder := json.NewDecoder(file)
-
-	log.Println("Loaded language config file", file.Name())
-
-	err := decoder.Decode(&lang)
-	if err != nil {
-		log.Panic("could not load language ", err.Error())
-	}
-}
 
 func getLangText(opts []string) string {
 	return opts[rand.Intn(len(opts))]

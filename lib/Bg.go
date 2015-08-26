@@ -1,6 +1,11 @@
 package lib
 
-import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+import (
+	"encoding/json"
+	"log"
+
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+)
 
 type Bg struct {
 	Details *Details
@@ -15,9 +20,11 @@ type Bg struct {
 	Parts
 }
 
+const bg_config_name = "bg.json"
+
 func NewBg(d *Details) *Bg {
 	bg := &Bg{Details: d}
-	loadLanguage(bg.lang)
+	bg.loadLanguage()
 	bg.Parts = append(
 		bg.Parts,
 		&Part{Func: bg.partOne, ToBeRun: true},
@@ -25,6 +32,35 @@ func NewBg(d *Details) *Bg {
 		&Part{Func: bg.partThree, ToBeRun: true},
 	)
 	return bg
+}
+
+func (this *Bg) loadLanguage() {
+
+	encoded := `{
+	  "comment": "Cool lets get that done for you then.",
+	  "question": "So your last bloodsugar was ... ",
+		"above": {
+	    "text": "Above what I would like",
+	    "feedback":["Hydrate!","Say bye to high!","Just remember it happens to the best of us"],
+	     "followUp" :["Has it been high for a while?"]
+	  },
+		"in": {
+	    "text": "About right",
+	    "feedback":["Awesome work!!","Its never as easy as its made out aye :)","How does it feel to be perfect :)"],
+	    "followUp" :["Did you feel you could do this again and again?"]
+	  },
+		"below":{
+	    "text": "Below what I would like",
+	    "feedback":["Lets say no to low!","Damn lows","Hope you keep your low supplies stocked up"],
+	    "followUp" :["Do you have any idea why you went low?"]
+	  },
+	  "thank":"Thanks for that - it all counts"
+	}`
+
+	err := json.Unmarshal([]byte(encoded), &this.lang)
+	if err != nil {
+		log.Panic("could not load BG language ", err.Error())
+	}
 }
 
 func (this *Bg) GetParts() Parts {
