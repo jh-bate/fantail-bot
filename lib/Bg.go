@@ -2,6 +2,7 @@ package lib
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -18,20 +19,6 @@ type Bg struct {
 		Thank    string `json:"thank"`
 	}
 	Parts
-}
-
-const bg_config_name = "bg.json"
-
-func NewBg(d *Details) *Bg {
-	bg := &Bg{Details: d}
-	bg.loadLanguage()
-	bg.Parts = append(
-		bg.Parts,
-		&Part{Func: bg.partOne, ToBeRun: true},
-		&Part{Func: bg.partTwo, ToBeRun: true},
-		&Part{Func: bg.partThree, ToBeRun: true},
-	)
-	return bg
 }
 
 func (this *Bg) loadLanguage() {
@@ -62,12 +49,24 @@ func (this *Bg) loadLanguage() {
 		log.Panic("could not load BG language ", err.Error())
 	}
 }
+func NewBg(d *Details) *Bg {
+	bg := &Bg{Details: d}
+	bg.loadLanguage()
+	bg.Parts = append(
+		bg.Parts,
+		&Part{Func: bg.partOne, ToBeRun: true},
+		&Part{Func: bg.partTwo, ToBeRun: true},
+		&Part{Func: bg.partThree, ToBeRun: true},
+	)
+	return bg
+}
 
 func (this *Bg) GetParts() Parts {
 	return this.Parts
 }
 
 func (this *Bg) partOne(msg telebot.Message) {
+	this.Details.send(fmt.Sprintf("Hey %s", msg.Chat.FirstName))
 	this.Details.send(this.lang.Comment)
 	this.Details.sendWithKeyboard(this.lang.Question, makeKeyBoard(this.lang.Above.Text, this.lang.In.Text, this.lang.Below.Text))
 	return
@@ -92,6 +91,6 @@ func (this *Bg) partTwo(msg telebot.Message) {
 }
 
 func (this *Bg) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(yes_text, no_text))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(bye_text))
 	return
 }

@@ -2,6 +2,7 @@ package lib
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -18,18 +19,6 @@ type Low struct {
 		Thank    string `json:"thank"`
 	}
 	Parts
-}
-
-func NewLow(d *Details) *Low {
-	low := &Low{Details: d}
-	low.loadLanguage()
-	low.Parts = append(
-		low.Parts,
-		&Part{Func: low.partOne, ToBeRun: true},
-		&Part{Func: low.partTwo, ToBeRun: true},
-		&Part{Func: low.partThree, ToBeRun: true},
-	)
-	return low
 }
 
 func (this *Low) loadLanguage() {
@@ -61,11 +50,24 @@ func (this *Low) loadLanguage() {
 	}
 }
 
+func NewLow(d *Details) *Low {
+	low := &Low{Details: d}
+	low.loadLanguage()
+	low.Parts = append(
+		low.Parts,
+		&Part{Func: low.partOne, ToBeRun: true},
+		&Part{Func: low.partTwo, ToBeRun: true},
+		&Part{Func: low.partThree, ToBeRun: true},
+	)
+	return low
+}
+
 func (this *Low) GetParts() Parts {
 	return this.Parts
 }
 
 func (this *Low) partOne(msg telebot.Message) {
+	this.Details.send(fmt.Sprintf("Hey %s", msg.Chat.FirstName))
 	this.Details.send(this.lang.Comment)
 	this.Details.sendWithKeyboard(this.lang.Question, makeKeyBoard(this.lang.Good.Text, this.lang.NotGood.Text, this.lang.Other.Text))
 	return
@@ -90,6 +92,6 @@ func (this *Low) partTwo(msg telebot.Message) {
 }
 
 func (this *Low) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(yes_text, no_text))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(bye_text))
 	return
 }

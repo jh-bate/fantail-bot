@@ -10,6 +10,7 @@ import (
 const (
 	yes_text = "Yeah"
 	no_text  = "Nope"
+	bye_text = "See you"
 )
 
 type (
@@ -75,13 +76,12 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 
 func Run(m telebot.Message, p Parts) {
 	for i := range p {
-		log.Println("checking ", i, "of", len(p), "run?", p[i].ToBeRun)
+		log.Println("checking ", i, "of", len(p), "still to run?", p[i].ToBeRun)
 		if p[i].ToBeRun {
 			log.Println("running ", i)
 			p[i].ToBeRun = false
 			p[i].Func(m)
-			log.Println("has run ", i)
-			return
+			log.Println("all done ", i)
 		}
 	}
 }
