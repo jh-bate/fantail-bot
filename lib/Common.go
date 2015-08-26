@@ -3,6 +3,7 @@ package lib
 import (
 	"log"
 	"math/rand"
+	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
@@ -11,6 +12,8 @@ const (
 	yes_text = "Yeah"
 	no_text  = "Nope"
 	bye_text = "See you"
+
+	typing_action = "typing"
 )
 
 type (
@@ -55,10 +58,12 @@ func (d *Details) send(msg string) {
 		msg,
 		nil,
 	)
+	d.takeThoughtfulPause()
 	return
 }
 
 func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
+	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
 		msg,
@@ -71,6 +76,12 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 			},
 		},
 	)
+	return
+}
+
+func (d *Details) takeThoughtfulPause() {
+	d.Bot.SendChatAction(d.User, typing_action)
+	time.Sleep(2 * time.Second)
 	return
 }
 

@@ -16,8 +16,6 @@ const (
 	yostart_command = "/hey"
 	yobg_command    = "/bg"
 	yolow_command   = "/low"
-
-	typing_action = "typing"
 )
 
 type (
