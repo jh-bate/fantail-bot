@@ -24,7 +24,7 @@ type Bg struct {
 func (this *Bg) loadLanguage() {
 
 	encoded := `{
-        "comment": "Cool lets get that blood sugar remebered for you then.",
+        "comment": "OK lets save that blood sugar for you.",
         "question": "So your last blood sugar was ... ",
         "above": {
             "text": "Above what I would like",
@@ -84,13 +84,13 @@ func (this *Bg) partTwo(msg telebot.Message) {
 		return
 	case msg.Text == this.lang.Below.Text:
 		this.Details.send(getLangText(this.lang.Below.Feedback))
-		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeap I have a hunch", "No, I just don't get it"))
+		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeah I have a hunch", "No, I just don't get it"))
 		return
 	}
 	return
 }
 
 func (this *Bg) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(fmt.Sprintf(bye_text, msg.Chat.FirstName)))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard("It does aye. See you!"))
 	return
 }

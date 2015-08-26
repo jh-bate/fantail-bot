@@ -24,7 +24,7 @@ type Low struct {
 func (this *Low) loadLanguage() {
 
 	encoded := `{
-	  "comment": "Stink! We hope you are back on track now.",
+	  "comment": "Stink! We hope you are back on track now after the low.",
 	  "question": "So how do you feel you coped with the low?",
 	  "good":{
 	    "text":"OK",
@@ -41,7 +41,7 @@ func (this *Low) loadLanguage() {
 	    "feedback":["Yeap, we sure do!","Just remember sharing is caring :)"],
 	    "followUp" :["Maybe next time?"]
 	  },
-	  "thank":"Lets plan on no more of those to deal with for a while!"
+	  "thank":"Lets plan on having no more lows for a while aye?"
 	}`
 
 	err := json.Unmarshal([]byte(encoded), &this.lang)
@@ -92,6 +92,6 @@ func (this *Low) partTwo(msg telebot.Message) {
 }
 
 func (this *Low) partThree(msg telebot.Message) {
-	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard(fmt.Sprintf(bye_text, msg.Chat.FirstName)))
+	this.Details.sendWithKeyboard(this.lang.Thank, makeKeyBoard("Sounds like a plan!"))
 	return
 }
