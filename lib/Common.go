@@ -68,7 +68,6 @@ func (d *Details) send(msg string) {
 }
 
 func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
-	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
 		msg,
@@ -81,11 +80,12 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 			},
 		},
 	)
+	d.takeThoughtfulPause()
 	return
 }
 
 func (d *Details) takeThoughtfulPause() {
 	d.Bot.SendChatAction(d.User, typing_action)
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	return
 }
