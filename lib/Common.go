@@ -30,6 +30,11 @@ type (
 		FollowUpQuestion []string `json:"followUp"`
 	}
 
+	yesNo struct {
+		Yes string `json:"yes"`
+		No  string `json:"no"`
+	}
+
 	Details struct {
 		Bot  *telebot.Bot
 		User telebot.User

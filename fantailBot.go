@@ -15,6 +15,7 @@ const (
 	//commands
 	yostart_command = "/hey"
 	yobg_command    = "/bg"
+	yoqbg_command   = "/qbg"
 	yolow_command   = "/low"
 )
 
@@ -96,6 +97,14 @@ func (this *fantailBot) startBg(usr telebot.User) {
 		yobg_command,
 	)
 }
+func (this *fantailBot) startQuickBg(usr telebot.User) {
+	log.Println("init QBG setup")
+	this.running = nil
+	this.setRunning(
+		lib.NewQuickBg(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
+		yoqbg_command,
+	)
+}
 
 func main() {
 
@@ -111,6 +120,8 @@ func main() {
 			fBot.startBg(msg.Chat)
 		} else if strings.Contains(msg.Text, yolow_command) {
 			fBot.startLow(msg.Chat)
+		} else if strings.Contains(msg.Text, yoqbg_command) {
+			fBot.startQuickBg(msg.Chat)
 		}
 		if fBot.isRunning() {
 			lib.Run(msg, fBot.running.Parts)
