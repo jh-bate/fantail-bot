@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"log"
 	"math/rand"
 	"time"
 
@@ -41,7 +40,8 @@ type (
 	}
 
 	Process interface {
-		GetParts() Parts
+		Run(telebot.Message)
+		CanRun() bool
 	}
 )
 
@@ -87,19 +87,5 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 func (d *Details) takeThoughtfulPause() {
 	d.Bot.SendChatAction(d.User, typing_action)
 	time.Sleep(2 * time.Second)
-	return
-}
-
-func Run(m telebot.Message, p Parts) {
-	for i := range p {
-		log.Println("checking ", i, "of", len(p), "still to run?", p[i].ToBeRun)
-		if p[i].ToBeRun {
-			log.Println("running ", i)
-			p[i].ToBeRun = false
-			p[i].Func(m)
-			log.Println("all done ", i)
-			return
-		}
-	}
 	return
 }

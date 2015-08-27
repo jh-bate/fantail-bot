@@ -21,13 +21,8 @@ const (
 
 type (
 	fantailBot struct {
-		bot *telebot.Bot
-		*running
-	}
-
-	running struct {
-		Parts lib.Parts
-		Name  string
+		bot     *telebot.Bot
+		process lib.Process
 	}
 )
 
@@ -71,39 +66,28 @@ func (this *fantailBot) showOptions(usr telebot.User) {
 	return
 }
 
-func (this *fantailBot) setRunning(p lib.Parts, n string) {
-	this.running = &running{Parts: p, Name: n}
+func (this *fantailBot) setRunning(p lib.Process) {
+	this.process = nil
+	this.process = p
 	return
 }
 
 func (this *fantailBot) isRunning() bool {
-	return this.running != nil && len(this.running.Parts) > 0
+	return this.process != nil && this.process.CanRun()
 }
 
 func (this *fantailBot) startLow(usr telebot.User) {
 	log.Println("init LOW setup")
-	this.running = nil
-	this.setRunning(
-		lib.NewLow(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
-		yolow_command,
-	)
+	this.setRunning(lib.NewLow(&lib.Details{Bot: this.bot, User: usr}))
 }
 
 func (this *fantailBot) startBg(usr telebot.User) {
 	log.Println("init BG setup")
-	this.running = nil
-	this.setRunning(
-		lib.NewBg(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
-		yobg_command,
-	)
+	this.setRunning(lib.NewBg(&lib.Details{Bot: this.bot, User: usr}))
 }
 func (this *fantailBot) startQuickBg(usr telebot.User) {
 	log.Println("init QBG setup")
-	this.running = nil
-	this.setRunning(
-		lib.NewQuickBg(&lib.Details{Bot: this.bot, User: usr}).GetParts(),
-		yoqbg_command,
-	)
+	this.setRunning(lib.NewQuickBg(&lib.Details{Bot: this.bot, User: usr}))
 }
 
 func main() {
@@ -124,7 +108,7 @@ func main() {
 			fBot.startQuickBg(msg.Chat)
 		}
 		if fBot.isRunning() {
-			lib.Run(msg, fBot.running.Parts)
+			fBot.process.Run(msg)
 		}
 	}
 

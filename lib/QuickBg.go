@@ -68,8 +68,22 @@ func NewQuickBg(d *Details) *QuickBg {
 	return bg
 }
 
-func (this *QuickBg) GetParts() Parts {
-	return this.Parts
+func (this *QuickBg) Run(m telebot.Message) {
+	for i := range this.Parts {
+		log.Println("checking ", i, "of", len(this.Parts), "still to run?", this.Parts[i].ToBeRun)
+		if this.Parts[i].ToBeRun {
+			log.Println("running ", i)
+			this.Parts[i].ToBeRun = false
+			this.Parts[i].Func(m)
+			log.Println("all done ", i)
+			return
+		}
+	}
+	return
+}
+
+func (this *QuickBg) CanRun() bool {
+	return len(this.Parts) > 0
 }
 
 func (this *QuickBg) askBg(msg telebot.Message) {

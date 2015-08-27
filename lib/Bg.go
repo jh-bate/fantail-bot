@@ -61,8 +61,22 @@ func NewBg(d *Details) *Bg {
 	return bg
 }
 
-func (this *Bg) GetParts() Parts {
-	return this.Parts
+func (this *Bg) Run(m telebot.Message) {
+	for i := range this.Parts {
+		log.Println("checking ", i, "of", len(this.Parts), "still to run?", this.Parts[i].ToBeRun)
+		if this.Parts[i].ToBeRun {
+			log.Println("running ", i)
+			this.Parts[i].ToBeRun = false
+			this.Parts[i].Func(m)
+			log.Println("all done ", i)
+			return
+		}
+	}
+	return
+}
+
+func (this *Bg) CanRun() bool {
+	return len(this.Parts) > 0
 }
 
 func (this *Bg) partOne(msg telebot.Message) {
