@@ -98,6 +98,7 @@ func (this *QuickBg) askReview(msg telebot.Message) {
 }
 
 func (this *QuickBg) replyReview(msg telebot.Message) {
+	log.Println("did you want to review?", msg.Text)
 	switch {
 	case msg.Text == this.lang.ReviewYesNo.Yes:
 		this.Parts = append(
@@ -111,9 +112,11 @@ func (this *QuickBg) replyReview(msg telebot.Message) {
 			&Part{Func: this.onYa, ToBeRun: true},
 		)
 	}
+	return
 }
 
 func (this *QuickBg) doReview(msg telebot.Message) {
+	log.Println("BG", this.SelectedAnswer)
 	switch {
 	case this.SelectedAnswer == this.lang.Above.Text:
 		this.Details.send(getLangText(this.lang.Above.Feedback))
