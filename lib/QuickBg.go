@@ -8,15 +8,17 @@ import (
 )
 
 type QuickBg struct {
-	Details *Details
-	lang    struct {
-		Comment  string `json:"comment"`
-		Question string `json:"question"`
-		Review   yesNo  `json:"review"`
-		Above    option `json:"above"`
-		In       option `json:"in"`
-		Below    option `json:"below"`
-		Thank    string `json:"thank"`
+	Details        *Details
+	SelectedAnswer string
+	lang           struct {
+		Comment     string `json:"comment"`
+		Question    string `json:"question"`
+		Review      string `json:"review"`
+		ReviewYesNo yesNo  `json:"reviewYesNo"`
+		Above       option `json:"above"`
+		In          option `json:"in"`
+		Below       option `json:"below"`
+		Thank       string `json:"thank"`
 	}
 	Parts
 }
@@ -26,7 +28,8 @@ func (this *QuickBg) loadLanguage() {
 	encoded := `{
         "comment": "OK lets save that blood sugar for you.",
         "question": "So your last blood sugar was ... ",
-        "review" : {
+        "review": "Would you like to review your result?",
+        "reviewYesNo" : {
         	"yes":"Sure thing!",
         	"no": "No thanks"
         },
@@ -58,9 +61,9 @@ func NewQuickBg(d *Details) *QuickBg {
 	bg.loadLanguage()
 	bg.Parts = append(
 		bg.Parts,
-		&Part{Func: bg.selectBg, ToBeRun: true},
-		&Part{Func: bg.questionReview, ToBeRun: true},
-		&Part{Func: bg.answerReview, ToBeRun: true},
+		&Part{Func: bg.askBg, ToBeRun: true},
+		&Part{Func: bg.askReview, ToBeRun: true},
+		&Part{Func: bg.replyReview, ToBeRun: true},
 	)
 	return bg
 }
@@ -69,25 +72,26 @@ func (this *QuickBg) GetParts() Parts {
 	return this.Parts
 }
 
-func (this *QuickBg) selectBg(msg telebot.Message) {
+func (this *QuickBg) askBg(msg telebot.Message) {
 	this.Details.sendWithKeyboard(this.lang.Question, makeKeyBoard(this.lang.Above.Text, this.lang.In.Text, this.lang.Below.Text))
 	return
 }
 
-func (this *QuickBg) questionReview(msg telebot.Message) {
-	this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard(this.lang.Review.Yes, this.lang.Review.No))
+func (this *QuickBg) askReview(msg telebot.Message) {
+	this.SelectedAnswer = msg.Text
+	this.Details.sendWithKeyboard(this.lang.Review, makeKeyBoard(this.lang.ReviewYesNo.Yes, this.lang.ReviewYesNo.No))
 	return
 }
 
-func (this *QuickBg) answerReview(msg telebot.Message) {
+func (this *QuickBg) replyReview(msg telebot.Message) {
 	switch {
-	case msg.Text == this.lang.Review.Yes:
+	case msg.Text == this.lang.ReviewYesNo.Yes:
 		this.Parts = append(
 			this.Parts,
 			&Part{Func: this.doReview, ToBeRun: true},
 			&Part{Func: this.onYa, ToBeRun: true},
 		)
-	case msg.Text == this.lang.Review.No:
+	case msg.Text == this.lang.ReviewYesNo.No:
 		this.Parts = append(
 			this.Parts,
 			&Part{Func: this.onYa, ToBeRun: true},
@@ -97,15 +101,15 @@ func (this *QuickBg) answerReview(msg telebot.Message) {
 
 func (this *QuickBg) doReview(msg telebot.Message) {
 	switch {
-	case msg.Text == this.lang.Above.Text:
+	case this.SelectedAnswer == this.lang.Above.Text:
 		this.Details.send(getLangText(this.lang.Above.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard("Sure has", "Nope"))
 		return
-	case msg.Text == this.lang.In.Text:
+	case this.SelectedAnswer == this.lang.In.Text:
 		this.Details.send(getLangText(this.lang.In.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.In.FollowUpQuestion), makeKeyBoard("Totally!", "Not so sure"))
 		return
-	case msg.Text == this.lang.Below.Text:
+	case this.SelectedAnswer == this.lang.Below.Text:
 		this.Details.send(getLangText(this.lang.Below.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeah I have a hunch", "No, I just don't get it"))
 		return
