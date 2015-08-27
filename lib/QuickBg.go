@@ -101,32 +101,32 @@ func (this *QuickBg) replyReview(msg telebot.Message) {
 	log.Println("did you want to review?", msg.Text)
 	switch {
 	case msg.Text == this.lang.ReviewYesNo.Yes:
+		log.Println("adding review")
+		this.doReview(this.SelectedAnswer)
 		this.Parts = append(
 			this.Parts,
-			&Part{Func: this.doReview, ToBeRun: true},
 			&Part{Func: this.onYa, ToBeRun: true},
 		)
+		return
 	case msg.Text == this.lang.ReviewYesNo.No:
-		this.Parts = append(
-			this.Parts,
-			&Part{Func: this.onYa, ToBeRun: true},
-		)
+		log.Println("moving on")
+		this.onYa(msg)
 	}
 	return
 }
 
-func (this *QuickBg) doReview(msg telebot.Message) {
-	log.Println("BG", this.SelectedAnswer)
+func (this *QuickBg) doReview(selectedAnswer string) {
+	log.Println("BG", selectedAnswer)
 	switch {
-	case this.SelectedAnswer == this.lang.Above.Text:
+	case selectedAnswer == this.lang.Above.Text:
 		this.Details.send(getLangText(this.lang.Above.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard("Sure has", "Nope"))
 		return
-	case this.SelectedAnswer == this.lang.In.Text:
+	case selectedAnswer == this.lang.In.Text:
 		this.Details.send(getLangText(this.lang.In.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.In.FollowUpQuestion), makeKeyBoard("Totally!", "Not so sure"))
 		return
-	case this.SelectedAnswer == this.lang.Below.Text:
+	case selectedAnswer == this.lang.Below.Text:
 		this.Details.send(getLangText(this.lang.Below.Feedback))
 		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeah I have a hunch", "No, I just don't get it"))
 		return
