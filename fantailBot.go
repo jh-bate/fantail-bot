@@ -105,8 +105,8 @@ func main() {
 			fBot.startLow(msg.Chat)
 		} else if strings.Contains(msg.Text, yobg_command) {
 			fBot.startQuickBg(msg.Chat)
-		} else if strings.Contains(msg.Text, yobg_command) {
-			fBot.startQuickBg(msg.Chat)
+		} else if strings.Contains(msg.Text, yofood_command) {
+			fBot.startFunWithFood(msg.Chat)
 		}
 		if fBot.isRunning() {
 			fBot.process.Run(msg)
