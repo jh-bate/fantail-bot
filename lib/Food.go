@@ -40,7 +40,7 @@ func (this *Food) loadLanguage() {
         "meal": "A Meal",
         "snack": "A Snack",
         "beverage": "A Drink",
-        "playSnap": [ "Would you like to play a game of snap?, "If you BG before the food equals BG after then its SNAP!"],
+        "playSnap": [ "Would you like to play a game of snap?", "If you BG before the food equals BG after then its SNAP!"],
         "snapYesNo" : {
         	"yes":"Lets do it!",
         	"no": "No thanks"
