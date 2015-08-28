@@ -15,6 +15,7 @@ const (
 	//commands
 	yostart_command = "/hey"
 	yobg_command    = "/bg"
+	yofood_command  = "/food"
 	yolow_command   = "/low"
 )
 
@@ -85,6 +86,11 @@ func (this *fantailBot) startQuickBg(usr telebot.User) {
 	this.setRunning(lib.NewQuickBg(&lib.Details{Bot: this.bot, User: usr}))
 }
 
+func (this *fantailBot) startFunWithFood(usr telebot.User) {
+	log.Println("init Fun w Food setup")
+	this.setRunning(lib.NewFood(&lib.Details{Bot: this.bot, User: usr}))
+}
+
 func main() {
 
 	fBot := newFantailBot()
@@ -97,6 +103,8 @@ func main() {
 
 		if strings.Contains(msg.Text, yolow_command) {
 			fBot.startLow(msg.Chat)
+		} else if strings.Contains(msg.Text, yobg_command) {
+			fBot.startQuickBg(msg.Chat)
 		} else if strings.Contains(msg.Text, yobg_command) {
 			fBot.startQuickBg(msg.Chat)
 		}
