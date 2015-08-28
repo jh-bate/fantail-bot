@@ -12,15 +12,15 @@ type Food struct {
 	Details        *Details
 	SelectedAnswer string
 	lang           struct {
-		Comment   string `json:"comment"`
-		Question  string `json:"question"`
-		Meal      string `json:"mean"`
-		Snack     string `json:"snack"`
-		Beverage  string `json:"beverage"`
-		PlaySnap  string `json:"playSnap"`
-		SnapYesNo yesNo  `json:"snapYesNo"`
-		Snapped   yesNo  `json:"snapped"`
-		Thank     string `json:"thank"`
+		Comment   string   `json:"comment"`
+		Question  string   `json:"question"`
+		Meal      string   `json:"mean"`
+		Snack     string   `json:"snack"`
+		Beverage  string   `json:"beverage"`
+		PlaySnap  []string `json:"playSnap"`
+		SnapYesNo yesNo    `json:"snapYesNo"`
+		Snapped   yesNo    `json:"snapped"`
+		Thank     string   `json:"thank"`
 	}
 	Parts
 	snapResults struct {
@@ -40,7 +40,7 @@ func (this *Food) loadLanguage() {
         "meal": "A Meal",
         "snack": "A Snack",
         "beverage": "A Drink",
-        "playSnap": "Would you like to play a game of snap?/n If you BG before equals BG after then its SNAP!",
+        "playSnap": [ "Would you like to play a game of snap?, "If you BG before the food equals BG after then its SNAP!"],
         "snapYesNo" : {
         	"yes":"Lets do it!",
         	"no": "No thanks"
@@ -91,7 +91,8 @@ func (this *Food) whatFood(msg telebot.Message) {
 
 func (this *Food) askToPlaySnap(msg telebot.Message) {
 	this.SelectedAnswer = msg.Text
-	this.Details.sendWithKeyboard(this.lang.PlaySnap, makeKeyBoard(this.lang.SnapYesNo.Yes, this.lang.SnapYesNo.No))
+	this.Details.send(this.lang.PlaySnap[0])
+	this.Details.sendWithKeyboard(this.lang.PlaySnap[1], makeKeyBoard(this.lang.SnapYesNo.Yes, this.lang.SnapYesNo.No))
 	return
 }
 
@@ -116,6 +117,8 @@ func (this *Food) areWePalyingSnap(msg telebot.Message) {
 func (this *Food) startSnap(msg telebot.Message) {
 	this.snapResults.BgStart = msg.Text
 	time.Sleep(30 * time.Second)
+	bg := NewQuickBg(this.Details)
+	bg.askBg(msg)
 	return
 }
 

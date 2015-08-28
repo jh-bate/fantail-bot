@@ -58,16 +58,17 @@ func makeKeyBoard(keys ...string) [][]string {
 }
 
 func (d *Details) send(msg string) {
+	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
 		msg,
 		nil,
 	)
-	d.takeThoughtfulPause()
 	return
 }
 
 func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
+	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
 		msg,
@@ -80,7 +81,6 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 			},
 		},
 	)
-	d.takeThoughtfulPause()
 	return
 }
 
