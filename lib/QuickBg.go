@@ -35,12 +35,12 @@ func (this *QuickBg) loadLanguage() {
         },
         "above": {
             "text": "Above what I would like",
-            "feedback":["Remember to keep your fuilds up","Just remember it happens to the best of us"],
+            "feedback":["Remember to keep your fuilds up","and remember it happens to the best of us"],
             "followUp" :["Has it been high for a while?"]
         },
         "in": {
             "text": "About right",
-            "feedback":["Awesome work!!","Its never as easy as its made out aye :)","How does it feel to be perfect :)"],
+            "feedback":["Awesome work!!","Its never as easy as its made out aye :)"],
             "followUp" :["Did you feel you could do this again and again?"]
         },
         "below":{
@@ -112,15 +112,18 @@ func (this *QuickBg) replyReview(msg telebot.Message) {
 func (this *QuickBg) doReview(selectedAnswer string) {
 	switch {
 	case selectedAnswer == this.lang.Above.Text:
-		this.Details.send(getLangText(this.lang.Above.Feedback))
+		this.Details.send(this.lang.Above.Feedback[0])
+		this.Details.send(this.lang.Above.Feedback[1])
 		this.Details.sendWithKeyboard(getLangText(this.lang.Above.FollowUpQuestion), makeKeyBoard("Sure has", "Nope"))
 		return
 	case selectedAnswer == this.lang.In.Text:
-		this.Details.send(getLangText(this.lang.In.Feedback))
+		this.Details.send(this.lang.In.Feedback[0])
+		this.Details.send(this.lang.In.Feedback[1])
 		this.Details.sendWithKeyboard(getLangText(this.lang.In.FollowUpQuestion), makeKeyBoard("Totally!", "Not so sure"))
 		return
 	case selectedAnswer == this.lang.Below.Text:
-		this.Details.send(getLangText(this.lang.Below.Feedback))
+		this.Details.send(this.lang.Below.Feedback[0])
+		this.Details.send(this.lang.Below.Feedback[1])
 		this.Details.sendWithKeyboard(getLangText(this.lang.Below.FollowUpQuestion), makeKeyBoard("Yeah I have a hunch", "No, I just don't get it"))
 		return
 	}

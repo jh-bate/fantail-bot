@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -15,6 +13,7 @@ const (
 	//commands
 	yostart_command = "/hey"
 	yobg_command    = "/bg"
+	yoobg_command   = "/obg"
 	yofood_command  = "/food"
 	yolow_command   = "/low"
 )
@@ -40,32 +39,6 @@ func newFantailBot() *fantailBot {
 	return &fantailBot{bot: bot}
 }
 
-func (this *fantailBot) showOptions(usr telebot.User) {
-	this.bot.SendMessage(
-		usr,
-		fmt.Sprintf("Hey %s", usr.FirstName),
-		nil)
-	this.bot.SendMessage(
-		usr,
-		"Sorry but at this time you can only choose from the options below ...",
-		nil)
-	this.bot.SendMessage(
-		usr,
-		fmt.Sprintf("Select one and we can get this party started!"),
-		&telebot.SendOptions{
-			ReplyMarkup: telebot.ReplyMarkup{
-				ForceReply: false,
-				CustomKeyboard: [][]string{
-					[]string{yobg_command},
-					[]string{yolow_command},
-				},
-				ResizeKeyboard:  false,
-				OneTimeKeyboard: false,
-			},
-		})
-	return
-}
-
 func (this *fantailBot) setRunning(p lib.Process) {
 	this.process = nil
 	this.process = p
@@ -86,6 +59,11 @@ func (this *fantailBot) startQuickBg(usr telebot.User) {
 	this.setRunning(lib.NewQuickBg(&lib.Details{Bot: this.bot, User: usr}))
 }
 
+/*func (this *fantailBot) startBg(usr telebot.User) {
+	log.Println("init OTHER-BG setup")
+	this.setRunning(lib.NewBg(&lib.Details{Bot: this.bot, User: usr}))
+}*/
+
 func (this *fantailBot) startFunWithFood(usr telebot.User) {
 	log.Println("init Fun w Food setup")
 	this.setRunning(lib.NewFood(&lib.Details{Bot: this.bot, User: usr}))
@@ -97,9 +75,13 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	for msg := range messages {
+	bg := lib.NewBg(&lib.Details{Bot: fBot.bot})
+	bg.Run(messages)
+
+	/*for msg := range messages {
 
 		log.Println("incoming ...", msg.Text)
+
 
 		if strings.Contains(msg.Text, yolow_command) {
 			fBot.startLow(msg.Chat)
@@ -107,10 +89,12 @@ func main() {
 			fBot.startQuickBg(msg.Chat)
 		} else if strings.Contains(msg.Text, yofood_command) {
 			fBot.startFunWithFood(msg.Chat)
+		} else if strings.Contains(msg.Text, yoobg_command) {
+			fBot.startBg(msg.Chat)
 		}
 		if fBot.isRunning() {
 			fBot.process.Run(msg)
 		}
-	}
+	}*/
 
 }

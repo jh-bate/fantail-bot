@@ -49,7 +49,7 @@ func (this *Food) loadLanguage() {
         	"yes":"SNAP!!",
         	"no": "Next time!"
         },
-        "thank":"You rock! Just had to say that before you go :)"
+        "thank":"You rock! Catch you later."
     }`
 
 	err := json.Unmarshal([]byte(encoded), &this.lang)

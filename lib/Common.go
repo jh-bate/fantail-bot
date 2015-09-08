@@ -17,16 +17,36 @@ const (
 
 type (
 	Part struct {
-		Func    func(incoming telebot.Message)
-		ToBeRun bool
+		Func     func(incoming telebot.Message)
+		Msg      func(msg string)
+		Keyboard func(msg string, keys [][]string)
+		ToBeRun  bool
 	}
 
 	Parts []*Part
+
+	Step struct {
+		SendMsg      func(incoming telebot.Message)
+		SendKeyboard func(incoming telebot.Message)
+	}
+
+	Steps []*Step
 
 	option struct {
 		Text             string   `json:"text"`
 		Feedback         []string `json:"feedback"`
 		FollowUpQuestion []string `json:"followUp"`
+	}
+
+	question struct {
+		Label    string      `json:"label"`
+		Question string      `json:"question"`
+		Children []*question `json:"children"`
+	}
+
+	questionYesNo struct {
+		Question string `json:"question"`
+		yesNo    `json:"answers"`
 	}
 
 	yesNo struct {
@@ -42,6 +62,10 @@ type (
 	Process interface {
 		Run(telebot.Message)
 		CanRun() bool
+	}
+
+	Process2 interface {
+		Run(input <-chan telebot.Message)
 	}
 )
 
