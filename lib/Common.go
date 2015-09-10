@@ -80,6 +80,13 @@ func (q *question) hasChildren() bool {
 
 func (q *question) findChild(label string) *question {
 	if q.hasChildren() {
+
+		if q.Label == label {
+			log.Println("at the top so return this one's children")
+			//return the first as we are the top
+			return q.Children[0]
+		}
+
 		for i := range q.Children {
 			if q.Children[i].Label == label {
 				log.Println("found ", label)
