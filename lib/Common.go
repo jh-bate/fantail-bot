@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"log"
 	"math/rand"
 	"time"
 
@@ -71,6 +72,38 @@ type (
 
 func getLangText(opts []string) string {
 	return opts[rand.Intn(len(opts))]
+}
+
+func (q *question) hasChildren() bool {
+	return q.Children != nil && len(q.Children) > 0
+}
+
+func (q *question) findChild(label string) *question {
+	if q.hasChildren() {
+		for i := range q.Children {
+			if q.Children[i].Label == label {
+				log.Println("found ", label)
+				return q.Children[i]
+			} else if q.Children[i].hasChildren() {
+				log.Println("check children ", label)
+				match := q.Children[i].findChild(label)
+				if match != nil {
+					return match
+				}
+			}
+
+		}
+	}
+	return nil
+}
+
+func (q *question) keyboard() [][]string {
+	log.Println("keyboard for ", q.Label)
+	keyboard := [][]string{}
+	for i := range q.Children {
+		keyboard = append(keyboard, []string{q.Children[i].Label})
+	}
+	return keyboard
 }
 
 func makeKeyBoard(keys ...string) [][]string {

@@ -75,7 +75,7 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	bg := lib.NewBg(&lib.Details{Bot: fBot.bot})
+	bg := lib.NewBgLevel(&lib.Details{Bot: fBot.bot})
 	bg.Run(messages)
 
 	/*for msg := range messages {
