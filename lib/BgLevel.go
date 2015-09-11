@@ -8,6 +8,7 @@ import (
 )
 
 type BgLevel struct {
+	done    chan struct{}
 	Details *Details
 	lang    struct {
 		BgNow question `json:"bgNow"`
@@ -218,13 +219,21 @@ func (this *BgLevel) loadLanguage() {
 func NewBgLevel(d *Details) *BgLevel {
 	bg := &BgLevel{Details: d}
 	bg.loadLanguage()
+	bg.done = make(chan struct{})
 	return bg
 }
 
 func (this *BgLevel) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-		this.ask(msg)
+
+		go func() {
+			this.ask(msg)
+		}()
+
+		<-this.done
+		log.Println("finished up and now thanking")
+		this.seeYa(msg)
 	}
 }
 
@@ -232,7 +241,8 @@ func (this *BgLevel) ask(msg telebot.Message) {
 	log.Println("answer was", msg.Text)
 	nextQ := this.lang.BgNow.findChild(msg.Text)
 	if nextQ == nil {
-		this.seeYa(msg)
+		log.Println("all done now")
+		close(this.done)
 		return
 	}
 	log.Println("asking ...", nextQ.Question, "labeled:", nextQ.Label)
