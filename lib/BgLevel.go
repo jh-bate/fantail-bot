@@ -8,7 +8,6 @@ import (
 )
 
 type BgLevel struct {
-	//Done    chan bool
 	Details *Details
 	lang    struct {
 		BgNow question `json:"bgNow"`
@@ -25,14 +24,14 @@ func (this *BgLevel) loadLanguage() {
             "children":[
                 {
                     "label":"Above what I would like",
-                    "question":"Do you have any idea why?",
+                    "question":"Do you know why it was above?",
                     "children":[
                         {
                             "label":"Yeah I think so",
-                            "question":"Was it because ...",
+                            "question":"Was it above because ...",
                             "children":[
                                 {
-                                    "label":"I guessed my BG",
+                                    "label":"I guessed my BG before eating",
                                     "question":"Do you often guess your BG?",
                                     "children":[
                                         {
@@ -48,7 +47,7 @@ func (this *BgLevel) loadLanguage() {
                                     ]
                                 },
                                 {
-                                    "label":"I guessed the carbs",
+                                    "label":"I didn't know how many carbs I actually ate",
                                     "question":"Do you often guess the amount of carbs?",
                                     "children":[
                                         {
@@ -64,8 +63,8 @@ func (this *BgLevel) loadLanguage() {
                                     ]
                                 },
                                 {
-                                    "label":"I ate more the planned",
-                                    "question":"Is this common for you?",
+                                    "label":"A bad site or injection",
+                                    "question":"Do you know how to deal with this?",
                                     "children":[
                                         {
                                             "label":"Nope",
@@ -80,9 +79,20 @@ func (this *BgLevel) loadLanguage() {
                                     ]
                                 },
                                 {
-                                    "label":"Just ate more",
-                                    "question":"",
-                                    "children":null
+                                    "label":"I am sick / I think I am gettig sick",
+                                    "question":"Do you have a plan in place for when your sick?",
+                                    "children":[
+                                        {
+                                            "label":"Nope",
+                                            "question":"",
+                                            "children":null
+                                        },
+                                        {
+                                            "label":" Yeah",
+                                            "question":"",
+                                            "children":null
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -119,12 +129,12 @@ func (this *BgLevel) loadLanguage() {
                     "question":"Well done! So was that just as you planned :)",
                     "children":[
                         {
-                            "label":"Yeah of course",
+                            "label":"Yeah of course :)",
                             "question":"",
                             "children": null
                         },
                         {
-                            "label":"Nope, but I will take it!",
+                            "label":"Nope, but I will take the win!",
                             "question":"",
                             "children": null
                         }
@@ -132,23 +142,23 @@ func (this *BgLevel) loadLanguage() {
                 },
                 {
                     "label":"Below what I would like",
-                    "question":"Do you have any idea why?",
+                    "question":"Do you know why it was below?",
                     "children":[
                         {
-                            "label":"Yeah I think so",
-                            "question":"Was it because ...",
+                            "label":"Yeah",
+                            "question":"Was it below because ...",
                             "children":[
                                 {
-                                    "label":"I didn't eat enough",
-                                    "question":"Do you know your insulin/carb ratio?",
+                                    "label":"I got my carb-to-insulin ratio wrong",
+                                    "question":"Do you know your carb-to-insulin ratio?",
                                     "children":[
                                         {
-                                            "label":"Nope",
+                                            "label":"Yeah",
                                             "question":"",
                                             "children":null
                                         },
                                         {
-                                            "label":" Yeah",
+                                            "label":"No",
                                             "question":"",
                                             "children":null
                                         }
@@ -178,21 +188,16 @@ func (this *BgLevel) loadLanguage() {
                             ]
                         },
                         {
-                            "label":"No I don't",
+                            "label":"Nah",
                             "question":"Could it be because of any of the following reasons?",
                             "children":[
-                                {
-                                    "label":"I didn't eat enough",
-                                    "question":"",
-                                    "children": null
-                                },
                                 {
                                     "label":"I had exercised",
                                     "question":"",
                                     "children":null
                                 },
                                 {
-                                    "label":"I don't know my insulin/carb ratio",
+                                    "label":"Your unsure of the carb-to-insulin ratio?",
                                     "question":"",
                                     "children":null
                                 },
@@ -216,10 +221,21 @@ func (this *BgLevel) loadLanguage() {
 	}
 }
 
+/*func (this *BgLevel) loadConfig() {
+	config, err := ioutil.ReadFile("./bgConfig.json")
+	if err != nil {
+		log.Fatal("Loading BG config", err.Error())
+	}
+	err = json.Unmarshal(config, &this.lang)
+	if err != nil {
+		log.Panic("Unmarshaling BG config", err.Error())
+	}
+	return
+}*/
+
 func NewBgLevel(d *Details) *BgLevel {
 	bg := &BgLevel{Details: d}
 	bg.loadLanguage()
-	//bg.Done = make(chan bool)
 	return bg
 }
 
@@ -232,11 +248,10 @@ func (this *BgLevel) Run(input <-chan telebot.Message) {
 
 func (this *BgLevel) ask(msg telebot.Message) {
 	log.Println("answer was", msg.Text)
-	nextQ := this.lang.BgNow.findChild(msg.Text)
+	nextQ := this.lang.BgNow.find(msg.Text)
 	if nextQ == nil {
 		this.Details.send(this.lang.Thank)
 		log.Println("all done now")
-		//close(this.Done)
 		return
 	}
 	log.Println("asking ...", nextQ.Question, "labeled:", nextQ.Label)
