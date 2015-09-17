@@ -1,0 +1,230 @@
+{
+  "bgNow": {
+    "label": "/chat",
+    "question": "So what did you last do ...",
+    "children": [
+      {
+        "label": "Slept",
+        "question": "Good sleep was it?",
+        "children": [
+          {
+            "label": "Yeah a good sleep thanks",
+            "question": "Did you know your BG before bed?",
+            "children": [
+              {
+                "label": "Yeah I knew by BG before bed",
+                "question": "And it was ...",
+                "children": [
+                  {
+                    "label": "Higher than hoped",
+                    "question": "",
+                    "children": []
+                  },
+                  {
+                    "label": "About right",
+                    "question": "",
+                    "children": []
+                  },
+                  {
+                    "label": "Lower than hoped",
+                    "question": "",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "label": "No I didn't know my BG before bed",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "No it wasn't the best sleep",
+            "question": "BG before was ...",
+            "children": []
+          }
+        ]
+      },
+      {
+        "label": "Ate",
+        "question": "mmmm nosh! Did you have ...",
+        "children": [
+          {
+            "label": "A meal",
+            "question": "BG before meal was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "A snack",
+            "question": "BG before snack was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "A drink",
+            "question": "BG before drink was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Exercised",
+        "question": "High five!! Would you say it was ...",
+        "children": [
+          {
+            "label": "Easy: just cruising ",
+            "question": "BG before was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "Moderate: hard to talk too much",
+            "question": "BG before was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "Hard: breathing through my eyeballs",
+            "question": "BG before was ...",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Not sure",
+                "question": "",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Life and stuff",
+        "question": "Ahhh, we all have that aye. How was you last BG?",
+        "children": []
+      },
+      {
+        "label": "No comment :)",
+        "question": "No worries, next time aye!",
+        "children": []
+      }
+    ]
+  },
+  "thank": "Nice to chat, see you again soon!"
+}
