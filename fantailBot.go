@@ -35,7 +35,7 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	bg := lib.NewBgLevel(&lib.Details{Bot: fBot.bot})
-	bg.Run(messages)
+	qandA := lib.NewQandA(&lib.Details{Bot: fBot.bot})
+	qandA.Run(messages)
 
 }
