@@ -2,8 +2,8 @@ package lib
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
@@ -18,14 +18,13 @@ type QandA struct {
 
 func (this *QandA) loadLanguage() {
 
-	lifeJson, err := ioutil.ReadFile("life.json")
+	file, err := os.Open("./life.json")
 	if err != nil {
 		log.Panic("could not load QandA language file", err.Error())
 	}
-
-	err = json.Unmarshal(lifeJson, &this.lang)
+	err = json.NewDecoder(file).Decode(&this.lang)
 	if err != nil {
-		log.Panic("could not load QandA language ", err.Error())
+		log.Panic("could not decode QandA ", err.Error())
 	}
 }
 
