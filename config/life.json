@@ -16,19 +16,96 @@
                 "question": "And it was ...",
                 "children": [
                   {
-                    "label": "Higher than hoped",
-                    "question": "",
-                    "children": []
+                    "label": "Higher than hoped before bed",
+                    "question": "Did you do a correction before bed?",
+                    "children": [
+                      {
+                        "label": "Yeah I did correct before bed",
+                        "question": "And how was it when you woke?",
+                        "children": null
+                      },
+                      {
+                        "label": "Nah I didn't correct before bed",
+                        "question": "Sweet. As long as you feel in control and know you can if needed.",
+                        "children": [
+                          {
+                            "label": "Yeah I am in control",
+                            "question": "Sure are!!",
+                            "children": null
+                          },
+                          {
+                            "label": "I just don't feel confident",
+                            "question": "Maybe something to work on?",
+                            "children": null
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "label": "About right",
-                    "question": "",
-                    "children": []
+                    "label": "About right before bed",
+                    "question": "Awesome! And it was good when you woke?",
+                    "children": [
+                      {
+                        "label": "Yeah sure was!",
+                        "question": "Thats great! A good night's sleep makes a difference!",
+                        "children": null
+                      },
+                      {
+                        "label": "Nah not where I would hope.",
+                        "question": "Could it be time to look at your basal rate?",
+                        "children": [
+                          {
+                            "label": "Yeah good point",
+                            "question": "It could make a difference",
+                            "children": null
+                          },
+                          {
+                            "label": "Nah I feel its OK",
+                            "question": "Good on you :)",
+                            "children": null
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "label": "Lower than hoped",
-                    "question": "",
-                    "children": []
+                    "label": "Lower than hoped before bed",
+                    "question": "So did you have some food to bring it up?",
+                    "children": [
+                      {
+                        "label": "Yeah I had some food",
+                        "question": "Good work, and it was OK when you woke?",
+                        "children": [
+                          {
+                            "label": "Yeah my BG was fine when I woke",
+                            "question": "Awesome work! Nice to take charge aye :)",
+                            "children": null
+                          },
+                          {
+                            "label": "Nah my BG wasn't where I would like when I woke",
+                            "question": "Maybe try something different next time?",
+                            "children": null
+                          }
+                        ]
+                      },
+                      {
+                        "label": "No I didn't have any food",
+                        "question": "And how did that work out when you woke?",
+                        "children": [
+                          {
+                            "label": "Yeah my BG was fine when I woke",
+                            "question": "Well done.",
+                            "children": null
+                          },
+                          {
+                            "label": "Nah my BG wasn't where I would like when I woke",
+                            "question": "Maybe try something different next time?",
+                            "children": null
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               },
@@ -41,8 +118,30 @@
           },
           {
             "label": "No it wasn't the best sleep",
-            "question": "BG before was ...",
-            "children": []
+            "question": "Do you think your sleep was effected by your BG?",
+            "children": [
+              {
+                "label": "Yeah I feel my BG did effect my sleep",
+                "question": "Did you know your BG before bed?",
+                "children": [
+                  {
+                    "label": "Yeah I knew my BG",
+                    "question": "Well thats a great start",
+                    "children": null
+                  },
+                  {
+                    "label": "Nah I didn't know my BG before bed.",
+                    "question": "Maybe that would be a good start next time?",
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "Nah it wasn't my BG",
+                "question": "Too much thinking maybe :)",
+                "children": null
+              }
+            ]
           }
         ]
       },
@@ -52,25 +151,25 @@
         "children": [
           {
             "label": "A meal",
-            "question": "BG before meal was ...",
+            "question": "and BG before meal was ...",
             "children": [
               {
-                "label": "Higher than hoped",
+                "label": "Higher than hoped before eating",
                 "question": "",
                 "children": []
               },
               {
-                "label": "About right",
+                "label": "About right before eating",
                 "question": "",
                 "children": []
               },
               {
-                "label": "Lower than hoped",
+                "label": "Lower than hoped before eating",
                 "question": "",
                 "children": []
               },
               {
-                "label": "Not sure",
+                "label": "Not sure what my BG was",
                 "question": "",
                 "children": []
               }
@@ -78,20 +177,20 @@
           },
           {
             "label": "A snack",
-            "question": "BG before snack was ...",
+            "question": "and BG before snack was ...",
             "children": [
               {
-                "label": "Higher than hoped",
+                "label": "Higher than hoped before snacking",
                 "question": "",
                 "children": []
               },
               {
-                "label": "About right",
+                "label": "About right before snacking",
                 "question": "",
                 "children": []
               },
               {
-                "label": "Lower than hoped",
+                "label": "Lower than hoped before snacking",
                 "question": "",
                 "children": []
               },
