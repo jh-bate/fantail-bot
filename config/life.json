@@ -147,7 +147,7 @@
       },
       {
         "label": "Ate",
-        "question": "mmmm nosh! Did you have ...",
+        "question": "Mmmm nosh! Did you have ...",
         "children": [
           {
             "label": "A meal",
@@ -315,8 +315,41 @@
       },
       {
         "label": "Life and stuff",
-        "question": "Ahhh, we all have that aye. How was you last BG?",
-        "children": []
+        "question": "Ahhh, we all have to do that aye :) Have you done a BG recently?",
+        "children": [
+          {
+            "label": "Yeah I have done a BG",
+            "question": "Good work! How was it?",
+            "children": [
+              {
+                "label": "Higher than hoped",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "About right",
+                "question": "",
+                "children": []
+              },
+              {
+                "label": "Lower than hoped",
+                "question": "",
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "No comment :)",
+            "question": "No worries. No time like the present though!",
+            "children": [
+            {
+                "label": "True that :)",
+                "question": "Well I will let you get to it then.",
+                "children": null
+              }
+            ]
+          }
+        ]
       },
       {
         "label": "No comment :)",
