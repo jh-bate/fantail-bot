@@ -12,10 +12,16 @@ const (
 )
 
 type (
-	question struct {
+	/*question struct {
 		Label    string      `json:"label"`
 		Question string      `json:"question"`
 		Children []*question `json:"children"`
+	}*/
+
+	questions struct {
+		Label     string      `json:"label"`
+		Questions []string    `json:"questions"`
+		Children  []*question `json:"children"`
 	}
 
 	Details struct {
@@ -30,25 +36,22 @@ type (
 	Keyboard [][]string
 )
 
-func (q *question) hasChildren() bool {
+func (q *questions) hasChildren() bool {
 	return q.Children != nil && len(q.Children) > 0
 }
 
-func (q *question) find(label string) *question {
+func (q *questions) find(label string) *questions {
 	if q.hasChildren() {
 
 		if q.Label == label {
 			log.Println("at the top so return this one's children")
-			//return the first as we are the top
 			return q
 		}
 
 		for i := range q.Children {
 			if q.Children[i].Label == label {
-				//log.Println("found ", label)
 				return q.Children[i]
 			} else if q.Children[i].hasChildren() {
-				//log.Println("check children ", label)
 				match := q.Children[i].find(label)
 				if match != nil {
 					return match
@@ -56,18 +59,19 @@ func (q *question) find(label string) *question {
 			}
 		}
 	}
+	log.Println("nothing else found")
 	return nil
 }
 
-func (q *question) keyboard() [][]string {
-	keyboard := [][]string{}
+func (q *questions) makeKeyboard() Keyboard {
+	keyboard := Keyboard{}
 	for i := range q.Children {
 		keyboard = append(keyboard, []string{q.Children[i].Label})
 	}
 	return keyboard
 }
 
-func (d *Details) send(msg string) {
+func (d *Details) send(m string) {
 	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
@@ -77,7 +81,18 @@ func (d *Details) send(msg string) {
 	return
 }
 
-func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
+func (d *Details) askQuestion(q *questions) {
+	for i := range q.Questions {
+		if i == len(q.Questions) {
+			d.send(q.Questions[i])
+		} else {
+			d.sendWithKeyboard(q.Questions[i], q.makeKeyboard())
+		}
+	}
+	return
+}
+
+func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
@@ -85,7 +100,7 @@ func (d *Details) sendWithKeyboard(msg string, keyboard [][]string) {
 		&telebot.SendOptions{
 			ReplyMarkup: telebot.ReplyMarkup{
 				ForceReply:      true,
-				CustomKeyboard:  keyboard,
+				CustomKeyboard:  kb,
 				ResizeKeyboard:  false,
 				OneTimeKeyboard: true,
 			},

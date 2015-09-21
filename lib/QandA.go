@@ -11,8 +11,8 @@ import (
 type QandA struct {
 	Details *Details
 	lang    struct {
-		QandA question `json:"QandA"`
-		Thank string   `json:"thank"`
+		QandA questions `json:"QandA"`
+		Thank string    `json:"thank"`
 	}
 }
 
@@ -49,8 +49,8 @@ func (this *QandA) ask(msg telebot.Message) {
 		log.Println("all done now")
 		return
 	}
-	log.Println("asking ...", nextQ.Question, "labeled:", nextQ.Label)
+	//log.Println("asking ...", nextQ.Question, "labeled:", nextQ.Label)
 
-	this.Details.sendWithKeyboard(nextQ.Question, nextQ.keyboard())
+	this.Details.askQuestion(nextQ)
 	return
 }
