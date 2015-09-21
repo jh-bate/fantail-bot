@@ -12,16 +12,10 @@ const (
 )
 
 type (
-	/*question struct {
-		Label    string      `json:"label"`
-		Question string      `json:"question"`
-		Children []*question `json:"children"`
-	}*/
-
 	questions struct {
-		Label     string      `json:"label"`
-		Questions []string    `json:"questions"`
-		Children  []*question `json:"children"`
+		Label     string       `json:"label"`
+		Questions []string     `json:"questions"`
+		Children  []*questions `json:"children"`
 	}
 
 	Details struct {
@@ -71,7 +65,7 @@ func (q *questions) makeKeyboard() Keyboard {
 	return keyboard
 }
 
-func (d *Details) send(m string) {
+func (d *Details) send(msg string) {
 	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
