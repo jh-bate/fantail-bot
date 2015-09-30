@@ -77,7 +77,7 @@ func (d *Details) send(msg string) {
 
 func (d *Details) askQuestion(q *questions) {
 	for i := range q.Questions {
-		if i == len(q.Questions) {
+		if i != len(q.Questions) {
 			d.send(q.Questions[i])
 		} else {
 			d.sendWithKeyboard(q.Questions[i], q.makeKeyboard())

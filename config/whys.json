@@ -1,0 +1,236 @@
+{
+  "QandA": {
+    "label": "/chat",
+    "questions": [
+      "So what did you last do ..."
+    ],
+    "children": [
+      {
+        "label": "Slept",
+        "questions": [
+          "Leonardo da Vinci said `A well-spent day brings happy sleep`",
+          "So was it a good sleep then?"
+        ],
+        "children": [
+          {
+            "label": "Yeah a good sleep thanks",
+            "questions": [
+              "Great to hear!",
+              "Why do you think it was a good sleep?"
+            ],
+            "children": [
+              {
+                "label": "I slept un-interupted",
+                "questions": [
+                  "Why do you think you slept un-interupted?"
+                ],
+                "children": [
+                  {
+                    "label": "My BG was stable",
+                    "questions": [
+                      "Nice work on that!",
+                      "Why do you think your BG was stable?"
+                    ],
+                    "children": [
+                      {
+                        "label": "I had eaten well",
+                        "questions": [
+                          "Good foods before sleeping can really help aye",
+                          "Why did eat well?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Because I knew it made a difference",
+                            "questions": [
+                              "Good foods before sleeping can really help aye",
+                              "Why did you know it made a difference?"
+                            ],
+                            "children": [
+                              {
+                                "label": "Because I knew it made a difference",
+                                "questions": [
+                                  "Good foods before sleeping can really help aye",
+                                  "Why did you know it made a difference?"
+                                ],
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "label": "I knew my BG",
+                        "questions": [
+                          "Informstion is power :)",
+                          "Why did you know your BG?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Yeah I am in control",
+                            "questions": [
+                              "Sure are!!"
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "I just don't feel confident",
+                            "questions": [
+                              "Maybe something to work on?"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "label": "I had excercised",
+                        "questions": [
+                          "Why did you excercise late?"
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "label": "About right before bed",
+                    "questions": [
+                      "Awesome! And it was good when you woke?"
+                    ],
+                    "children": [
+                      {
+                        "label": "Yeah sure was!",
+                        "questions": [
+                          "Thats great! A good night's sleep makes a difference!"
+                        ],
+                        "children": []
+                      },
+                      {
+                        "label": "Nah not where I would hope.",
+                        "questions": [
+                          "Could it be time to look at your basal rate?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Yeah good point",
+                            "questions": [
+                              "It could make a difference"
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "Nah I feel its OK",
+                            "questions": [
+                              "Good on you :)"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Lower than hoped before bed",
+                    "questions": [
+                      "So did you have some food to bring it up?"
+                    ],
+                    "children": [
+                      {
+                        "label": "Yeah I had some food",
+                        "questions": [
+                          "Good work, and it was OK when you woke?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Yeah my BG was fine when I woke",
+                            "questions": [
+                              "Awesome work! Nice to take charge aye :)"
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "Nah my BG wasn't where I would like when I woke",
+                            "questions": [
+                              "Maybe try something different next time?"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "label": "No I didn't have any food",
+                        "questions": [
+                          "And how did that work out when you woke?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Yeah my BG was fine when I woke",
+                            "questions": [
+                              "Well done."
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "Nah my BG wasn't where I would like when I woke",
+                            "questions": [
+                              "Maybe try something different next time?"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "I slept longer than normal",
+                "questions": [
+                  "Why did you sleep longer than usual"
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "No it wasn't the best sleep",
+            "questions": [
+              "Stink!",
+              "Why do you think it wasn't the best sleep?"
+            ],
+            "children": [
+              {
+                "label": "Inturpted sleep",
+                "questions": [
+                  "Did you know your BG before bed?"
+                ],
+                "children": [
+                  {
+                    "label": "Yeah I knew my BG",
+                    "questions": [
+                      "Well thats a great start"
+                    ],
+                    "children": []
+                  },
+                  {
+                    "label": "Nah I didn't know my BG before bed.",
+                    "questions": [
+                      "Maybe that would be a good start next time?"
+                    ],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "label": "Less sleep",
+                "questions": [
+                  "Too much thinking maybe :)"
+                ],
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "thank": "Nice to chat, see you again soon!"
+}
