@@ -1,0 +1,239 @@
+{
+  "QandA": {
+    "label": "/chat",
+    "questions": [
+      "Hey!",
+      "So what have you just been up too?"
+    ],
+    "children": [
+      {
+        "label": "Sleeping",
+        "questions": [
+          "Nice!",
+          "Catching some zzzzz's",
+          "Was it a good sleep then?"
+        ],
+        "children": [
+          {
+            "label": "Yeah it was a good sleep",
+            "questions": [
+              "Well we hope you feel rested.",
+              "So lets talk some details then ...",
+              "Where was you BG before bed?"
+            ],
+            "children": [
+              {
+                "label": "Above what I would like before bed",
+                "questions": [
+                  "and you still had a good sleep ...",
+                  "How was your BG on waking then?"
+                ],
+                "children": [
+                  {
+                    "label": "Above what I would like on waking",
+                    "questions": [
+                      "And you still had a good sleep ...",
+                      "Well we are gald for that!",
+                      "But would urge you to imagine how it could be better :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "About what I would like on waking",
+                    "questions": [
+                      "Nice work!",
+                      "Whats the secret to your success :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "Below what I would like on waking",
+                    "questions": [
+                      "Ahh bugger!",
+                      "Not too low we hope."
+                    ],
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "About what I would like before bed",
+                "questions": [
+                  "Nice work!",
+                  "And when you woke where was your BG?"
+                ],
+                "children": [
+                  {
+                    "label": "Above what I would like on waking",
+                    "questions": [
+                      "And you still had a good sleep ...",
+                      "Well we are gald for that!",
+                      "But would urge you to imagine how it could be better :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "About what I would like on waking",
+                    "questions": [
+                      "Nice work!",
+                      "Whats the secret to your success :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "Below what I would like on waking",
+                    "questions": [
+                      "Ahh bugger!",
+                      "Not too low we hope."
+                    ],
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "Below what I would like before bed",
+                "questions": [
+                  "Well we hope you feel rested.",
+                  "So lets talk some details then ...",
+                  "Where was you BG before bed?"
+                ],
+                "children": [
+                  {
+                    "label": "Above what I would like on waking",
+                    "questions": [
+                      "And you still had a good sleep ...",
+                      "Well we are gald for that!",
+                      "But would urge you to imagine how it could be better :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "About what I would like on waking",
+                    "questions": [
+                      "Nice work!",
+                      "Whats the secret to your success :)"
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "Below what I would like on waking",
+                    "questions": [
+                      "Ahh bugger!",
+                      "Not too low we hope."
+                    ],
+                    "children": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "The sleep wasn't the best",
+            "questions": [
+              "Ahh stink!",
+              "Hmmm ... anything to do with your diabetes?"
+            ],
+            "children": [
+              {
+                "label": "Yeah it was the betes ...",
+                "questions": [
+                  "OK - at least we know that",
+                  "Whats the secret to your success :)"
+                ],
+                "children": null
+              },
+              {
+                "label": "Nope",
+                "questions": [
+                  "Good to rule that out then!",
+                  "So any ideas then?"
+                ],
+                "children": [
+                  {
+                    "label": "Just life and stuff",
+                    "questions": [
+                      "Ahh that life and stuff thing!",
+                      "Care to elborate and leave a note ..."
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "Not sure actually",
+                    "questions": [
+                      "Ahh bugger!",
+                      "Not too low we hope."
+                    ],
+                    "children": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "Eating",
+        "questions": [
+          "Yum yum",
+          "We all need some sustanance aye!",
+          "What did you have?"
+        ],
+        "children": [
+          {
+            "label": "A meal",
+            "questions": [
+              "Nice work!",
+              "Whats the secret to your success :)"
+            ],
+            "children": null
+          },
+          {
+            "label": "A snack",
+            "questions": [
+              "Ahh bugger!",
+              "Not too low we hope."
+            ],
+            "children": null
+          },
+          {
+            "label": "A drink",
+            "questions": [
+              "Ahh bugger!",
+              "Not too low we hope."
+            ],
+            "children": null
+          }
+        ]
+      },
+      {
+        "label": "Exercising",
+        "questions": [
+          "Good job!",
+          "`movement is life` so I hear :)",
+          "What did you do?"
+        ],
+        "children": []
+      },
+      {
+        "label": "Living aka life and stuff",
+        "questions": [
+          "Living ...",
+          "thats a good place to be at :)",
+          "A quick question then",
+          "What was your last BG?"
+        ],
+        "children": []
+      },
+      {
+        "label": "No comment :)",
+        "questions": [
+          "Fair call",
+          "Maybe we can catchup next time then",
+          "Have a good one!"
+        ],
+        "children": null
+      }
+    ]
+  },
+  "thank": "Nice to chat, see you again soon!"
+}

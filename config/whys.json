@@ -9,57 +9,67 @@
         "label": "Slept",
         "questions": [
           "Leonardo da Vinci said `A well-spent day brings happy sleep`",
-          "So was it a good sleep then?"
+          "So was it a happy sleep then?"
         ],
         "children": [
           {
-            "label": "Yeah a good sleep thanks",
+            "label": "Yeah better than normal sleep",
             "questions": [
               "Great to hear!",
-              "Why do you think it was a good sleep?"
+              "Why do you say it was better then normal?"
             ],
             "children": [
               {
-                "label": "I slept un-interupted",
+                "label": "I felt better rested",
                 "questions": [
-                  "Why do you think you slept un-interupted?"
+                  "Why do you think you felt better rested?"
                 ],
                 "children": [
                   {
-                    "label": "My BG was stable",
+                    "label": "My sleep wasn't disturbed",
                     "questions": [
-                      "Nice work on that!",
-                      "Why do you think your BG was stable?"
+                      "That is a big help isn't it!",
+                      "Why do you think your sleep wasn't disturbed?"
                     ],
                     "children": [
                       {
-                        "label": "I had eaten well",
+                        "label": "I wasn't as stressed",
                         "questions": [
-                          "Good foods before sleeping can really help aye",
-                          "Why did eat well?"
+                          "Great work on de-stressing",
+                          "Why do you think you weren't as stressed?"
                         ],
                         "children": [
                           {
-                            "label": "Because I knew it made a difference",
+                            "label": "Getting more exercise",
                             "questions": [
-                              "Good foods before sleeping can really help aye",
-                              "Why did you know it made a difference?"
+                              "Nice!",
+                              "Exercise is a great way to help deal with stress.",
+                              "Good job!"
                             ],
-                            "children": [
-                              {
-                                "label": "Because I knew it made a difference",
-                                "questions": [
-                                  "Good foods before sleeping can really help aye",
-                                  "Why did you know it made a difference?"
-                                ],
-                                "children": []
-                              }
-                            ]
+                            "children": null
+                          },
+                          {
+                            "label": "Living smarter not harder",
+                            "questions": [
+                              "Sounds like a good plan.",
+                              "It is freeing when you feel more in control",
+                              "Keep up the good work!"
+                            ],
+                            "children": null
+                          },
+                          {
+                            "label": "Diabetes in better control",
+                            "questions": [
+                              "Nice work!!",
+                              "It can really be a weight off your shoulders",
+                              "May it continue :)"
+                            ],
+                            "children": null
                           }
                         ]
                       },
                       {
-                        "label": "I knew my BG",
+                        "label": "My BG was stable",
                         "questions": [
                           "Informstion is power :)",
                           "Why did you know your BG?"
@@ -91,9 +101,10 @@
                     ]
                   },
                   {
-                    "label": "About right before bed",
+                    "label": "I went to bed ealier",
                     "questions": [
-                      "Awesome! And it was good when you woke?"
+                      "Nothing beats an early night at times aye :)",
+                      "Why did you go to bed ealier?"
                     ],
                     "children": [
                       {
@@ -191,10 +202,48 @@
             ]
           },
           {
-            "label": "No it wasn't the best sleep",
+            "label": "A normal sleep I would say",
+            "questions": [
+              "Good to be consistent!",
+              "Why do you say it?"
+            ],
+            "children": [
+              {
+                "label": "Inturpted sleep",
+                "questions": [
+                  "Did you know your BG before bed?"
+                ],
+                "children": [
+                  {
+                    "label": "Yeah I knew my BG",
+                    "questions": [
+                      "Well thats a great start"
+                    ],
+                    "children": []
+                  },
+                  {
+                    "label": "Nah I didn't know my BG before bed.",
+                    "questions": [
+                      "Maybe that would be a good start next time?"
+                    ],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "label": "Less sleep",
+                "questions": [
+                  "Too much thinking maybe :)"
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "Worse than normal sleep unfortunately",
             "questions": [
               "Stink!",
-              "Why do you think it wasn't the best sleep?"
+              "Why do you say it wasn't the best sleep?"
             ],
             "children": [
               {

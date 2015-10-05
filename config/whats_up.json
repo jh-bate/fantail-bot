@@ -1,0 +1,233 @@
+{
+  "QandA": {
+    "label": "/chat",
+    "questions": [
+      "Hey!",
+      "So what have you just been up too?"
+    ],
+    "children": [
+      {
+        "label": "Sleeping",
+        "questions": [
+          "Nice!",
+          "Catching some zzzzz's",
+          "Was it a good sleep then?"
+        ],
+        "children": [
+          {
+            "label": "Yeah it was a good sleep",
+            "questions": [
+              "Nothing bets than a decent sleep",
+              "Why was it a good sleep?"
+            ],
+            "children": [
+              {
+                "label": "My diabetes didn't interfere",
+                "questions": [
+                  "The gold standard in sleep",
+                  "Thats great aye!",
+                  "Is there anything that would help make this `normal` for you?"
+                ],
+                "children": [
+                  {
+                    "label": "Understand why my diabetes was so awesome",
+                    "questions": [
+                      "Yeah it can be a mystry at times aye :)",
+                      "If you have a specific comment feel free to add it ..."
+                    ],
+                    "children": null
+                  },
+                  {
+                    "label": "Nah I think I have this",
+                    "questions": [
+                      "Sounds like you have it covered then!",
+                      "Maybe you could help us learn?",
+                      "If you want add a note to tell us the secret of your success ..."
+                    ],
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "I slept longer than normal",
+                "questions": [
+                  "Yeah a bit of extra sleep really helps at times",
+                  "Why did you sleep longer?"
+                ],
+                "children": [
+                  {
+                    "label": "I needed it",
+                    "questions": [
+                      "Don't we all at times!",
+                      "Why do you think you needed it?"
+                    ],
+                    "children": [
+                      {
+                        "label": "Was tired",
+                        "questions": [
+                          "Good to catchup on sleep then",
+                          "Why do you think you were so tired?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Tired because of diabetes",
+                            "questions": [
+                              "Thats no good!",
+                              "Is there anything that would help?",
+                              "If there is write a note ..."
+                            ],
+                            "children": null
+                          },
+                          {
+                            "label": "Tired because of generally being busy",
+                            "questions": [
+                              "We all have those times!",
+                              "As long as its not forever though :)",
+                              "Is there an end in site?",
+                              "Maybe make a note ..."
+                            ],
+                            "children": null
+                          },
+                          {
+                            "label": "Not sure why I was so tired",
+                            "questions": [
+                              "Probably best not to overthink it",
+                              "Maybe id your BG's are up also could you be getting sick?",
+                              "Fell free to make a note ..."
+                            ],
+                            "children": null
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Was stressed",
+                        "questions": [
+                          "That can really drain you",
+                          "We hope you are feeling less stressed now.",
+                          "why do you think you were stressed?"
+                        ],
+                        "children": [
+                          {
+                            "label": "Stressed by life in general",
+                            "questions": [
+                              "That can really drain you",
+                              "We hope you are feeling less stressed now.",
+                              "why do you think you were stressed?"
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "Stressed by my health",
+                            "questions": [
+                              "Yup - that can suck!",
+                              "We you have good support!",
+                              "Do you have any thoughts as too why?"
+                            ],
+                            "children": []
+                          },
+                          {
+                            "label": "Stressed about things and stuff",
+                            "questions": [
+                              "That can really drain you",
+                              "We hope you are feeling less stressed now.",
+                              "why do you think you were stressed?"
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Who knows; it just happened",
+                    "questions": [
+                      "Hey who care then",
+                      "As long as you feel rested we are happy :)",
+                      "Is there anything we could do ?",
+                      "Fell free to make a note ..."
+                    ],
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "I slept ealier than normal",
+                "questions": [
+                  "Ahh stink!",
+                  "Hopefully you don't feel too robbed.",
+                  "Why wasn't it a good sleep?"
+                ],
+                "children": []
+              },
+              {
+                "label": "I was less stressed than normal",
+                "questions": [
+                  "Ahh stink!",
+                  "Hopefully you don't feel too robbed.",
+                  "Why wasn't it a good sleep?"
+                ],
+                "children": []
+              },
+              {
+                "label": "I just felt more rested",
+                "questions": [
+                  "Ahh stink!",
+                  "Hopefully you don't feel too robbed.",
+                  "Why wasn't it a good sleep?"
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "label": "It wasn't the best sleep",
+            "questions": [
+              "Ahh stink!",
+              "Hopefully you don't feel too robbed.",
+              "Why wasn't it a good sleep?"
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "label": "Eating",
+        "questions": [
+          "Yum yum",
+          "We all need some sustanance aye!",
+          "What did you have?"
+        ],
+        "children": []
+      },
+      {
+        "label": "Exercising",
+        "questions": [
+          "Good job!",
+          "`movement is life` so I hear :)",
+          "What did you do?"
+        ],
+        "children": []
+      },
+      {
+        "label": "Living aka life and stuff",
+        "questions": [
+          "Living ...",
+          "thats a good place to be at :)",
+          "A quick question then",
+          "What was your last BG?"
+        ],
+        "children": []
+      },
+      {
+        "label": "No comment :)",
+        "questions": [
+          "Fair call",
+          "Maybe we can catchup next time then",
+          "Have a good one!"
+        ],
+        "children": null
+      }
+    ]
+  },
+  "thank": "Nice to chat, see you again soon!"
+}
