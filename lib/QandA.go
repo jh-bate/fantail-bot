@@ -18,7 +18,7 @@ type QandA struct {
 
 func (this *QandA) loadLanguage() {
 
-	file, err := os.Open("./config/life.json")
+	file, err := os.Open("./config/quick_chat.json")
 	if err != nil {
 		log.Panic("could not load QandA language file ", err.Error())
 	}
