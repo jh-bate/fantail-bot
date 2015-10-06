@@ -46,12 +46,8 @@
         ],
         "question": "Would you like to talk about any of the following more?",
         "answers": [
-          "All good thanks!",
-          "Stress",
-          "Support",
-          "Food",
-          "Excercise",
-          "My damn BG"
+          "Yeah /why_high",
+          "Nah all good thanks"
         ]
       },
       {

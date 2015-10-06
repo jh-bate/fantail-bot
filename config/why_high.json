@@ -33,48 +33,42 @@
                   {
                     "label": "Counted carbs wrong",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
                   {
                     "label": "Don't know carb ratio",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
                   {
                     "label": "Gave insulin late",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
                   {
                     "label": "Forgot to give insulin",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
                   {
                     "label": "Sick or getting sick",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
                   {
                     "label": "Stressed",
                     "questions": [
-                      "Yeah it can be a mystry at times aye :)",
-                      "If you have a specific comment feel free to add it ..."
+                      "[TODO] ..."
                     ],
                     "children": null
                   },
@@ -97,7 +91,7 @@
                         "label": "Check Line OK?",
                         "questions": [
                           "The smell of insulin can be a give away",
-                          "Time to change the line aye"
+                          "Time to change the line aye."
                         ],
                         "children": null
                       },
@@ -145,21 +139,21 @@
         ]
       },
       {
-        "label": "Sleeping",
+        "label": "[TODO] Sleeping",
         "questions": [
           "Still todo ..."
         ],
         "children": null
       },
       {
-        "label": "Exercising",
+        "label": "[TODO] Exercising",
         "questions": [
           "Still todo ..."
         ],
         "children": null
       },
       {
-        "label": "Living aka life and stuff",
+        "label": "[TODO] Life and stuff",
         "questions": [
           "Still todo ..."
         ],
