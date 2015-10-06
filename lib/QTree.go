@@ -25,6 +25,9 @@ func NewQTree(d *Details) *QTree {
 func (this *QTree) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
+
+		log.Println("in", msg.Text)
+
 		this.ask(msg)
 	}
 }
