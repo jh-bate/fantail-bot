@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -40,9 +41,14 @@ type (
 
 func (d *Details) send(msg string) {
 	d.takeThoughtfulPause()
+
+	if strings.Contains(msg, "%s") {
+		msg = fmt.Sprintf(msg, d.User.FirstName)
+	}
+
 	d.Bot.SendMessage(
 		d.User,
-		fmt.Sprintf(msg, d.User.FirstName),
+		msg,
 		nil,
 	)
 	return
@@ -50,9 +56,14 @@ func (d *Details) send(msg string) {
 
 func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 	d.takeThoughtfulPause()
+
+	if strings.Contains(msg, "%s") {
+		msg = fmt.Sprintf(msg, d.User.FirstName)
+	}
+
 	d.Bot.SendMessage(
 		d.User,
-		fmt.Sprintf(msg, d.User.FirstName),
+		msg,
 		&telebot.SendOptions{
 			ReplyMarkup: telebot.ReplyMarkup{
 				ForceReply:      true,
