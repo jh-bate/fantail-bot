@@ -20,6 +20,7 @@ type (
 	}
 
 	Question struct {
+		RelatesTo       []string `json:"relatesTo"`
 		Context         []string `json:"context"`
 		QuestionText    string   `json:"question"`
 		PossibleAnswers []string `json:"answers"`

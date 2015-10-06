@@ -48,14 +48,12 @@ func (this *QandA) getNext(prevAnswer string) *QandA {
 	if strings.Contains(prevAnswer, "/chat") {
 		this.toAsk = this.lang.QandA[0]
 	} else {
+		log.Println("finding next Q", prevAnswer)
 		for i := range this.lang.QandA {
-			for a := range this.lang.QandA[i].PossibleAnswers {
-				if this.lang.QandA[i].PossibleAnswers[a] == prevAnswer {
-					nextQNum := i + 1
-					if len(this.lang.QandA) <= nextQNum {
-						this.toAsk = this.lang.QandA[nextQNum]
-						return this
-					}
+			for a := range this.lang.QandA[i].RelatesTo {
+				if this.lang.QandA[i].RelatesTo[a] == prevAnswer {
+					this.toAsk = this.lang.QandA[i]
+					return this
 				}
 			}
 		}

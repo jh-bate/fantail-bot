@@ -1,6 +1,7 @@
 {
   "QandA": [
     {
+      "relatesTo": null,
       "context": [
         "Hey %s",
         "Good to see you"
@@ -14,6 +15,12 @@
       ]
     },
     {
+      "relatesTo": [
+        "Eating",
+        "Sleeping",
+        "Exercising",
+        "Life and stuff"
+      ],
       "context": [
         "Thanks for that %s!",
         "Now for the tricky part :)"
@@ -27,6 +34,12 @@
       ]
     },
     {
+      "relatesTo": [
+        "Above where I want it",
+        "About where I want it",
+        "Below where I want it",
+        "Ahhh ... I don't know"
+      ],
       "context": [
         "Yay ...",
         "Now %s that we have that out of the way",
@@ -39,6 +52,10 @@
       ]
     },
     {
+      "relatesTo": [
+        "Yeah it did get in the way",
+        "Nah it didn't get in the way"
+      ],
       "context": [
         "Now %s we are here to help ...",
         "And we have a number of areas that many people would like help with"
@@ -50,6 +67,9 @@
       ]
     },
     {
+      "relatesTo": [
+         "Nah all good thanks"
+      ],
       "context": [
         "Thanks for that %s"
       ],
