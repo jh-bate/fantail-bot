@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -76,10 +75,10 @@ func (this *QandA) andAsk() {
 	if this.toAsk != nil {
 		//context
 		for i := range this.toAsk.Context {
-			this.Details.send(fmt.Sprintf(this.toAsk.Context[i], this.Details.User.FirstName))
+			this.Details.send(this.toAsk.Context[i])
 		}
 		//the actual question
-		this.Details.sendWithKeyboard(fmt.Sprintf(this.toAsk.QuestionText, this.Details.User.FirstName), this.makeKeyboard())
+		this.Details.sendWithKeyboard(this.toAsk.QuestionText, this.makeKeyboard())
 	}
 	return
 }
