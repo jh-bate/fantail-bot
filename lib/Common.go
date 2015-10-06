@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -12,11 +12,19 @@ const (
 )
 
 type (
-	questions struct {
-		Label     string       `json:"label"`
-		Questions []string     `json:"questions"`
-		Children  []*questions `json:"children"`
+	questionTree struct {
+		Label     string          `json:"label"`
+		Questions []string        `json:"questions"`
+		Children  []*questionTree `json:"children"`
 	}
+
+	Question struct {
+		Context         []string `json:"context"`
+		QuestionText    string   `json:"question"`
+		PossibleAnswers []string `json:"answers"`
+	}
+
+	questions []*Question
 
 	Details struct {
 		Bot  *telebot.Bot
@@ -30,59 +38,13 @@ type (
 	Keyboard [][]string
 )
 
-func (q *questions) hasChildren() bool {
-	return q.Children != nil && len(q.Children) > 0
-}
-
-func (q *questions) find(label string) *questions {
-	if q.hasChildren() {
-
-		if q.Label == label {
-			log.Println("at the top so return this one's children")
-			return q
-		}
-
-		for i := range q.Children {
-			if q.Children[i].Label == label {
-				return q.Children[i]
-			} else if q.Children[i].hasChildren() {
-				match := q.Children[i].find(label)
-				if match != nil {
-					return match
-				}
-			}
-		}
-	}
-	log.Println("nothing else found")
-	return nil
-}
-
-func (q *questions) makeKeyboard() Keyboard {
-	keyboard := Keyboard{}
-	for i := range q.Children {
-		keyboard = append(keyboard, []string{q.Children[i].Label})
-	}
-	return keyboard
-}
-
 func (d *Details) send(msg string) {
 	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
-		msg,
+		fmt.Sprintf(msg, d.User.FirstName),
 		nil,
 	)
-	return
-}
-
-func (d *Details) askQuestion(q *questions) {
-	for i := range q.Questions {
-		if i != len(q.Questions) {
-			d.send(q.Questions[i])
-		} else {
-			d.sendWithKeyboard(q.Questions[i], q.makeKeyboard())
-		}
-	}
 	return
 }
 
@@ -90,7 +52,7 @@ func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 	d.takeThoughtfulPause()
 	d.Bot.SendMessage(
 		d.User,
-		msg,
+		fmt.Sprintf(msg, d.User.FirstName),
 		&telebot.SendOptions{
 			ReplyMarkup: telebot.ReplyMarkup{
 				ForceReply:      true,

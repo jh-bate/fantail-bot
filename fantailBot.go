@@ -35,7 +35,10 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	qandA := lib.NewQandA(&lib.Details{Bot: fBot.bot})
-	qandA.Run(messages)
+	//qandA := lib.NewQandA(&lib.Details{Bot: fBot.bot})
+	//qandA.Run(messages)
+
+	qTree := lib.NewQTree(&lib.Details{Bot: fBot.bot})
+	qTree.Run(messages)
 
 }
