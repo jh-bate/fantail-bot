@@ -25,9 +25,7 @@ func NewQTree(d *Details) *QTree {
 func (this *QTree) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-
 		log.Println("in", msg.Text)
-
 		this.ask(msg)
 	}
 }
@@ -55,7 +53,6 @@ func (q *questionTree) find(label string) *questionTree {
 			log.Println("at the top so return this one's children")
 			return q
 		}
-
 		for i := range q.Children {
 			if q.Children[i].Label == label {
 				return q.Children[i]
@@ -80,13 +77,13 @@ func (this *QTree) makeKeyboard(q *questionTree) Keyboard {
 }
 
 func (this *QTree) askQuestion(q *questionTree) {
-	log.Println("asking ...", q.Label)
+	//log.Println("asking ...", q.Label)
 	for i := range q.Questions {
 		if i+1 != len(q.Questions) {
-			log.Println("snd msg")
+			//log.Println("snd msg")
 			this.Details.send(q.Questions[i])
 		} else {
-			log.Println("snd msg w kb")
+			//log.Println("snd msg w kb")
 			this.Details.sendWithKeyboard(q.Questions[i], this.makeKeyboard(q))
 		}
 	}
@@ -94,7 +91,7 @@ func (this *QTree) askQuestion(q *questionTree) {
 }
 
 func (this *QTree) ask(msg telebot.Message) {
-	log.Println("answer was", msg.Text)
+	//log.Println("answer was", msg.Text)
 	nextQ := this.lang.QTree.find(msg.Text)
 	if nextQ == nil {
 		this.Details.send(this.lang.Thank)
