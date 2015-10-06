@@ -82,11 +82,11 @@ func (this *QTree) makeKeyboard(q *questionTree) Keyboard {
 func (this *QTree) askQuestion(q *questionTree) {
 	log.Println("asking ...", q.Label)
 	for i := range q.Questions {
-		if i != len(q.Questions) {
-			log.Println("msg")
+		if i+1 != len(q.Questions) {
+			log.Println("snd msg")
 			this.Details.send(q.Questions[i])
 		} else {
-			log.Println("msg w kb")
+			log.Println("snd msg w kb")
 			this.Details.sendWithKeyboard(q.Questions[i], this.makeKeyboard(q))
 		}
 	}
