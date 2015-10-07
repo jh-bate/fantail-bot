@@ -61,6 +61,10 @@ func (this *QProcess) getNext(prevAnswer string) *QProcess {
 				}
 			}
 		}
+		if this.next == nil {
+			last := len(this.lang.questions)
+			this.next = this.lang.questions[last]
+		}
 	}
 	return this
 }

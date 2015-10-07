@@ -3,16 +3,16 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s!",
+        "OK %s!",
         "So a stupid high BG then",
         "Lets try and get to the bottom of this!"
       ],
       "question": "What where you just doing?",
       "answers": [
         "Eating",
-        "Sleeping",
-        "Exercising",
-        "Life and stuff"
+        "[TODO] Sleeping",
+        "[TODO] Exercising",
+        "[TODO] Life and stuff"
       ]
     },
     {
@@ -110,9 +110,9 @@
     },
     {
       "relatesTo": [
-        "Sleeping",
-        "Exercising",
-        "Life and stuff"
+        "[TODO] Sleeping",
+        "[TODO] Exercising",
+        "[TODO] Life and stuff"
       ],
       "context": [
         "Thanks for that %s",
