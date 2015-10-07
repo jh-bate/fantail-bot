@@ -1,165 +1,139 @@
 {
-  "QTree": {
-    "label": "/why_high",
-    "questions": [
-      "Hey %s!",
-      "So a stupid high BG then",
-      "Lets try and get to the bottom of this!",
-      "What where you just doing?"
-    ],
-    "children": [
-      {
-        "label": "Eating",
-        "questions": [
-          "Nice %s!",
-          "Gotta love eating ... need it to live and all",
-          "Did you know your BG before eating?"
-        ],
-        "children": [
-          {
-            "label": "Yeah I knew my BG",
-            "questions": [
-              "Good start then %s!",
-              "Did you know how many carbs you were eating?"
-            ],
-            "children": [
-              {
-                "label": "Yeah I knew the amount of carbs",
-                "questions": [
-                  "OK %s so far you are doing great!",
-                  "In that case do any of the following seem like a possible reason?"
-                ],
-                "children": [
-                  {
-                    "label": "Counted carbs wrong",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Don't know carb ratio",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Gave insulin late",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Forgot to give insulin",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Sick or getting sick",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Stressed",
-                    "questions": [
-                      "[TODO] ..."
-                    ],
-                    "children": null
-                  },
-                  {
-                    "label": "Sanity check",
-                    "questions": [
-                      "Here are some other ideas for you",
-                      "Did you?"
-                    ],
-                    "children": [
-                      {
-                        "label": "Check Site OK?",
-                        "questions": [
-                          "Yeah a bad site can throw things",
-                          "Time to change maybe?"
-                        ],
-                        "children": null
-                      },
-                      {
-                        "label": "Check Line OK?",
-                        "questions": [
-                          "The smell of insulin can be a give away",
-                          "Time to change the line aye."
-                        ],
-                        "children": null
-                      },
-                      {
-                        "label": "Check washed hands before BG?",
-                        "questions": [
-                          "Yeah - you might have infulenced that BG :)",
-                          "Wash your hands and retest aye."
-                        ],
-                        "children": null
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "label": "No I didn't know the amount of carbs",
-                "questions": [
-                  "Well %s",
-                  "I would have to say its going to be an uphill battle to get it right",
-                  "But good news is you have something easy to work on!",
-                  "So waht are we going to do next time?"
-                ],
-                "children": [
-                  {
-                    "label": "Count the carbs :)",
-                    "questions": [
-                      "Thats the one!"
-                    ],
-                    "children": null
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "I didn't know my BG",
-            "questions": [
-              "We all do that %s",
-              "But it does make it harder though ...",
-              "Did you know how many carbs you were eating?"
-            ],
-            "children": []
-          }
-        ]
-      },
-      {
-        "label": "[TODO] Sleeping",
-        "questions": [
-          "Still todo ..."
-        ],
-        "children": null
-      },
-      {
-        "label": "[TODO] Exercising",
-        "questions": [
-          "Still todo ..."
-        ],
-        "children": null
-      },
-      {
-        "label": "[TODO] Life and stuff",
-        "questions": [
-          "Still todo ..."
-        ],
-        "children": null
-      }
-    ]
-  },
-  "thank": "Well %s, hopefully we made shed some light there!"
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [
+        "Hey %s!",
+        "So a stupid high BG then",
+        "Lets try and get to the bottom of this!"
+      ],
+      "question": "What where you just doing?",
+      "answers": [
+        "Eating",
+        "Sleeping",
+        "Exercising",
+        "Life and stuff"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Eating"
+      ],
+      "context": [
+        "Nice %s!",
+        "Gotta love eating ... need it to live and all"
+      ],
+      "question": "Did you know your BG before eating?",
+      "answers": [
+        "Yeah I knew the amount of carbs",
+        "No I didn't know the amount of carbs"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Yeah I knew the amount of carbs"
+      ],
+      "context": [
+        "OK %s so far you are doing great!"
+      ],
+      "question": "Do any of these sound like a reason?",
+      "answers": [
+        "Counted carbs wrong",
+        "Don't know carb ratio",
+        "Gave insulin late",
+        "Forgot to give insulin",
+        "Sick (or getting sick)",
+        "Stressed",
+        "Issue with equipment"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Issue with equipment"
+      ],
+      "context": [
+        "Here are some ideas %s",
+        "Check Site OK?",
+        "Check Line OK?",
+        "Pen not leaking"
+      ],
+      "question": "Maybe on of those?",
+      "answers": [
+        "Yeah could be one of those",
+        "No don't think so"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Counted carbs wrong",
+        "Don't know carb ratio",
+        "Sick (or getting sick)",
+        "Stressed"
+      ],
+      "context": [
+        "Thanks for that %s"
+      ],
+      "question": "Did you feel informed on how to handle these?",
+      "answers": [
+        "Yeah I do feel informed",
+        "No I don't feel informed"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Gave insulin late",
+        "Forgot to give insulin"
+      ],
+      "context": [
+        "OK %s"
+      ],
+      "question": "Have you tried giving the insulin before the meal?",
+      "answers": [
+        "Yeah I normally do",
+        "Yeah I have",
+        "No haven't"
+      ]
+    },
+    {
+      "relatesTo": [
+        "I didn't know my BG",
+        "No I didn't know the amount of carbs"
+      ],
+      "context": [
+        "To be honest %s there are times all of us are in this situation!",
+        "But it does make it harder though ...",
+      ],
+      "question": "So back to basics next time?",
+      "answers": [
+        "Yeah will do :)"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Sleeping",
+        "Exercising",
+        "Life and stuff"
+      ],
+      "context": [
+        "Thanks for that %s",
+        "This is still a work in progress"
+      ],
+      "question": "Sorry about that",
+      "answers": [
+        "OK thanks for the heads up!"
+      ]
+    },
+    {
+      "relatesTo": [
+        "end"
+      ],
+      "context": [
+        "Thanks for that %s"
+      ],
+      "question": "Chat again later",
+      "answers": [
+        "See you!"
+      ]
+    }
+  ]
 }
