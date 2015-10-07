@@ -61,10 +61,6 @@ func (this *QProcess) getNext(prevAnswer string) *QProcess {
 				}
 			}
 		}
-		if this.next == nil {
-			last := len(this.lang.questions)
-			this.next = this.lang.questions[last]
-		}
 	}
 	return this
 }
@@ -78,13 +74,16 @@ func (this *QProcess) makeKeyboard() Keyboard {
 }
 
 func (this *QProcess) andAsk() {
-	if this.next != nil {
-		//context
-		for i := range this.next.Context {
-			this.Details.send(this.next.Context[i])
-		}
-		//the actual question
-		this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
+	if this.next == nil {
+		log.Println("finish up")
+		this.next = this.lang.questions[len(this.lang.questions)-1]
 	}
+	//context
+	for i := range this.next.Context {
+		this.Details.send(this.next.Context[i])
+	}
+	//the actual question
+	this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
+
 	return
 }
