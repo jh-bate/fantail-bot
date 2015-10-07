@@ -10,6 +10,8 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
+const chat_cmd, high_cmd = "/chat", "/why_high"
+
 type QProcess struct {
 	Details *Details
 	lang    struct {
@@ -44,11 +46,11 @@ func (this *QProcess) loadLanguage(name string) {
 func (this *QProcess) getNext(prevAnswer string) *QProcess {
 	this.next = nil
 
-	if strings.Contains(prevAnswer, "/") {
-		log.Println("start fresh for command", prevAnswer)
-		cmdName := strings.Split(prevAnswer, "/")[0]
-		cmdName = strings.Split(cmdName, " ")[0]
-		this.loadLanguage(cmdName)
+	if strings.Contains(prevAnswer, chat_cmd) {
+		this.loadLanguage("chat")
+		this.next = this.lang.questions[0]
+	} else if strings.Contains(prevAnswer, high_cmd) {
+		this.loadLanguage("why_high")
 		this.next = this.lang.questions[0]
 	} else {
 		for i := range this.lang.questions {
