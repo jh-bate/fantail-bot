@@ -74,16 +74,15 @@ func (this *QProcess) makeKeyboard() Keyboard {
 }
 
 func (this *QProcess) andAsk() {
-	if this.next == nil {
-		log.Println("finish up")
-		this.next = this.lang.questions[len(this.lang.questions)-1]
+	if this.next != nil {
+
+		//context
+		for i := range this.next.Context {
+			this.Details.send(this.next.Context[i])
+		}
+		//the actual question
+		this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
 	}
-	//context
-	for i := range this.next.Context {
-		this.Details.send(this.next.Context[i])
-	}
-	//the actual question
-	this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
 
 	return
 }
