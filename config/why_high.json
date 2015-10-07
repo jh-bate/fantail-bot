@@ -25,6 +25,21 @@
       ],
       "question": "Did you know your BG before eating?",
       "answers": [
+        "Yeah I knew my BG",
+        "No I didn't know my BG"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Yeah I knew my BG"
+      ],
+      "context": [
+        "Great %s",
+        "Information is power ...",
+        "so knowing your BG is a great start."
+      ],
+      "question": "Did you know approximatly the amount of carbs you ate?",
+      "answers": [
         "Yeah I knew the amount of carbs",
         "No I didn't know the amount of carbs"
       ]
@@ -96,7 +111,7 @@
     },
     {
       "relatesTo": [
-        "I didn't know my BG",
+        "No I didn't know my BG",
         "No I didn't know the amount of carbs"
       ],
       "context": [
@@ -118,7 +133,7 @@
         "Thanks for that %s",
         "This is still a work in progress"
       ],
-      "question": "Sorry about that",
+      "question": "Maybe next time?",
       "answers": [
         "OK thanks for the heads up!"
       ]
