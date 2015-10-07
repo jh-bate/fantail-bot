@@ -19,10 +19,10 @@ type (
 		Children  []*questionTree `json:"children"`
 	}
 
-	QTree struct {
+	Tree struct {
 		Context      []string `json:"context"`
 		QuestionText string   `json:"question"`
-		Children     []*QTree `json:"children"`
+		Children     []*Tree  `json:"children"`
 	}
 
 	Question struct {
