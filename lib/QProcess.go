@@ -66,7 +66,7 @@ func (this *QProcess) getNext(prevAnswer string) *QProcess {
 func (this *QProcess) makeKeyboard() Keyboard {
 	keyboard := Keyboard{}
 	for i := range this.next.PossibleAnswers {
-		keyboard = append(keyboard, []string{this.next.PossibleAnswers[i].Text})
+		keyboard = append(keyboard, []string{this.next.PossibleAnswers[i]})
 	}
 	return keyboard
 }
