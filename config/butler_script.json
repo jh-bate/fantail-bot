@@ -1,0 +1,77 @@
+{
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [
+        "Hey %s",
+        "Time to get that script aye!"
+      ],
+      "question": "Do you need insulin?",
+      "answers": [
+        "Yes - Insulin",
+        "No - Insulin"
+      ]
+    },
+    {
+      "relatesTo": [
+         "Yes - Insulin"
+      ],
+      "context": [
+        "Thanks for that %s!",
+        "Now for the tricky part :)"
+      ],
+      "question": "What was your last BG?",
+      "answers": [
+        "Above where I want it",
+        "About where I want it",
+        "Below where I want it",
+        "Ahhh ... I don't know"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Above where I want it",
+        "About where I want it",
+        "Below where I want it",
+        "Ahhh ... I don't know"
+      ],
+      "context": [
+        "Yay ...",
+        "Now %s that we have that out of the way",
+        "Another question; and be blunt here ..."
+      ],
+      "question": "Did your diabetes get in the way of what you wanted to do?",
+      "answers": [
+        "Yeah it did get in the way",
+        "Nah it didn't get in the way"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Yeah it did get in the way",
+        "Nah it didn't get in the way"
+      ],
+      "context": [
+        "Now %s we are here to help ...",
+        "And we have a number of areas that many people would like help with"
+      ],
+      "question": "Would you like to talk about any of the following more?",
+      "answers": [
+        "Yeah /why_high",
+        "Nah all good thanks"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Nah all good thanks"
+      ],
+      "context": [
+        "Thanks for that %s"
+      ],
+      "question": "Chat again later",
+      "answers": [
+        "See you!"
+      ]
+    }
+  ]
+}
