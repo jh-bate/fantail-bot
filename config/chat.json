@@ -22,7 +22,7 @@
         "Life and stuff"
       ],
       "context": [
-        "Thanks for that %s!",
+        "Thanks for that %s!"
       ],
       "question": "And what was your last BG?",
       "answers": [
@@ -82,7 +82,7 @@
       ],
       "question": "Ask away",
       "answers": [
-        "All done thanks",
+        "All done thanks"
       ]
     },
     {
