@@ -23,9 +23,8 @@
       ],
       "context": [
         "Thanks for that %s!",
-        "Now for the tricky part :)"
       ],
-      "question": "What was your last BG?",
+      "question": "And what was your last BG?",
       "answers": [
         "Above where I want it",
         "About where I want it",
@@ -37,38 +36,59 @@
       "relatesTo": [
         "Above where I want it",
         "About where I want it",
-        "Below where I want it",
+        "Below where I want it"
+      ],
+      "context": [
+        "Great work %s",
+        "Knowing were you are starting from is half the issue :)"
+      ],
+      "question": "Anything that we could help with?",
+      "answers": [
+        "Yes please",
+        "Nah all good"
+      ]
+    },
+    {
+      "relatesTo": [
         "Ahhh ... I don't know"
       ],
       "context": [
-        "Yay ...",
-        "Now %s that we have that out of the way",
-        "Another question; and be blunt here ..."
+        "No worries %s"
       ],
-      "question": "Did your diabetes get in the way of what you wanted to do?",
+      "question": "Maybe time to do one?",
       "answers": [
-        "Yeah it did get in the way",
-        "Nah it didn't get in the way"
+        "Yeah maybe :)"
       ]
     },
     {
       "relatesTo": [
-        "Yeah it did get in the way",
-        "Nah it didn't get in the way"
+        "Yeah maybe :)"
       ],
       "context": [
-        "Now %s we are here to help ...",
-        "And we have a number of areas that many people would like help with"
+        "Nice!"
       ],
-      "question": "Would you like to talk about any of the following more?",
+      "question": "Anything that we could help with?",
       "answers": [
-        "Yeah /why_high",
-        "Nah all good thanks"
+        "Yes please",
+        "Nah all good"
       ]
     },
     {
       "relatesTo": [
-        "Nah all good thanks"
+        "Yes please"
+      ],
+      "context": [
+        "We aim to help!"
+      ],
+      "question": "Ask away",
+      "answers": [
+        "All done thanks",
+      ]
+    },
+    {
+      "relatesTo": [
+        "All done thanks",
+        "Nah all good"
       ],
       "context": [
         "Thanks for that %s"
