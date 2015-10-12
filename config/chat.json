@@ -39,10 +39,9 @@
         "Below where I want it"
       ],
       "context": [
-        "👍",
-        "Great work %s"
+        "👍 great work %s"
       ],
-      "question": "Anything that we could help with?",
+      "question": "Do you have any questions for us?",
       "answers": [
         "Yes please",
         "Nah all good"
@@ -78,9 +77,10 @@
         "Yes please"
       ],
       "context": [
-        "We aim to help!"
+        "We aim to help 😃",
+        "Just ask your question and then hit the `all done ...` button"
       ],
-      "question": "Ask away",
+      "question": "Ask away ...",
       "answers": [
         "All done thanks"
       ]

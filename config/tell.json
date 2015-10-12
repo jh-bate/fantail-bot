@@ -3,26 +3,25 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s, good to see you",
-        "Good to see you"
+        "Hey %s, good to see you"
       ],
       "question": "So you want to tell it like it is!",
       "answers": [
         "Sure do!",
-        "How does this work?",
-        "Ahhh wrong place :)"
+        "Ahhh no",
+        "What is this?"
       ]
     },
     {
       "relatesTo": [
-        "Ahhh wrong place :)"
+        "Ahhh no"
       ],
       "context": [
         "Ha ha %s"
       ],
       "question": "Catch you later then",
       "answers": [
-        "OK :)"
+        "OK 😃"
       ]
     },
     {
@@ -31,22 +30,24 @@
         "Sure do!"
       ],
       "context": [
-        "Cool %s"
+        "Cool %s",
+        "Just leave a message `telling it like it is!`"
       ],
-      "question": "Tell it like it is!",
+      "question": "and click the button when your done",
       "answers": [
-        "The `telling` is done :)"
+        "All done 😃"
       ]
     },
     {
       "relatesTo": [
-        "How does this work?"
+        "What is this?"
       ],
       "context": [
         "So %s feel free to tell us anything!",
-        "- maybe tell your diabetes what you think of it ...",
-        "- maybe tell what your worried about ...",
-        " or anything else ..."
+        "- tell your diabetes what you think of it ...",
+        "- tell what your worried about ...",
+        "- tell us anything else ...",
+        "we say `a friend in need is a friend indeed`"
       ],
       "question": "Sound good?",
       "answers": [
@@ -56,7 +57,7 @@
     },
     {
       "relatesTo": [
-        "The `telling` is done :)"
+        "All done 😃"
       ],
       "context": [
         "Cheers %s",
