@@ -73,9 +73,9 @@ func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 		msg,
 		&telebot.SendOptions{
 			ReplyMarkup: telebot.ReplyMarkup{
-				ForceReply:      true,
+				ForceReply:      false,
 				CustomKeyboard:  kb,
-				ResizeKeyboard:  false,
+				ResizeKeyboard:  true,
 				OneTimeKeyboard: true,
 			},
 		},
