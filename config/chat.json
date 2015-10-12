@@ -11,8 +11,7 @@
         "Eating",
         "Sleeping",
         "Exercising",
-        "Life and stuff",
-        "`👍`"
+        "Life and stuff"
       ]
     },
     {
@@ -40,8 +39,8 @@
         "Below where I want it"
       ],
       "context": [
-        "Great work %s",
-        "Knowing were you are starting from is half the issue :)"
+        "👍",
+        "Great work %s"
       ],
       "question": "Anything that we could help with?",
       "answers": [
