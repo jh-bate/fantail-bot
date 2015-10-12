@@ -1,0 +1,72 @@
+{
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [
+        "Hey %s, good to see you",
+        "Good to see you"
+      ],
+      "question": "So you want to tell it like it is!",
+      "answers": [
+        "Sure do!",
+        "How does this work?",
+        "Ahhh wrong place :)"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Ahhh wrong place :)"
+      ],
+      "context": [
+        "Ha ha %s"
+      ],
+      "question": "Catch you later then",
+      "answers": [
+        "OK :)",
+      ]
+    },
+    {
+      "relatesTo": [
+        "Yeah it does",
+        "Sure do!"
+      ],
+      "context": [
+        "Cool %s"
+      ],
+      "question": "Tell it like it is!",
+      "answers": [
+        "The `telling` is done :)"
+      ]
+    },
+    {
+      "relatesTo": [
+        "How does this work?"
+      ],
+      "context": [
+        "So %s feel free to tell us anything!",
+        "- maybe tell your diabetes what you think of it ...",
+        "- maybe tell what your worried about ...",
+        " or anything else ..."
+      ],
+      "question": "Sound good?",
+      "answers": [
+        "Yeah it does",
+        "Nah I will pass"
+      ]
+    },
+    {
+      "relatesTo": [
+        "The `telling` is done :)"
+      ],
+      "context": [
+        "Cheers %s",
+        "hope that helped",
+        "and maybe you got something off your chest!"
+      ],
+      "question": "Catch you later",
+      "answers": [
+        "Thanks, see you!"
+      ]
+    }
+  ]
+}
