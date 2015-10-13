@@ -3,9 +3,9 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s, good to see you"
+        "Hey %s"
       ],
-      "question": "So you want to tell us something!",
+      "question": "So you have a question you wish you knew the answer too?",
       "answers": [
         "Sure do!",
         "Please explain?",
@@ -19,7 +19,7 @@
       ],
       "context": [
         "Cool %s",
-        "Just leave a message `telling it like it is!`"
+        "Just write down your question"
       ],
       "question": "and then click `all done`",
       "answers": [
@@ -31,16 +31,16 @@
         "Please explain?"
       ],
       "context": [
-        "So %s feel free to tell us anything!",
-        "- tell your diabetes what you think of it ...",
-        "- tell what your worried about ...",
-        "- tell something you want to achieve ...",
-        "- tell us anything else ..."
+        "So %s the idea is to ask a question you wish you had the answer to",
+        "maybe `who does stress impact me`",
+        "or `why do I have several lows in a row`",
+        "or if you must `what is the meaning of life` :)",
+        "Then we will check in with you and see if they are still important questions to you!"
       ],
       "question": "Sound good?",
       "answers": [
         "Sounds good!",
-        "Nah I will pass"
+        "No, I am good actually"
       ]
     },
     {
@@ -49,9 +49,8 @@
         "No, I am good actually"
       ],
       "context": [
-        "Cheers %s",
-        "hope that helped",
-        "and maybe you got something off your chest!"
+        "Thanks %s",
+        "Keep up the great work! 👍"
       ],
       "question": "Catch you later",
       "answers": [

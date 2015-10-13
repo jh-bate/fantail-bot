@@ -34,17 +34,47 @@
     },
     {
       "relatesTo": [
-        "Above where I want it",
-        "About where I want it",
-        "Below where I want it"
+        "Above where I want it"
       ],
       "context": [
-        "👍 great work %s"
+        "Don't worry about it being above %s ...",
+        "we have all been there before!",
+        "Anyway great work on knowing 👍"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yes please",
-        "Nah all good"
+        "Yeah I have a question",
+        "Nah all good thanks"
+      ]
+    },
+    {
+      "relatesTo": [
+        "About where I want it"
+      ],
+      "context": [
+        "👍 great work %s",
+        "lets take a moment ...",
+        "and bask in the glory of that achievement!"
+      ],
+      "question": "Do you have any questions for us?",
+      "answers": [
+        "Yeah I have a question",
+        "Nah all good thanks"
+      ]
+    },
+    {
+      "relatesTo": [
+        "Below where I want it"
+      ],
+      "context": [
+        "Hey %s, hope your feeling `back together` now.",
+        "Lows can really suck though!",
+        "Remember though your doing a good job 👍"
+      ],
+      "question": "Is there anything else?",
+      "answers": [
+        "Yeah could be",
+        "Nah all good thanks"
       ]
     },
     {
@@ -52,9 +82,10 @@
         "Ahhh ... I don't know"
       ],
       "context": [
-        "No worries %s"
+        "No worries %s",
+        "Its hard to know your BG all the time aye!"
       ],
-      "question": "Maybe time to do one?",
+      "question": "Maybe time to do a BG though?",
       "answers": [
         "Yeah maybe :)"
       ]
@@ -74,21 +105,23 @@
     },
     {
       "relatesTo": [
-        "Yes please"
+        "Yeah could be",
       ],
       "context": [
-        "We aim to help 😃",
-        "Just ask your question and then hit the `all done ...` button"
+        "We aim to help 😃"
       ],
-      "question": "Ask away ...",
+      "question": "Your options are",
       "answers": [
-        "All done thanks"
+        "/ask a question",
+        "/tell us something important",
+        "/help you wish you had",
+        "All good actually"
       ]
     },
     {
       "relatesTo": [
-        "All done thanks",
-        "Nah all good"
+        "All good actually",
+        "Nah all good thanks"
       ],
       "context": [
         "Thanks for that %s"
