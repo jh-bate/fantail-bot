@@ -13,17 +13,15 @@ const (
 )
 
 type (
-	questionTree struct {
-		Label     string          `json:"label"`
-		Questions []string        `json:"questions"`
-		Children  []*questionTree `json:"children"`
+	said struct {
+		FromId       int
+		ToId         int
+		When         time.Time
+		Todo         bool
+		TodoComplete time.Time
+		Text         string
 	}
-
-	Tree struct {
-		Context      []string `json:"context"`
-		QuestionText string   `json:"question"`
-		Children     []*Tree  `json:"children"`
-	}
+	chat []*said
 
 	Question struct {
 		RelatesTo       []string `json:"relatesTo"`
