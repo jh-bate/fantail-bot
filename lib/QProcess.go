@@ -27,7 +27,7 @@ func NewQProcess(d *Details) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-		this.getNext(msg.Text).andAsk()
+		this.saveAndFindNext(msg).andAsk()
 	}
 }
 
@@ -43,25 +43,51 @@ func (this *QProcess) loadLanguage(name string) {
 	}
 }
 
-func (this *QProcess) getNext(prevAnswer string) *QProcess {
+func (this *QProcess) saveThis(msg telebot.Message) {
+	if strings.Contains(msg.Text, ask_cmd) {
+		if len(strings.SplitAfter(msg.Text, ask_cmd)) > 0 {
+			log.Println("Saving...", ask_cmd)
+			this.Details.save(msg)
+		}
+		return
+	} else if strings.Contains(msg.Text, tell_cmd) {
+		if len(strings.SplitAfter(msg.Text, tell_cmd)) > 0 {
+			log.Println("Saving...", tell_cmd)
+			this.Details.save(msg)
+		}
+		return
+	} else if strings.Contains(msg.Text, help_cmd) {
+		if len(strings.SplitAfter(msg.Text, help_cmd)) > 0 {
+			log.Println("Saving...", help_cmd)
+			this.Details.save(msg)
+		}
+		return
+	}
+	log.Println("Saving...", chat_cmd)
+	this.Details.save(msg)
+	return
+}
+
+func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if strings.Contains(prevAnswer, chat_cmd) {
+	if strings.Contains(msg.Text, chat_cmd) ||
+		strings.Contains(msg.Text, ask_cmd) ||
+		strings.Contains(msg.Text, tell_cmd) {
+		this.saveThis(msg)
+		this.loadLanguage("thank")
+		this.next = this.lang.questions[0]
+	} else if strings.Contains(msg.Text, chat_cmd) {
 		this.loadLanguage("chat")
-		this.next = this.lang.questions[0]
-	} else if strings.Contains(prevAnswer, ask_cmd) {
-		this.loadLanguage("ask")
-		this.next = this.lang.questions[0]
-	} else if strings.Contains(prevAnswer, tell_cmd) {
-		this.loadLanguage("tell")
-		this.next = this.lang.questions[0]
-	} else if strings.Contains(prevAnswer, help_cmd) {
-		this.loadLanguage("help")
 		this.next = this.lang.questions[0]
 	} else {
 		for i := range this.lang.questions {
-			for a := range this.lang.questions[i].RelatesTo {
-				if this.lang.questions[i].RelatesTo[a] == prevAnswer {
+			for a := range this.lang.questions[i].RelatesTo.Answers {
+				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
+					//was the answer a remainder to save?
+					if this.lang.questions[i].RelatesTo.Save {
+						this.saveThis(msg)
+					}
 					this.next = this.lang.questions[i]
 					return this
 				}

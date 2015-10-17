@@ -15,12 +15,15 @@
       ]
     },
     {
-      "relatesTo": [
-        "Eating",
-        "Sleeping",
-        "Exercising",
-        "Life and stuff"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Eating",
+          "Sleeping",
+          "Exercising",
+          "Life and stuff"
+        ],
+        "save": true
+      },
       "context": [
         "Thanks for that %s!"
       ],
@@ -33,9 +36,12 @@
       ]
     },
     {
-      "relatesTo": [
-        "Above where I want it"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Above where I want it"
+        ],
+        "save": true
+      },
       "context": [
         "Don't worry about it being above %s ...",
         "we have all been there before!",
@@ -43,14 +49,17 @@
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I have a question",
+        "Yeah could be",
         "Nah all good thanks"
       ]
     },
     {
-      "relatesTo": [
-        "About where I want it"
-      ],
+      "relatesTo": {
+        "answers": [
+          "About where I want it"
+        ],
+        "save": true
+      },
       "context": [
         "👍 great work %s",
         "lets take a moment ...",
@@ -58,14 +67,17 @@
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I have a question",
+        "Yeah could be",
         "Nah all good thanks"
       ]
     },
     {
-      "relatesTo": [
-        "Below where I want it"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Below where I want it"
+        ],
+        "save": true
+      },
       "context": [
         "Hey %s, hope your feeling `back together` now.",
         "Lows can really suck though!",
@@ -78,9 +90,12 @@
       ]
     },
     {
-      "relatesTo": [
-        "Ahhh ... I don't know"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Ahhh ... I don't know"
+        ],
+        "save": true
+      },
       "context": [
         "No worries %s",
         "Its hard to know your BG all the time aye!"
@@ -91,22 +106,28 @@
       ]
     },
     {
-      "relatesTo": [
-        "Yeah maybe :)"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Yeah maybe :)"
+        ],
+        "save": false
+      },
       "context": [
         "Nice!"
       ],
       "question": "Anything that we could help with?",
       "answers": [
-        "Yes please",
+        "Yeah could be",
         "Nah all good"
       ]
     },
     {
-      "relatesTo": [
-        "Yeah could be",
-      ],
+      "relatesTo": {
+        "answers": [
+          "Yeah could be"
+        ],
+        "save": true
+      },
       "context": [
         "We aim to help 😃"
       ],
@@ -119,10 +140,13 @@
       ]
     },
     {
-      "relatesTo": [
-        "All good actually",
-        "Nah all good thanks"
-      ],
+      "relatesTo": {
+        "answers": [
+          "All good actually",
+          "Nah all good thanks"
+        ],
+        "save": false
+      },
       "context": [
         "Thanks for that %s"
       ],

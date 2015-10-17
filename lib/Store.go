@@ -8,12 +8,12 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-type api struct {
+type Storage struct {
 	store redis.Conn
 }
 
-func newApi() *api {
-	a := &api{}
+func NewStorage() *Storage {
+	a := &Storage{}
 	redisUrl := os.Getenv("REDIS_URL")
 
 	if redisUrl == "" {
@@ -28,7 +28,7 @@ func newApi() *api {
 	return a
 }
 
-func (a *api) save(userId string, s said) error {
+func (a *Storage) Save(userId string, s Said) error {
 	serialized, err := json.Marshal(s)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func (a *api) save(userId string, s said) error {
 	return err
 }
 
-func (a *api) get(userId string) (chat, error) {
+func (a *Storage) Get(userId string) (Chat, error) {
 
 	count, err := redis.Int(a.store.Do("LLEN", userId))
 
@@ -51,10 +51,10 @@ func (a *api) get(userId string) (chat, error) {
 		return nil, err
 	}
 
-	var c chat
+	var c Chat
 
 	for i := range items {
-		var s said
+		var s Said
 		serialized, _ := redis.Bytes(items[i], nil)
 		json.Unmarshal(serialized, &s)
 		c = append(c, &s)
@@ -62,19 +62,19 @@ func (a *api) get(userId string) (chat, error) {
 	return c, nil
 }
 
-func (a *api) getCurrentTodos(userId string) (chat, error) {
+func (a *Storage) GetCurrentTodos(userId string) (Chat, error) {
 
-	all, err := a.get(userId)
+	all, err := a.Get(userId)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var c chat
+	var c Chat
 
 	for i := range all {
 
-		if all[i].Todo == true && all[i].TodoComplete.IsZero() {
+		if all[i].Remind == true && all[i].RemindComplete.IsZero() {
 			c = append(c, all[i])
 		}
 	}
@@ -82,19 +82,19 @@ func (a *api) getCurrentTodos(userId string) (chat, error) {
 	return c, nil
 }
 
-func (a *api) getCompleteTodos(userId string) (chat, error) {
+func (a *Storage) GetCompleteTodos(userId string) (Chat, error) {
 
-	all, err := a.get(userId)
+	all, err := a.Get(userId)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var c chat
+	var c Chat
 
 	for i := range all {
 
-		if all[i].Todo == true && all[i].TodoComplete.IsZero() == false {
+		if all[i].Remind == true && all[i].RemindComplete.IsZero() == false {
 			c = append(c, all[i])
 		}
 	}
