@@ -11,7 +11,8 @@ import (
 
 type (
 	fantailBot struct {
-		bot *telebot.Bot
+		bot   *telebot.Bot
+		store *lib.Storage
 	}
 )
 
@@ -26,7 +27,8 @@ func newFantailBot() *fantailBot {
 	if err != nil {
 		return nil
 	}
-	return &fantailBot{bot: bot}
+
+	return &fantailBot{bot: bot, store: lib.NewStorage()}
 }
 
 func main() {
@@ -35,13 +37,6 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	/*qandA := lib.NewQandA(&lib.Details{Bot: fBot.bot})
-	qandA.Run(messages)
-
-	qTree := lib.NewQTree(&lib.Details{Bot: fBot.bot})
-	qTree.Run(messages)*/
-
-	q := lib.NewQProcess(&lib.Details{Bot: fBot.bot})
+	q := lib.NewQProcess(&lib.Details{Bot: fBot.bot, Storage: fBot.store})
 	q.Run(messages)
-
 }
