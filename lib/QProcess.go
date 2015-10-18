@@ -71,7 +71,7 @@ func (this *QProcess) saveThis(msg telebot.Message) {
 func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if strings.Contains(msg.Text, chat_cmd) ||
+	if strings.Contains(msg.Text, help_cmd) ||
 		strings.Contains(msg.Text, ask_cmd) ||
 		strings.Contains(msg.Text, tell_cmd) {
 		this.saveThis(msg)
