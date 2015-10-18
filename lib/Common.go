@@ -89,12 +89,13 @@ func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 
 func (d *Details) save(msg telebot.Message) {
 	if d.Storage == nil {
-		log.Println("Storage not enabled")
+		log.Println(StorageInitErr.Error())
 		return
 	}
+	log.Println("Saving", msg.Text)
 	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), Said{FromId: msg.Sender.ID, ToId: msg.Chat.ID, When: msg.Time(), Text: msg.Text, Remind: true})
 	if err != nil {
-		log.Println("Error trying to save to Storage")
+		log.Println(StorageSaveErr.Error())
 	}
 	return
 }

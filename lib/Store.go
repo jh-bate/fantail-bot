@@ -2,11 +2,15 @@ package lib
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 
 	"github.com/garyburd/redigo/redis"
 )
+
+var StorageInitErr = errors.New("Storage is not enabled")
+var StorageSaveErr = errors.New("Error trying to save to Storage")
 
 type Storage struct {
 	store redis.Conn
