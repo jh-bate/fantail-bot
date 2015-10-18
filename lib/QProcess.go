@@ -71,6 +71,7 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	if hasSubmisson(msg.Text, help_cmd, ask_cmd, tell_cmd) {
 		this.Details.save(msg)
 		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		langFile = strings.Fields(langFile)[0]
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)
 		this.next = this.lang.questions[len(this.lang.questions)-1]
