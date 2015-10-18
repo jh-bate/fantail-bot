@@ -44,21 +44,19 @@ func (this *QProcess) loadLanguage(name string) {
 }
 
 func hasSubmisson(txt string, cmds ...string) bool {
-
 	if isCmd(txt, cmds...) {
 		for i := range cmds {
-			if len(strings.SplitAfter(txt, cmds[i])) > 0 {
+			log.Println("Check if submisson", txt)
+			if len(strings.SplitAfter(txt, cmds[i])) > 1 {
 				return true
 			}
 		}
 	}
-
 	return false
-
 }
 
 func isCmd(txt string, cmds ...string) bool {
-
+	log.Println("Check if cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true
@@ -72,8 +70,10 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 
 	if hasSubmisson(msg.Text, help_cmd, ask_cmd, tell_cmd) {
 		this.Details.save(msg)
-		this.loadLanguage("thank")
-		this.next = this.lang.questions[0]
+		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		log.Println("loading ...", langFile)
+		this.loadLanguage(langFile)
+		this.next = this.lang.questions[len(this.lang.questions)-1]
 	} else if isCmd(msg.Text, help_cmd, ask_cmd, tell_cmd, chat_cmd) {
 		langFile := strings.SplitAfter(msg.Text, "/")[1]
 		log.Println("loading ...", langFile)

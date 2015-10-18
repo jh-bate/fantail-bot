@@ -31,6 +31,17 @@
       "answers": [
         "Get me out of here!"
       ]
+    },
+    {
+      "relatesTo": null,
+      "context": [
+        "Thanks %s",
+        "Glad you told us that"
+      ],
+      "question": "Chat later!",
+      "answers": [
+        "Will do!"
+      ]
     }
   ]
 }
