@@ -3,58 +3,33 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s"
+        "Hey %s",
+        "To get going all you need to do is type"
       ],
-      "question": "So you have somthing you wish you could get help with?",
+      "question": "/help [what you what help with]",
       "answers": [
-        "Sure do!",
-        "Please explain?",
-        "No, I am good actually"
+        "Tell me more",
+        "Get me out of here!"
       ]
     },
     {
-      "relatesTo": [
-        "Sounds good!",
-        "Sure do!"
-      ],
-      "context": [
-        "Cool %s",
-        "Just write what you wish you had help with"
-      ],
-      "question": "and then click `all done`",
-      "answers": [
-        "All done 😃"
-      ]
-    },
-    {
-      "relatesTo": [
-        "Please explain?"
-      ],
+      "relatesTo": {
+        "answers": [
+          "Tell me more"
+        ],
+        "save": false
+      },
       "context": [
         "So %s the idea is to write down anything you wish you could get help with",
-        "- `remembering to order supplies`",
-        "- `finding a dr that works for me`",
-        "- `being the best athlete I can`",
-        "Then we will check in with you and see if they are still important things you would like help with!"
+        "maybe - 'remembering to order supplies'",
+        "or - 'finding a dr that works for me'",
+        "or - 'being the best athlete I can'",
+        "Then we will check in with you and see if they are still important things you would like help with!",
+        "Remember get going all you need to do is type"
       ],
-      "question": "Sound good?",
+      "question": "/help [what you what help with]",
       "answers": [
-        "Sounds good!",
-        "No, I am good actually"
-      ]
-    },
-    {
-      "relatesTo": [
-        "All done 😃",
-        "No, I am good actually"
-      ],
-      "context": [
-        "Thanks %s",
-        "Keep up the great work! 👍"
-      ],
-      "question": "Catch you later",
-      "answers": [
-        "Thanks, see you!"
+        "Get me out of here!"
       ]
     }
   ]

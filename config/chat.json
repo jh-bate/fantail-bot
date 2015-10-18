@@ -49,8 +49,8 @@
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah could be",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
@@ -67,8 +67,8 @@
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah could be",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
@@ -85,8 +85,8 @@
       ],
       "question": "Is there anything else?",
       "answers": [
-        "Yeah could be",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
@@ -117,14 +117,14 @@
       ],
       "question": "Anything that we could help with?",
       "answers": [
-        "Yeah could be",
-        "Nah all good"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "Yeah could be"
+          "Yeah might do"
         ],
         "save": true
       },
@@ -133,9 +133,9 @@
       ],
       "question": "Your options are",
       "answers": [
-        "/ask a question",
-        "/tell us something important",
-        "/help you wish you had",
+        "/ask [a question]",
+        "/tell [us something important to you]",
+        "/help [you wish you had]",
         "All good actually"
       ]
     },
@@ -143,7 +143,7 @@
       "relatesTo": {
         "answers": [
           "All good actually",
-          "Nah all good thanks"
+          "No thanks"
         ],
         "save": false
       },
