@@ -43,42 +43,41 @@ func (this *QProcess) loadLanguage(name string) {
 	}
 }
 
-func (this *QProcess) saveThis(msg telebot.Message) {
-	if strings.Contains(msg.Text, ask_cmd) {
-		if len(strings.SplitAfter(msg.Text, ask_cmd)) > 0 {
-			log.Println("Saving...", ask_cmd)
-			this.Details.save(msg)
+func hasSubmisson(txt string, cmds ...string) bool {
+
+	if isCmd(txt, cmds...) {
+		for i := range cmds {
+			if len(strings.SplitAfter(txt, cmds[i])) > 0 {
+				return true
+			}
 		}
-		return
-	} else if strings.Contains(msg.Text, tell_cmd) {
-		if len(strings.SplitAfter(msg.Text, tell_cmd)) > 0 {
-			log.Println("Saving...", tell_cmd)
-			this.Details.save(msg)
-		}
-		return
-	} else if strings.Contains(msg.Text, help_cmd) {
-		if len(strings.SplitAfter(msg.Text, help_cmd)) > 0 {
-			log.Println("Saving...", help_cmd)
-			this.Details.save(msg)
-		}
-		return
 	}
-	log.Println("Saving...", chat_cmd)
-	this.Details.save(msg)
-	return
+
+	return false
+
+}
+
+func isCmd(txt string, cmds ...string) bool {
+
+	for i := range cmds {
+		if strings.Contains(txt, cmds[i]) {
+			return true
+		}
+	}
+	return false
 }
 
 func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if strings.Contains(msg.Text, help_cmd) ||
-		strings.Contains(msg.Text, ask_cmd) ||
-		strings.Contains(msg.Text, tell_cmd) {
-		this.saveThis(msg)
+	if hasSubmisson(msg.Text, help_cmd, ask_cmd, tell_cmd) {
+		this.Details.save(msg)
 		this.loadLanguage("thank")
 		this.next = this.lang.questions[0]
-	} else if strings.Contains(msg.Text, chat_cmd) {
-		this.loadLanguage("chat")
+	} else if isCmd(msg.Text, help_cmd, ask_cmd, tell_cmd, chat_cmd) {
+		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		log.Println("loading ...", langFile)
+		this.loadLanguage(langFile)
 		this.next = this.lang.questions[0]
 	} else {
 		for i := range this.lang.questions {
@@ -86,7 +85,7 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
-						this.saveThis(msg)
+						this.Details.save(msg)
 					}
 					this.next = this.lang.questions[i]
 					return this
