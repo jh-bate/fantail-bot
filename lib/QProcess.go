@@ -46,8 +46,8 @@ func (this *QProcess) loadLanguage(name string) {
 func hasSubmisson(txt string, cmds ...string) bool {
 	if isCmd(txt, cmds...) {
 		for i := range cmds {
-			log.Println("Check if submisson", txt)
-			if len(strings.SplitAfter(txt, cmds[i])) > 1 {
+			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
+				log.Println("Check if submisson", txt)
 				return true
 			}
 		}
