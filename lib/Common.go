@@ -1,8 +1,10 @@
 package lib
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,16 +16,16 @@ const (
 )
 
 type (
-	Said struct {
-		FromId         int
-		ToId           int
-		When           time.Time
-		Remind         bool
-		RemindComplete time.Time
-		Text           string
+	Reminder struct {
+		FromId      int
+		ToId        int
+		AddedOn     time.Time
+		RemindNext  time.Time
+		CompletedOn time.Time
+		Text        string
 	}
 
-	Chat []*Said
+	Reminders []*Reminder
 
 	Question struct {
 		RelatesTo struct {
@@ -93,7 +95,14 @@ func (d *Details) save(msg telebot.Message) {
 		return
 	}
 	log.Println("Saving", msg.Text)
-	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), Said{FromId: msg.Sender.ID, ToId: msg.Chat.ID, When: msg.Time(), Text: msg.Text, Remind: true})
+	err := d.Storage.Save(
+		fmt.Sprintf("%d", d.User.ID),
+		Reminder{FromId: msg.Sender.ID,
+			ToId:       msg.Chat.ID,
+			AddedOn:    msg.Time(),
+			Text:       msg.Text,
+			RemindNext: time.Now().AddDate(0, 0, 7)},
+	)
 	if err != nil {
 		log.Println(StorageSaveErr.Error())
 	}
@@ -104,4 +113,57 @@ func (d *Details) takeThoughtfulPause() {
 	d.Bot.SendChatAction(d.User, typing_action)
 	time.Sleep(1 * time.Second)
 	return
+}
+
+func hasSubmisson(txt string, cmds ...string) bool {
+	if isCmd(txt, cmds...) {
+		for i := range cmds {
+			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
+				log.Println("Check if submisson", txt)
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func isCmd(txt string, cmds ...string) bool {
+	log.Println("Check if cmd", txt)
+	for i := range cmds {
+		if strings.Contains(txt, cmds[i]) {
+			return true
+		}
+	}
+	return false
+}
+
+func (d *Details) saveReminder(msg telebot.Message) error {
+
+	const remind_pos, me_pos, in_pos, time_pos, to_pos, msg_pos = 0, 1, 2, 3, 4, 5
+	const remind, me, in, to = "/remind", "me", "in", "to"
+	words := strings.Fields(msg.Text)
+
+	if strings.ToLower(words[remind_pos]) != remind ||
+		strings.ToLower(words[me_pos]) != me ||
+		strings.ToLower(words[in_pos]) != in ||
+		strings.ToLower(words[to_pos]) != to {
+		return errors.New("format is /remind me to <days> do <msg>")
+	}
+
+	days, err := strconv.Atoi(words[time_pos])
+	if err != nil {
+		return err
+	}
+	what := words[msg_pos]
+
+	return d.Storage.Save(
+		fmt.Sprintf("%d", d.User.ID),
+		Reminder{
+			FromId:     msg.Sender.ID,
+			ToId:       msg.Chat.ID,
+			AddedOn:    msg.Time(),
+			Text:       what,
+			RemindNext: time.Now().AddDate(0, 0, days),
+		})
+
 }

@@ -10,7 +10,8 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const chat_cmd, ask_cmd, tell_cmd, help_cmd = "/chat", "/ask", "/tell", "/help"
+//const chat_cmd, ask_cmd, tell_cmd, help_cmd = "/chat", "/ask", "/tell", "/help"
+const chat_cmd, say_cmd, remind_cmd = "/chat", "/say", "/remind"
 
 type QProcess struct {
 	Details *Details
@@ -43,39 +44,24 @@ func (this *QProcess) loadLanguage(name string) {
 	}
 }
 
-func hasSubmisson(txt string, cmds ...string) bool {
-	if isCmd(txt, cmds...) {
-		for i := range cmds {
-			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
-				log.Println("Check if submisson", txt)
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func isCmd(txt string, cmds ...string) bool {
-	log.Println("Check if cmd", txt)
-	for i := range cmds {
-		if strings.Contains(txt, cmds[i]) {
-			return true
-		}
-	}
-	return false
-}
-
 func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if hasSubmisson(msg.Text, help_cmd, ask_cmd, tell_cmd) {
+	if hasSubmisson(msg.Text, say_cmd) {
 		this.Details.save(msg)
 		langFile := strings.SplitAfter(msg.Text, "/")[1]
 		langFile = strings.Fields(langFile)[0]
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)
 		this.next = this.lang.questions[len(this.lang.questions)-1]
-	} else if isCmd(msg.Text, help_cmd, ask_cmd, tell_cmd, chat_cmd) {
+	} else if hasSubmisson(msg.Text, remind_cmd) {
+		this.Details.saveReminder(msg)
+		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		langFile = strings.Fields(langFile)[0]
+		log.Println("loading ...", langFile)
+		this.loadLanguage(langFile)
+		this.next = this.lang.questions[len(this.lang.questions)-1]
+	} else if isCmd(msg.Text, say_cmd, remind_cmd, chat_cmd) {
 		langFile := strings.SplitAfter(msg.Text, "/")[1]
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)

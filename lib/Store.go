@@ -32,8 +32,8 @@ func NewStorage() *Storage {
 	return a
 }
 
-func (a *Storage) Save(userId string, s Said) error {
-	serialized, err := json.Marshal(s)
+func (a *Storage) Save(userId string, r Reminder) error {
+	serialized, err := json.Marshal(r)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func (a *Storage) Save(userId string, s Said) error {
 	return err
 }
 
-func (a *Storage) Get(userId string) (Chat, error) {
+func (a *Storage) Get(userId string) (Reminders, error) {
 
 	count, err := redis.Int(a.store.Do("LLEN", userId))
 
@@ -55,18 +55,18 @@ func (a *Storage) Get(userId string) (Chat, error) {
 		return nil, err
 	}
 
-	var c Chat
+	var all Reminders
 
 	for i := range items {
-		var s Said
+		var r Reminder
 		serialized, _ := redis.Bytes(items[i], nil)
-		json.Unmarshal(serialized, &s)
-		c = append(c, &s)
+		json.Unmarshal(serialized, &r)
+		all = append(all, &r)
 	}
-	return c, nil
+	return all, nil
 }
 
-func (a *Storage) GetCurrentTodos(userId string) (Chat, error) {
+func (a *Storage) GetCurrentTodos(userId string) (Reminders, error) {
 
 	all, err := a.Get(userId)
 
@@ -74,19 +74,19 @@ func (a *Storage) GetCurrentTodos(userId string) (Chat, error) {
 		return nil, err
 	}
 
-	var c Chat
+	var curr Reminders
 
 	for i := range all {
 
-		if all[i].Remind == true && all[i].RemindComplete.IsZero() {
-			c = append(c, all[i])
+		if all[i].CompletedOn.IsZero() == true {
+			curr = append(curr, all[i])
 		}
 	}
 
-	return c, nil
+	return curr, nil
 }
 
-func (a *Storage) GetCompleteTodos(userId string) (Chat, error) {
+func (a *Storage) GetCompleteTodos(userId string) (Reminders, error) {
 
 	all, err := a.Get(userId)
 
@@ -94,14 +94,14 @@ func (a *Storage) GetCompleteTodos(userId string) (Chat, error) {
 		return nil, err
 	}
 
-	var c Chat
+	var complete Reminders
 
 	for i := range all {
 
-		if all[i].Remind == true && all[i].RemindComplete.IsZero() == false {
-			c = append(c, all[i])
+		if all[i].CompletedOn.IsZero() != true {
+			complete = append(complete, all[i])
 		}
 	}
 
-	return c, nil
+	return complete, nil
 }
