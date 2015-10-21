@@ -45,7 +45,7 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "Don't worry about it being above %s ... we have all been there before! Anyway great work on knowing 👍",
+        "Don't worry about it being above %s ... we have all been there before! Anyway great work on knowing 👍"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
@@ -62,7 +62,7 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "👍 great work %s lets take a moment ... and bask in the glory of that achievement!",
+        "👍 great work %s lets take a moment ... and bask in the glory of that achievement!"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
