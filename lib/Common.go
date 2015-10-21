@@ -95,15 +95,19 @@ func (d *Details) save(msg telebot.Message) {
 		return
 	}
 	log.Println("Saving", msg.Text)
-	err := d.Storage.Save(
-		fmt.Sprintf("%d", d.User.ID),
-		Reminder{FromId: msg.Sender.ID,
-			ToId:       msg.Chat.ID,
-			AddedOn:    msg.Time(),
-			Text:       msg.Text,
-			RemindNext: time.Now().AddDate(0, 0, 7)},
-	)
+
+	r := Reminder{FromId: msg.Sender.ID,
+		ToId:       msg.Chat.ID,
+		AddedOn:    msg.Time(),
+		Text:       msg.Text,
+		RemindNext: time.Now().AddDate(0, 0, 7)}
+
+	log.Println("saving... ", r)
+
+	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
+
 	if err != nil {
+		log.Println(err.Error())
 		log.Println(StorageSaveErr.Error())
 	}
 	return
