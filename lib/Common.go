@@ -17,8 +17,7 @@ const (
 
 type (
 	Reminder struct {
-		FromId      int
-		ToId        int
+		WhoId       int
 		AddedOn     time.Time
 		RemindNext  time.Time
 		CompletedOn time.Time
@@ -96,8 +95,8 @@ func (d *Details) save(msg telebot.Message) {
 	}
 	log.Println("Saving", msg.Text)
 
-	r := Reminder{FromId: msg.Sender.ID,
-		ToId:       msg.Chat.ID,
+	r := Reminder{
+		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
 		RemindNext: time.Now().AddDate(0, 0, 7)}
@@ -160,14 +159,12 @@ func (d *Details) saveReminder(msg telebot.Message) error {
 	}
 	what := words[msg_pos]
 
-	return d.Storage.Save(
-		fmt.Sprintf("%d", d.User.ID),
-		Reminder{
-			FromId:     msg.Sender.ID,
-			ToId:       msg.Chat.ID,
-			AddedOn:    msg.Time(),
-			Text:       what,
-			RemindNext: time.Now().AddDate(0, 0, days),
-		})
+	r := Reminder{
+		WhoId:      msg.Sender.ID,
+		AddedOn:    msg.Time(),
+		Text:       what,
+		RemindNext: time.Now().AddDate(0, 0, days)}
+
+	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
 
 }

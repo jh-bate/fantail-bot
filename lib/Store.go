@@ -10,7 +10,7 @@ import (
 )
 
 var StorageInitErr = errors.New("Storage is not enabled")
-var StorageSaveErr = errors.New("Error trying to save to Storage")
+var StorageSaveErr = errors.New("Error trying to save to storage")
 
 type Storage struct {
 	store redis.Conn
