@@ -101,10 +101,8 @@ func (d *Details) save(msg telebot.Message, tags ...string) {
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
-		Tag:        fmt.Sprintln(tags),
+		Tag:        strings.Join(tags, ","),
 		RemindNext: time.Now().AddDate(0, 0, 7)}
-
-	log.Println("saving... ", r)
 
 	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
 
