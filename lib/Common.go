@@ -21,6 +21,7 @@ type (
 		AddedOn     time.Time
 		RemindNext  time.Time
 		CompletedOn time.Time
+		Tag         string
 		Text        string
 	}
 
@@ -30,6 +31,7 @@ type (
 		RelatesTo struct {
 			Answers []string `json:"answers"`
 			Save    bool     `json:"save"`
+			SaveTag string   `json:"saveTag"`
 		} `json:"relatesTo"`
 		Context         []string `json:"context"`
 		QuestionText    string   `json:"question"`
@@ -88,7 +90,7 @@ func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 	return
 }
 
-func (d *Details) save(msg telebot.Message) {
+func (d *Details) save(msg telebot.Message, tags ...string) {
 	if d.Storage == nil {
 		log.Println(StorageInitErr.Error())
 		return
@@ -99,6 +101,7 @@ func (d *Details) save(msg telebot.Message) {
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
+		Tag:        fmt.Sprintln(tags),
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 
 	log.Println("saving... ", r)
@@ -122,7 +125,7 @@ func hasSubmisson(txt string, cmds ...string) bool {
 	if isCmd(txt, cmds...) {
 		for i := range cmds {
 			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
-				log.Println("Check if submisson", txt)
+				//log.Println("Check if submisson", txt)
 				return true
 			}
 		}
@@ -131,7 +134,7 @@ func hasSubmisson(txt string, cmds ...string) bool {
 }
 
 func isCmd(txt string, cmds ...string) bool {
-	log.Println("Check if cmd", txt)
+	//log.Println("Check if cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true
@@ -163,6 +166,7 @@ func (d *Details) saveReminder(msg telebot.Message) error {
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       what,
+		Tag:        remind_cmd,
 		RemindNext: time.Now().AddDate(0, 0, days)}
 
 	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)

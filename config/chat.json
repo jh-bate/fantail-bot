@@ -22,7 +22,8 @@
           "Exercising",
           "Life and stuff"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "LAST_DOING"
       },
       "context": [
         "Thanks for that %s!"
@@ -40,7 +41,8 @@
         "answers": [
           "Above where I want it"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "LAST_BG"
       },
       "context": [
         "Don't worry about it being above %s ...",
@@ -58,7 +60,8 @@
         "answers": [
           "About where I want it"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "LAST_BG"
       },
       "context": [
         "👍 great work %s",
@@ -76,7 +79,8 @@
         "answers": [
           "Below where I want it"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "LAST_BG"
       },
       "context": [
         "Hey %s, hope your feeling `back together` now.",
@@ -94,11 +98,11 @@
         "answers": [
           "Ahhh ... I don't know"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "LAST_BG"
       },
       "context": [
-        "No worries %s",
-        "Its hard to know your BG all the time aye!"
+        "No worries %s, its hard to know your BG all the time aye!"
       ],
       "question": "Maybe time to do a BG though?",
       "answers": [
@@ -110,7 +114,8 @@
         "answers": [
           "Yeah maybe :)"
         ],
-        "save": false
+        "save": false,
+        "saveTag": ""
       },
       "context": [
         "Nice!"
@@ -126,16 +131,16 @@
         "answers": [
           "Yeah might do"
         ],
-        "save": true
+        "save": true,
+        "saveTag": "MORE"
       },
       "context": [
         "We aim to help 😃"
       ],
       "question": "Your options are",
       "answers": [
-        "/ask [a question]",
-        "/tell [us something important to you]",
-        "/help [you wish you had]",
+        "/say [what you want to say]",
+        "/remind me in <days> to <message>",
         "All good actually"
       ]
     },
@@ -145,7 +150,8 @@
           "All good actually",
           "No thanks"
         ],
-        "save": false
+        "save": false,
+        "saveTag": ""
       },
       "context": [
         "Thanks for that %s"

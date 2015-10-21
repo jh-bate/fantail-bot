@@ -10,8 +10,8 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-//const chat_cmd, ask_cmd, tell_cmd, help_cmd = "/chat", "/ask", "/tell", "/help"
 const chat_cmd, say_cmd, remind_cmd = "/chat", "/say", "/remind"
+const tag_separator = "."
 
 type QProcess struct {
 	Details *Details
@@ -48,7 +48,7 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 	this.next = nil
 
 	if hasSubmisson(msg.Text, say_cmd) {
-		this.Details.save(msg)
+		this.Details.save(msg, say_cmd)
 		langFile := strings.SplitAfter(msg.Text, "/")[1]
 		langFile = strings.Fields(langFile)[0]
 		log.Println("loading ...", langFile)
@@ -72,7 +72,7 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
-						this.Details.save(msg)
+						this.Details.save(msg, chat_cmd, tag_separator, this.lang.questions[i].RelatesTo.SaveTag)
 					}
 					this.next = this.lang.questions[i]
 					return this
