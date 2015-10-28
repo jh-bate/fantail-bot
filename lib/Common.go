@@ -1,10 +1,8 @@
 package lib
 
 import (
-	"errors"
 	"fmt"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 
@@ -16,17 +14,6 @@ const (
 )
 
 type (
-	Reminder struct {
-		WhoId       int
-		AddedOn     time.Time
-		RemindNext  time.Time
-		CompletedOn time.Time
-		Tag         string
-		Text        string
-	}
-
-	Reminders []*Reminder
-
 	Question struct {
 		RelatesTo struct {
 			Answers []string `json:"answers"`
@@ -52,19 +39,6 @@ type (
 
 	Keyboard [][]string
 )
-
-func (this *Reminder) RemindToday() bool {
-	today := time.Now()
-
-	return this.RemindNext.Year() == today.Year() &&
-		this.RemindNext.YearDay() == today.YearDay()
-}
-
-func (this *Reminder) SetNextReminder() {
-	today := time.Now()
-	this.RemindNext = today.AddDate(0, 0, 7)
-	return
-}
 
 func (d *Details) send(msg string) {
 	d.takeThoughtfulPause()
@@ -110,14 +84,7 @@ func (d *Details) save(msg telebot.Message, tags ...string) {
 	}
 	log.Println("Saving", msg.Text)
 
-	r := Reminder{
-		WhoId:      msg.Sender.ID,
-		AddedOn:    msg.Time(),
-		Text:       msg.Text,
-		Tag:        strings.Join(tags, ","),
-		RemindNext: time.Now().AddDate(0, 0, 7)}
-
-	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
+	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), *NewNote(msg, tags...))
 
 	if err != nil {
 		log.Println(err.Error())
@@ -136,7 +103,6 @@ func hasSubmisson(txt string, cmds ...string) bool {
 	if isCmd(txt, cmds...) {
 		for i := range cmds {
 			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
-				//log.Println("Check if submisson", txt)
 				return true
 			}
 		}
@@ -145,7 +111,6 @@ func hasSubmisson(txt string, cmds ...string) bool {
 }
 
 func isCmd(txt string, cmds ...string) bool {
-	//log.Println("Check if cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true
@@ -154,32 +119,18 @@ func isCmd(txt string, cmds ...string) bool {
 	return false
 }
 
-func (d *Details) saveReminder(msg telebot.Message) error {
-
-	const remind_pos, me_pos, in_pos, time_pos, to_pos, msg_pos = 0, 1, 2, 3, 4, 5
-	const remind, me, in, to = "/remind", "me", "in", "to"
-	words := strings.Fields(msg.Text)
-
-	if strings.ToLower(words[remind_pos]) != remind ||
-		strings.ToLower(words[me_pos]) != me ||
-		strings.ToLower(words[in_pos]) != in ||
-		strings.ToLower(words[to_pos]) != to {
-		return errors.New("format is /remind me to <days> do <msg>")
-	}
-
-	days, err := strconv.Atoi(words[time_pos])
+func (d *Details) saveAsReminder(msg telebot.Message) error {
+	r, err := NewReminderNote(msg)
 	if err != nil {
 		return err
 	}
-	what := words[msg_pos]
+	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), *r)
+}
 
-	r := Reminder{
-		WhoId:      msg.Sender.ID,
-		AddedOn:    msg.Time(),
-		Text:       what,
-		Tag:        remind_cmd,
-		RemindNext: time.Now().AddDate(0, 0, days)}
-
-	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
-
+func (d *Details) getReminders(userId string) Notes {
+	all, err := d.Storage.Get(userId)
+	if err == nil {
+		return all.FilterReminders()
+	}
+	return Notes{}
 }

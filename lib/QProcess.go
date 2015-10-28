@@ -31,31 +31,20 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 	}
 }
 
-func (this *QProcess) showReminders() *QProcess {
-	reminders, err := this.Details.Storage.GetReminders(fmt.Sprintf("%d", this.Details.User.ID))
-	if err != nil {
-		log.Println("Error trying to get users reminders", err.Error())
-	} else {
-
-		for i := range reminders {
-			if reminders[i].RemindToday() {
-				this.Details.send(reminders[i].Text)
-				reminders[i].SetNextReminder()
-				this.Details.Storage.Save(fmt.Sprintf("%d", this.Details.User.ID), *reminders[i])
-			}
-		}
-	}
-	return this
-}
-
 func (this *QProcess) quickWin(msg telebot.Message) *QProcess {
 
 	if hasSubmisson(msg.Text, remind_cmd) {
 		log.Println("making submisson ", msg.Text)
-		this.Details.saveReminder(msg)
+		this.Details.saveAsReminder(msg)
 	} else if strings.Contains(msg.Text, show_cmd) {
 		log.Println("showing reminders ", msg.Text)
-		this.showReminders()
+		r := this.Details.getReminders(fmt.Sprintf("%d", this.Details.User.ID))
+		for i := range r {
+			if r[i].RemindToday() {
+				this.Details.send(r[i].Text)
+
+			}
+		}
 	}
 	return this
 }

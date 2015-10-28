@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/garyburd/redigo/redis"
 )
@@ -33,8 +32,8 @@ func NewStorage() *Storage {
 	return a
 }
 
-func (a *Storage) Save(userId string, r Reminder) error {
-	serialized, err := json.Marshal(r)
+func (a *Storage) Save(userId string, n Note) error {
+	serialized, err := json.Marshal(n)
 	if err != nil {
 		return err
 	}
@@ -42,7 +41,7 @@ func (a *Storage) Save(userId string, r Reminder) error {
 	return err
 }
 
-func (a *Storage) Get(userId string) (Reminders, error) {
+func (a *Storage) Get(userId string) (Notes, error) {
 
 	count, err := redis.Int(a.store.Do("LLEN", userId))
 
@@ -56,72 +55,13 @@ func (a *Storage) Get(userId string) (Reminders, error) {
 		return nil, err
 	}
 
-	var all Reminders
+	var all Notes
 
 	for i := range items {
-		var r Reminder
+		var n Note
 		serialized, _ := redis.Bytes(items[i], nil)
-		json.Unmarshal(serialized, &r)
-		all = append(all, &r)
+		json.Unmarshal(serialized, &n)
+		all = append(all, &n)
 	}
 	return all, nil
-}
-
-func (a *Storage) GetReminders(userId string) (Reminders, error) {
-
-	all, err := a.Get(userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var curr Reminders
-
-	for i := range all {
-		if all[i].CompletedOn.IsZero() && strings.Contains(all[i].Tag, remind_cmd) {
-			curr = append(curr, all[i])
-		}
-	}
-
-	return curr, nil
-}
-
-func (a *Storage) GetCurrentTodos(userId string) (Reminders, error) {
-
-	all, err := a.Get(userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var curr Reminders
-
-	for i := range all {
-
-		if all[i].CompletedOn.IsZero() == true {
-			curr = append(curr, all[i])
-		}
-	}
-
-	return curr, nil
-}
-
-func (a *Storage) GetCompleteTodos(userId string) (Reminders, error) {
-
-	all, err := a.Get(userId)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var complete Reminders
-
-	for i := range all {
-
-		if all[i].CompletedOn.IsZero() != true {
-			complete = append(complete, all[i])
-		}
-	}
-
-	return complete, nil
 }
