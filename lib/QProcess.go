@@ -11,6 +11,7 @@ import (
 )
 
 const chat_cmd, remind_cmd, show_cmd, free_form = "/chat", "/remind", "/show", "/free"
+const default_script = "default"
 
 type QProcess struct {
 	Details *Details
@@ -27,7 +28,7 @@ func NewQProcess(d *Details) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-		this.quickWin(msg).loadScript(msg).findNextQuestion(msg).andAsk()
+		this.quickWin(msg).determineScript(msg).findNextQuestion(msg).andAsk()
 	}
 }
 
@@ -49,59 +50,70 @@ func (this *QProcess) quickWin(msg telebot.Message) *QProcess {
 	return this
 }
 
-func (this *QProcess) loadScript(msg telebot.Message) *QProcess {
+func (this *QProcess) loadScript(scriptName string) {
+	file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
+	if err != nil {
+		log.Panic("could not load QandA language file ", err.Error())
+	}
+	err = json.NewDecoder(file).Decode(&this.lang)
+	if err != nil {
+		log.Panic("could not decode QandA ", err.Error())
+	}
+}
 
-	scriptName := "default"
+func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, remind_cmd, chat_cmd, show_cmd) {
 		words := strings.Fields(msg.Text)
-		scriptName = strings.SplitAfter(words[0], "/")[1]
-
-		file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
-		if err != nil {
-			log.Panic("could not load QandA language file ", err.Error())
-		}
-		err = json.NewDecoder(file).Decode(&this.lang)
-		if err != nil {
-			log.Panic("could not decode QandA ", err.Error())
-		}
+		scriptName := strings.SplitAfter(words[0], "/")[1]
+		this.loadScript(scriptName)
 	}
 
 	return this
 }
 
+func (this *QProcess) noCurrentScript() bool {
+	log.Println("check if running a script ....")
+	if this.lang.questions == nil {
+
+		log.Println("no script")
+		return true
+	}
+	return false
+}
+
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if isCmd(msg.Text, remind_cmd, chat_cmd) {
+	if isCmd(msg.Text, remind_cmd, chat_cmd) || hasSubmisson(msg.Text, remind_cmd) {
 		//start at the beginning
 		this.next = this.lang.questions[0]
 		return this
-	} else if hasSubmisson(msg.Text, remind_cmd) {
-		//straight to the end
-		this.next = this.lang.questions[len(this.lang.questions)-1]
+	} else if this.noCurrentScript() {
+		log.Println("unknown so will save as", free_form)
+		this.Details.save(msg, free_form)
+		//load default and start at the beginning
+		this.loadScript(default_script)
+		this.next = this.lang.questions[0]
 		return this
-	}
+	} else {
 
-	//find the next question
-	for i := range this.lang.questions {
-		log.Println("looking next q ...")
-		for a := range this.lang.questions[i].RelatesTo.Answers {
-			if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
-				//was the answer a remainder to save?
-				if this.lang.questions[i].RelatesTo.Save {
-					this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
+		//find the next question
+		for i := range this.lang.questions {
+			log.Println("looking next q ...")
+			for a := range this.lang.questions[i].RelatesTo.Answers {
+				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
+					//was the answer a remainder to save?
+					if this.lang.questions[i].RelatesTo.Save {
+						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
+					}
+					this.next = this.lang.questions[i]
+					//all done
+					return this
 				}
-				this.next = this.lang.questions[i]
-				//all done
-				return this
 			}
 		}
 	}
-
-	//not sure so we will just save it
-	log.Println("unknown so will save as", free_form)
-	this.Details.save(msg, free_form)
 
 	return this
 }
