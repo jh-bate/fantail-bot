@@ -10,7 +10,7 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const chat_cmd, say_cmd, remind_cmd, show_cmd = "/chat", "/say", "/remind", "/show"
+const chat_cmd, remind_cmd, show_cmd, free_form = "/chat", "/remind", "/show", "/free"
 
 type QProcess struct {
 	Details *Details
@@ -27,12 +27,12 @@ func NewQProcess(d *Details) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-		this.saveIncomming(msg).loadScript(msg).findNextQuestion(msg).andAsk()
+		this.quickWin(msg).loadScript(msg).findNextQuestion(msg).andAsk()
 	}
 }
 
 func (this *QProcess) showReminders() *QProcess {
-	reminders, err := this.Details.Storage.GetCurrentTodos(fmt.Sprintf("%d", this.Details.User.ID))
+	reminders, err := this.Details.Storage.GetReminders(fmt.Sprintf("%d", this.Details.User.ID))
 	if err != nil {
 		log.Println("Error trying to get users reminders", err.Error())
 	} else {
@@ -48,15 +48,11 @@ func (this *QProcess) showReminders() *QProcess {
 	return this
 }
 
-func (this *QProcess) saveIncomming(msg telebot.Message) *QProcess {
+func (this *QProcess) quickWin(msg telebot.Message) *QProcess {
 
-	if hasSubmisson(msg.Text, say_cmd, remind_cmd) {
+	if hasSubmisson(msg.Text, remind_cmd) {
 		log.Println("making submisson ", msg.Text)
-		if strings.Contains(msg.Text, remind_cmd) {
-			this.Details.saveReminder(msg)
-		} else {
-			this.Details.save(msg, say_cmd)
-		}
+		this.Details.saveReminder(msg)
 	} else if strings.Contains(msg.Text, show_cmd) {
 		log.Println("showing reminders ", msg.Text)
 		this.showReminders()
@@ -66,30 +62,33 @@ func (this *QProcess) saveIncomming(msg telebot.Message) *QProcess {
 
 func (this *QProcess) loadScript(msg telebot.Message) *QProcess {
 
-	if isCmd(msg.Text, say_cmd, remind_cmd, chat_cmd, show_cmd) {
-		words := strings.Fields(msg.Text)
-		scriptName := strings.SplitAfter(words[0], "/")[1]
+	scriptName := "default"
 
-		file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
-		if err != nil {
-			log.Panic("could not load QandA language file ", err.Error())
-		}
-		err = json.NewDecoder(file).Decode(&this.lang)
-		if err != nil {
-			log.Panic("could not decode QandA ", err.Error())
-		}
+	if isCmd(msg.Text, remind_cmd, chat_cmd, show_cmd) {
+		words := strings.Fields(msg.Text)
+		scriptName = strings.SplitAfter(words[0], "/")[1]
 	}
+
+	file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
+	if err != nil {
+		log.Panic("could not load QandA language file ", err.Error())
+	}
+	err = json.NewDecoder(file).Decode(&this.lang)
+	if err != nil {
+		log.Panic("could not decode QandA ", err.Error())
+	}
+
 	return this
 }
 
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if isCmd(msg.Text, say_cmd, remind_cmd, chat_cmd) {
+	if isCmd(msg.Text, remind_cmd, chat_cmd) {
 		//start at the beginning
 		this.next = this.lang.questions[0]
 		return this
-	} else if hasSubmisson(msg.Text, say_cmd, remind_cmd) {
+	} else if hasSubmisson(msg.Text, remind_cmd) {
 		//straight to the end
 		this.next = this.lang.questions[len(this.lang.questions)-1]
 		return this
@@ -109,55 +108,13 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 			}
 		}
 	}
+
+	//not sure so we will just save it
+	log.Println("unknown so will save as", free_form)
+	this.Details.save(msg, free_form)
+
 	return this
 }
-
-/*func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
-	this.next = nil
-
-	if hasSubmisson(msg.Text, say_cmd) {
-		this.Details.save(msg, say_cmd)
-		langFile := strings.SplitAfter(say_cmd, "/")[1]
-		langFile = strings.Fields(langFile)[0]
-		log.Println("loading ...", langFile)
-		this.loadLanguage(langFile)
-		this.next = this.lang.questions[len(this.lang.questions)-1]
-	} else if hasSubmisson(msg.Text, remind_cmd) {
-		this.Details.saveReminder(msg)
-		langFile := strings.SplitAfter(remind_cmd, "/")[1]
-		langFile = strings.Fields(langFile)[0]
-		log.Println("loading ...", langFile)
-		this.loadLanguage(langFile)
-		this.next = this.lang.questions[len(this.lang.questions)-1]
-	} else if isCmd(msg.Text, say_cmd, remind_cmd, chat_cmd) {
-
-		langFile := strings.Fields(msg.Text)[0]
-		langFile = strings.SplitAfter(langFile, "/")[1]
-		log.Println("loading ...", langFile)
-		this.loadLanguage(langFile)
-		this.next = this.lang.questions[0]
-	} else if isCmd(msg.Text, show_cmd) {
-		this.showReminders()
-		langFile := strings.SplitAfter(msg.Text, "/")[1]
-		log.Println("loading ...", langFile)
-		this.loadLanguage(langFile)
-		this.next = this.lang.questions[0]
-	} else {
-		for i := range this.lang.questions {
-			for a := range this.lang.questions[i].RelatesTo.Answers {
-				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
-					//was the answer a remainder to save?
-					if this.lang.questions[i].RelatesTo.Save {
-						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
-					}
-					this.next = this.lang.questions[i]
-					return this
-				}
-			}
-		}
-	}
-	return this
-}*/
 
 func (this *QProcess) makeKeyboard() Keyboard {
 	keyboard := Keyboard{}

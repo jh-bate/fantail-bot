@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/garyburd/redigo/redis"
 )
@@ -64,6 +65,25 @@ func (a *Storage) Get(userId string) (Reminders, error) {
 		all = append(all, &r)
 	}
 	return all, nil
+}
+
+func (a *Storage) GetReminders(userId string) (Reminders, error) {
+
+	all, err := a.Get(userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var curr Reminders
+
+	for i := range all {
+		if all[i].CompletedOn.IsZero() && strings.Contains(all[i].Tag, remind_cmd) {
+			curr = append(curr, all[i])
+		}
+	}
+
+	return curr, nil
 }
 
 func (a *Storage) GetCurrentTodos(userId string) (Reminders, error) {

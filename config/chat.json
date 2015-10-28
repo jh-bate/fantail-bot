@@ -28,19 +28,16 @@
       "context": [],
       "question": "And what was your last BG?",
       "answers": [
-        "😡 Super High",
-        "😠 High",
-        "😄 Perfect",
-        "😮 Low",
-        "😵 Super Low",
-        "😏 Ahhh ... I don't know"
+        "😠  Above where I want it",
+        "😄  About where I want it",
+        "😮  Below where I want it",
+        "😏  Ahhh ... I don't know"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "😡 Super High",
-          "😠 High"
+          "😠  Above where I want it",
         ],
         "save": true,
         "saveTag": "LAST_BG"
@@ -60,7 +57,7 @@
     {
       "relatesTo": {
         "answers": [
-          "😄 Perfect"
+          "😄  About where I want it",
         ],
         "save": true,
         "saveTag": "LAST_BG"
@@ -79,8 +76,7 @@
     {
       "relatesTo": {
         "answers": [
-          "😮 Low",
-          "😵 Super Low"
+          "😮  Below where I want it",
         ],
         "save": true,
         "saveTag": "LAST_BG"
@@ -99,7 +95,7 @@
     {
       "relatesTo": {
         "answers": [
-          "😏 Ahhh ... I don't know"
+          "😏  Ahhh ... I don't know"
         ],
         "save": true,
         "saveTag": "LAST_BG"
