@@ -80,7 +80,7 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if this.done {
+	if this.done || this.lang.questions == nil {
 		log.Println("unknown so will save as", free_form)
 		this.Details.save(msg, free_form)
 		//load default and start at the beginning
