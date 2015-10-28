@@ -65,14 +65,14 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 
 	if hasSubmisson(msg.Text, say_cmd) {
 		this.Details.save(msg, say_cmd)
-		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		langFile := strings.SplitAfter(say_cmd, "/")[1]
 		langFile = strings.Fields(langFile)[0]
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)
 		this.next = this.lang.questions[len(this.lang.questions)-1]
 	} else if hasSubmisson(msg.Text, remind_cmd) {
 		this.Details.saveReminder(msg)
-		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		langFile := strings.SplitAfter(remind_cmd, "/")[1]
 		langFile = strings.Fields(langFile)[0]
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)
