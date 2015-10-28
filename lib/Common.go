@@ -25,6 +25,12 @@ type (
 		Text        string
 	}
 
+	Check struct {
+		RemindYes   string   `json:"remindNo"`
+		RemindNo    string   `json:"remindYes"`
+		RemindAgain []string `json:"remindQuestion"`
+	}
+
 	Reminders []*Reminder
 
 	Question struct {
@@ -52,6 +58,19 @@ type (
 
 	Keyboard [][]string
 )
+
+func (this *Reminder) RemindToday() bool {
+	today := time.Now()
+
+	return this.RemindNext.Year() == today.Year() &&
+		this.RemindNext.YearDay() == today.YearDay()
+}
+
+func (this *Reminder) SetNextReminder() {
+	today := time.Now()
+	this.RemindNext = today.AddDate(0, 0, 7)
+	return
+}
 
 func (d *Details) send(msg string) {
 	d.takeThoughtfulPause()
@@ -97,7 +116,7 @@ func (d *Details) save(msg telebot.Message, tags ...string) {
 	}
 	log.Println("Saving", msg.Text)
 
-	r := Reminder{
+	r := &Reminder{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
@@ -160,7 +179,7 @@ func (d *Details) saveReminder(msg telebot.Message) error {
 	}
 	what := words[msg_pos]
 
-	r := Reminder{
+	r := &Reminder{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       what,

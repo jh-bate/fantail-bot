@@ -25,98 +25,89 @@
         "save": true,
         "saveTag": "LAST_DOING"
       },
-      "context": [],
+      "context": [
+        "Thanks for that %s!"
+      ],
       "question": "And what was your last BG?",
       "answers": [
-        "😡 Super High",
-        "😠 High",
-        "😄 Perfect",
-        "😮 Low",
-        "😵 Super Low",
-        "😏 Ahhh ... I don't know"
+        "Above where I want it",
+        "About where I want it",
+        "Below where I want it",
+        "Ahhh ... I don't know"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "😡 Super High",
-          "😠 High"
+          "Above where I want it"
         ],
         "save": true,
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩",
-        "well %s no one enjoys that aye!",
-        "but do remember we have all been there before!",
-        " 👍"
+        "Don't worry about it being above %s ... we have all been there before! Anyway great work on knowing 👍"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I do",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "😄 Perfect"
+          "About where I want it"
         ],
         "save": true,
         "saveTag": "LAST_BG"
       },
       "context": [
-        "🙌",
-        "great work %s lets take a moment ... ",
-        "and bask in the glory of that achievement! 🎉🎉"
+        "👍 great work %s lets take a moment ... and bask in the glory of that achievement!"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I do",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "😮 Low",
-          "😵 Super Low"
+          "Below where I want it"
         ],
         "save": true,
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩",
-        "That probably sums up that experience aye %s!",
-        "Do remember we wall have them and your doing a great job 👍."
+        "Hey %s, hope your feeling `back together` now. Lows can really suck though can't they!",
+        "Remember though your doing a good job 👍"
       ],
       "question": "Is there anything else?",
       "answers": [
-        "Yeah I do",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "😏 Ahhh ... I don't know"
+          "Ahhh ... I don't know"
         ],
         "save": true,
         "saveTag": "LAST_BG"
       },
       "context": [
-        "😉",
-        "No worries %s we have all been there!!"
+        "No worries %s, its hard to know your BG all the time aye!"
       ],
-      "question": "Maybe it is time to do a BG though?",
+      "question": "Maybe time to do a BG though?",
       "answers": [
-        "Yeah maybe 😀"
+        "Yeah maybe :)"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "Yeah maybe 😀"
+          "Yeah maybe :)"
         ],
         "save": false,
         "saveTag": ""
@@ -126,31 +117,33 @@
       ],
       "question": "Anything that we could help with?",
       "answers": [
-        "Yeah there is",
-        "Nah all good thanks"
+        "Yeah might do",
+        "No thanks"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "Yeah I do",
-          "Yeah there is"
+          "Yeah might do"
         ],
         "save": true,
         "saveTag": "MORE"
       },
-      "context": [],
-      "question": "What would you like to do?",
+      "context": [
+        "We aim to help 😃"
+      ],
+      "question": "Your options are",
       "answers": [
         "/say [what you want to say]",
         "/remind me in <days> to <message>",
-        "Nah all good thanks"
+        "All good actually"
       ]
     },
     {
       "relatesTo": {
         "answers": [
-          "Nah all good thanks"
+          "All good actually",
+          "No thanks"
         ],
         "save": false,
         "saveTag": ""
@@ -158,7 +151,7 @@
       "context": [
         "Thanks for that %s"
       ],
-      "question": "👋 bye",
+      "question": "Chat again later",
       "answers": [
         "See you!"
       ]

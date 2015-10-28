@@ -10,7 +10,7 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const chat_cmd, say_cmd, remind_cmd = "/chat", "/say", "/remind"
+const chat_cmd, say_cmd, remind_cmd, show_cmd = "/chat", "/say", "/remind", "/show"
 
 type QProcess struct {
 	Details *Details
@@ -29,6 +29,23 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 		this.Details.User = msg.Chat
 		this.saveAndFindNext(msg).andAsk()
 	}
+}
+
+func (this *QProcess) showReminders() *QProcess {
+	reminders, err := this.Details.Storage.GetCurrentTodos(fmt.Sprintf("%d", this.Details.User.ID))
+	if err != nil {
+		log.Println("Error trying to get users reminders", err.Error())
+	} else {
+
+		for i := range reminders {
+			if reminders[i].RemindToday() {
+				this.Details.send(reminders[i].Text)
+				reminders[i].SetNextReminder()
+				this.Details.Storage.Save(fmt.Sprintf("%d", this.Details.User.ID), reminders[i])
+			}
+		}
+	}
+	return this
 }
 
 func (this *QProcess) loadLanguage(name string) {
@@ -65,6 +82,12 @@ func (this *QProcess) saveAndFindNext(msg telebot.Message) *QProcess {
 		log.Println("loading ...", langFile)
 		this.loadLanguage(langFile)
 		this.next = this.lang.questions[0]
+	} else if isCmd(msg.Text, show_cmd) {
+		this.showReminders()
+		langFile := strings.SplitAfter(msg.Text, "/")[1]
+		log.Println("loading ...", langFile)
+		this.loadLanguage(langFile)
+		this.next = this.lang.questions[0]
 	} else {
 		for i := range this.lang.questions {
 			for a := range this.lang.questions[i].RelatesTo.Answers {
@@ -92,7 +115,6 @@ func (this *QProcess) makeKeyboard() Keyboard {
 
 func (this *QProcess) andAsk() {
 	if this.next != nil {
-
 		//context
 		for i := range this.next.Context {
 			this.Details.send(this.next.Context[i])
