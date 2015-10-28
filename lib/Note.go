@@ -69,8 +69,8 @@ func (this Notes) FilterNotes() Notes {
 	return n
 }
 
-func NewNote(msg telebot.Message, tags ...string) *Note {
-	return &Note{
+func NewNote(msg telebot.Message, tags ...string) Note {
+	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
@@ -78,7 +78,7 @@ func NewNote(msg telebot.Message, tags ...string) *Note {
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 }
 
-func NewReminderNote(msg telebot.Message) (*Note, error) {
+func NewReminderNote(msg telebot.Message) (Note, error) {
 	const remind_pos, me_pos, in_pos, time_pos, to_pos, msg_pos = 0, 1, 2, 3, 4, 5
 	const remind, me, in, to = "/remind", "me", "in", "to"
 	words := strings.Fields(msg.Text)
@@ -87,16 +87,16 @@ func NewReminderNote(msg telebot.Message) (*Note, error) {
 		strings.ToLower(words[me_pos]) != me ||
 		strings.ToLower(words[in_pos]) != in ||
 		strings.ToLower(words[to_pos]) != to {
-		return nil, errors.New("format is /remind me to <days> do <msg>")
+		return Note{}, errors.New("format is /remind me to <days> do <msg>")
 	}
 
 	days, err := strconv.Atoi(words[time_pos])
 	if err != nil {
-		return nil, err
+		return Note{}, err
 	}
 	what := words[msg_pos]
 
-	return &Note{
+	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       what,

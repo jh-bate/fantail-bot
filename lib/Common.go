@@ -77,22 +77,6 @@ func (d *Details) sendWithKeyboard(msg string, kb Keyboard) {
 	return
 }
 
-func (d *Details) save(msg telebot.Message, tags ...string) {
-	if d.Storage == nil {
-		log.Println(StorageInitErr.Error())
-		return
-	}
-	log.Println("Saving", msg.Text)
-
-	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), *NewNote(msg, tags...))
-
-	if err != nil {
-		log.Println(err.Error())
-		log.Println(StorageSaveErr.Error())
-	}
-	return
-}
-
 func (d *Details) takeThoughtfulPause() {
 	d.Bot.SendChatAction(d.User, typing_action)
 	time.Sleep(1 * time.Second)
@@ -124,7 +108,23 @@ func (d *Details) saveAsReminder(msg telebot.Message) error {
 	if err != nil {
 		return err
 	}
-	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), *r)
+	return d.Storage.Save(fmt.Sprintf("%d", d.User.ID), r)
+}
+
+func (d *Details) save(msg telebot.Message, tags ...string) {
+	if d.Storage == nil {
+		log.Println(StorageInitErr.Error())
+		return
+	}
+	log.Println("Saving", msg.Text)
+
+	err := d.Storage.Save(fmt.Sprintf("%d", d.User.ID), NewNote(msg, tags...))
+
+	if err != nil {
+		log.Println(err.Error())
+		log.Println(StorageSaveErr.Error())
+	}
+	return
 }
 
 func (d *Details) getReminders(userId string) Notes {
