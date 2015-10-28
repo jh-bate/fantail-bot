@@ -10,8 +10,12 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const chat_cmd, remind_cmd, show_cmd, free_form = "/chat", "/remind", "/show", "/free"
-const default_script = "default"
+const (
+	chat_cmd, remind_cmd, show_cmd = "/chat", "/remind", "/show"
+
+	free_form      = "JUST_SAYING"
+	default_script = "default"
+)
 
 type QProcess struct {
 	Details *Details
@@ -19,6 +23,7 @@ type QProcess struct {
 		questions `json:"QandA"`
 	}
 	next *Question
+	done bool
 }
 
 func NewQProcess(d *Details) *QProcess {
@@ -72,32 +77,23 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 	return this
 }
 
-func (this *QProcess) noCurrentScript() bool {
-	log.Println("check if running a script ....")
-	if this.lang.questions == nil {
-
-		log.Println("no script")
-		return true
-	}
-	return false
-}
-
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if isCmd(msg.Text, remind_cmd, chat_cmd) || hasSubmisson(msg.Text, remind_cmd) {
-		//start at the beginning
-		this.next = this.lang.questions[0]
-		return this
-	} else if this.noCurrentScript() {
+	if this.done {
 		log.Println("unknown so will save as", free_form)
 		this.Details.save(msg, free_form)
 		//load default and start at the beginning
 		this.loadScript(default_script)
 		this.next = this.lang.questions[0]
+		this.done = false
+		return this
+	} else if isCmd(msg.Text, remind_cmd, chat_cmd) || hasSubmisson(msg.Text, remind_cmd) {
+		//start at the beginning
+		this.next = this.lang.questions[0]
+		this.done = false
 		return this
 	} else {
-
 		//find the next question
 		for i := range this.lang.questions {
 			log.Println("looking next q ...")
@@ -108,13 +104,14 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
 					}
 					this.next = this.lang.questions[i]
-					//all done
+					this.done = false
 					return this
 				}
 			}
 		}
 	}
-
+	log.Println("looks like we are all done!")
+	this.done = true
 	return this
 }
 
