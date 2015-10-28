@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"time"
 
 	"github.com/garyburd/redigo/redis"
 )
@@ -13,7 +14,7 @@ var StorageInitErr = errors.New("Storage is not enabled")
 var StorageSaveErr = errors.New("Error trying to save to storage")
 
 type Storage struct {
-	store redis.Conn
+	store *redis.Pool
 }
 
 func NewStorage() *Storage {
@@ -24,32 +25,51 @@ func NewStorage() *Storage {
 		log.Fatal("$REDIS_URL must be set")
 	}
 
-	c, err := redis.DialURL(redisUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-	a.store = c
+	a.store = newPool()
 	return a
 }
 
+func newPool() *redis.Pool {
+
+	redisUrl := os.Getenv("REDIS_URL")
+
+	if redisUrl == "" {
+		log.Fatal("$REDIS_URL must be set")
+	}
+	return &redis.Pool{
+		MaxIdle:     3,
+		IdleTimeout: 240 * time.Second,
+		Dial: func() (redis.Conn, error) {
+			c, err := redis.DialURL(redisUrl)
+			if err != nil {
+				return nil, err
+			}
+			return c, err
+		},
+	}
+}
+
 func (a *Storage) Save(userId string, n Note) error {
+
 	serialized, err := json.Marshal(n)
 	if err != nil {
 		return err
 	}
-	_, err = a.store.Do("LPUSH", userId, serialized)
+	_, err = a.store.Get().Do("LPUSH", userId, serialized)
 	return err
 }
 
 func (a *Storage) Get(userId string) (Notes, error) {
 
-	count, err := redis.Int(a.store.Do("LLEN", userId))
+	c := a.store.Get()
+
+	count, err := redis.Int(c.Do("LLEN", userId))
 
 	if err != nil {
 		return nil, err
 	}
 
-	items, err := redis.Values(a.store.Do("LRANGE", userId, 0, count))
+	items, err := redis.Values(c.Do("LRANGE", userId, 0, count))
 
 	if err != nil {
 		return nil, err
