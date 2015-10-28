@@ -32,7 +32,7 @@ func NewStorage() *Storage {
 	return a
 }
 
-func (a *Storage) Save(userId string, r *Reminder) error {
+func (a *Storage) Save(userId string, r Reminder) error {
 	serialized, err := json.Marshal(r)
 	if err != nil {
 		return err

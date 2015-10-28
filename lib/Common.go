@@ -25,12 +25,6 @@ type (
 		Text        string
 	}
 
-	Check struct {
-		RemindYes   string   `json:"remindNo"`
-		RemindNo    string   `json:"remindYes"`
-		RemindAgain []string `json:"remindQuestion"`
-	}
-
 	Reminders []*Reminder
 
 	Question struct {
@@ -116,7 +110,7 @@ func (d *Details) save(msg telebot.Message, tags ...string) {
 	}
 	log.Println("Saving", msg.Text)
 
-	r := &Reminder{
+	r := Reminder{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       msg.Text,
@@ -179,7 +173,7 @@ func (d *Details) saveReminder(msg telebot.Message) error {
 	}
 	what := words[msg_pos]
 
-	r := &Reminder{
+	r := Reminder{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       what,
