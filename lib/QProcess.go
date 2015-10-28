@@ -56,15 +56,15 @@ func (this *QProcess) loadScript(msg telebot.Message) *QProcess {
 	if isCmd(msg.Text, remind_cmd, chat_cmd, show_cmd) {
 		words := strings.Fields(msg.Text)
 		scriptName = strings.SplitAfter(words[0], "/")[1]
-	}
 
-	file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
-	if err != nil {
-		log.Panic("could not load QandA language file ", err.Error())
-	}
-	err = json.NewDecoder(file).Decode(&this.lang)
-	if err != nil {
-		log.Panic("could not decode QandA ", err.Error())
+		file, err := os.Open(fmt.Sprintf("./config/%s.json", scriptName))
+		if err != nil {
+			log.Panic("could not load QandA language file ", err.Error())
+		}
+		err = json.NewDecoder(file).Decode(&this.lang)
+		if err != nil {
+			log.Panic("could not decode QandA ", err.Error())
+		}
 	}
 
 	return this
@@ -85,6 +85,7 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 
 	//find the next question
 	for i := range this.lang.questions {
+		log.Println("looking ...", free_form)
 		for a := range this.lang.questions[i].RelatesTo.Answers {
 			if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 				//was the answer a remainder to save?
