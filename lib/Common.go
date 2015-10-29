@@ -84,6 +84,9 @@ func (d *Details) takeThoughtfulPause() {
 }
 
 func hasSubmisson(txt string, cmds ...string) bool {
+
+	log.Println("check for submisson", txt)
+
 	if isCmd(txt, cmds...) {
 		for i := range cmds {
 			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
@@ -95,6 +98,8 @@ func hasSubmisson(txt string, cmds ...string) bool {
 }
 
 func isCmd(txt string, cmds ...string) bool {
+
+	log.Println("check is cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true
