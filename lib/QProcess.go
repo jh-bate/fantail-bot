@@ -39,10 +39,11 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 
 func (this *QProcess) quickWin(msg telebot.Message) *QProcess {
 
-	if hasSubmisson(msg.Text, remind_cmd) {
+	/*if hasSubmisson(msg.Text, remind_cmd) {
 		log.Println("making submisson ", msg.Text)
 		this.Details.saveAsReminder(msg)
-	} else if isCmd(msg.Text, reminders_cmd) {
+	} else */
+	if isCmd(msg.Text, reminders_cmd) {
 		log.Println("showing reminders ", msg.Text)
 
 		r := this.Details.getReminders(fmt.Sprintf("%d", this.Details.User.ID))
@@ -78,19 +79,18 @@ func (this *QProcess) loadScript(scriptName string) {
 
 func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 
-	if isCmd(msg.Text, remind_cmd, chat_cmd, reminders_cmd, notes_cmd) {
+	if isCmd(msg.Text, chat_cmd, notes_cmd) { //remind_cmd, chat_cmd, reminders_cmd, notes_cmd) {
 		words := strings.Fields(msg.Text)
 		scriptName := strings.SplitAfter(words[0], "/")[1]
 		this.loadScript(scriptName)
 	}
-
 	return this
 }
 
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if this.done || this.lang.questions == nil {
+	/*if this.done || this.lang.questions == nil {
 		log.Println("unknown so will save as", free_form)
 		this.Details.save(msg, free_form)
 		//load default and start at the beginning
@@ -98,14 +98,17 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 		this.next = this.lang.questions[0]
 		this.done = false
 		return this
-	} else if isCmd(msg.Text, remind_cmd, chat_cmd, reminders_cmd, notes_cmd) || hasSubmisson(msg.Text, remind_cmd) {
+	} else */
+	if isCmd(msg.Text, chat_cmd, notes_cmd) { //|| hasSubmisson(msg.Text, remind_cmd) {
 		//start at the beginning
 		this.next = this.lang.questions[0]
-		this.done = false
+		//this.done = false
 		return this
 	} else {
 		//find the next question
+		searched := false
 		for i := range this.lang.questions {
+			searched = true
 			log.Println("looking next q ...")
 			for a := range this.lang.questions[i].RelatesTo.Answers {
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
@@ -114,14 +117,23 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
 					}
 					this.next = this.lang.questions[i]
-					this.done = false
+					//this.done = false
 					return this
 				}
 			}
 		}
+		if !searched {
+			log.Println("was just saying so we are just saving")
+			this.Details.save(msg, free_form)
+			//load default and start at the beginning
+			this.loadScript(default_script)
+			this.next = this.lang.questions[0]
+			//this.done = false
+			return this
+		}
 	}
 	log.Println("looks like we are all done!")
-	this.done = true
+	//this.done = true
 	return this
 }
 
