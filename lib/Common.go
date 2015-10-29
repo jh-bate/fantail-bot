@@ -134,3 +134,11 @@ func (d *Details) getReminders(userId string) Notes {
 	}
 	return Notes{}
 }
+
+func (d *Details) getNotes(userId string) Notes {
+	all, err := d.Storage.Get(userId)
+	if err == nil {
+		return all.FilterNotes()
+	}
+	return Notes{}
+}

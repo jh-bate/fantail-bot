@@ -43,14 +43,12 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩",
-        "well %s no one enjoys that aye!",
-        "but do remember we have all been there before!",
+        "💩 well %s no one enjoys that aye! But do remember we have all been there before!",
         " 👍"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I do",
+        "Yeah there is",
         "Nah all good thanks"
       ]
     },
@@ -64,12 +62,11 @@
       },
       "context": [
         "🙌",
-        "great work %s lets take a moment ... ",
-        "and bask in the glory of that achievement! 🎉🎉"
+        "great work %s lets take a moment ... and bask in the glory of that achievement! 🎉🎉"
       ],
       "question": "Do you have any questions for us?",
       "answers": [
-        "Yeah I do",
+        "Yeah there is",
         "Nah all good thanks"
       ]
     },
@@ -82,13 +79,12 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩",
-        "That probably sums up that experience aye %s!",
-        "Do remember we wall have them and your doing a great job 👍."
+        "💩! That probably sums up that experience aye %s!",
+        "Do remember we all have lows ... your not alone!"
       ],
       "question": "Is there anything else?",
       "answers": [
-        "Yeah I do",
+        "Yeah there is",
         "Nah all good thanks"
       ]
     },
@@ -101,8 +97,7 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "😉",
-        "No worries %s we have all been there!!"
+        "😉 No worries %s we have all been there!!"
       ],
       "question": "Maybe it is time to do a BG though?",
       "answers": [
@@ -129,7 +124,6 @@
     {
       "relatesTo": {
         "answers": [
-          "Yeah I do",
           "Yeah there is"
         ],
         "save": true,
@@ -138,8 +132,9 @@
       "context": [],
       "question": "What would you like to do?",
       "answers": [
-        "/say [what you want to say]",
         "/remind me in <days> to <message>",
+        "/reminders to show them",
+        "/notes to show them",
         "Nah all good thanks"
       ]
     },
