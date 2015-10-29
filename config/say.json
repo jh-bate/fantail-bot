@@ -1,0 +1,14 @@
+{
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [
+        "Hey %s, to say something just type"
+      ],
+      "question": "/say [what you want to say]",
+      "answers": [
+        "OK got it!"
+      ]
+    }
+  ]
+}

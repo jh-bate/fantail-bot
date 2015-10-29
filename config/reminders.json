@@ -3,12 +3,11 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s",
-        "There go your reminders since last time"
+        "Hey %s, those where your reminders since last time"
       ],
-      "question": "See you",
+      "question": "See you, and remember you rock!",
       "answers": [
-        "Cheers!"
+        "Ta, see you!"
       ]
     }
   ]
