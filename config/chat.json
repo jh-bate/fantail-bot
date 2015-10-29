@@ -3,8 +3,7 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s",
-        "Good to see you"
+        "Hey %s, good to see you!"
       ],
       "question": "So what where you last upto?",
       "answers": [
@@ -26,7 +25,7 @@
         "saveTag": "LAST_DOING"
       },
       "context": [],
-      "question": "And what was your last BG?",
+      "question": "And your last BG was?",
       "answers": [
         "😠  Above where I want it",
         "😄  About where I want it",
@@ -46,10 +45,43 @@
         "💩 well %s no one enjoys that aye! But do remember we have all been there before!",
         " 👍"
       ],
-      "question": "Do you have any questions for us?",
+      "question": "Was it a big deal",
       "answers": [
-        "Yeah there is",
-        "Nah all good thanks"
+        "Yeah it was a pain",
+        "Nah just a blip"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Yeah it was a pain"
+        ],
+        "save": true,
+        "saveTag": "BG_PAIN"
+      },
+      "context": [
+        "Ahh stink!",
+        "Do remember though it happens to all of us ..."
+      ],
+      "question": "👋 bye",
+      "answers": [
+        "See you!"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Nah just a blip"
+        ],
+        "save": true,
+        "saveTag": "BG_PAIN"
+      },
+      "context": [
+        "Cool, just wanted to check"
+      ],
+      "question": "👋 bye",
+      "answers": [
+        "See you!"
       ]
     },
     {
@@ -64,10 +96,9 @@
         "🙌",
         "great work %s lets take a moment ... and bask in the glory of that achievement! 🎉🎉"
       ],
-      "question": "Do you have any questions for us?",
+      "question": "Well - back to it then 👋",
       "answers": [
-        "Yeah there is",
-        "Nah all good thanks"
+        "Cheers!"
       ]
     },
     {
@@ -82,10 +113,10 @@
         "💩! That probably sums up that experience aye %s!",
         "Do remember we all have lows ... your not alone!"
       ],
-      "question": "Is there anything else?",
+      "question": "Was it a big deal",
       "answers": [
-        "Yeah there is",
-        "Nah all good thanks"
+        "Yeah it was a pain",
+        "Nah just a blip"
       ]
     },
     {
@@ -113,41 +144,7 @@
         "saveTag": ""
       },
       "context": [
-        "Nice!"
-      ],
-      "question": "Anything that we could help with?",
-      "answers": [
-        "Yeah there is",
-        "Nah all good thanks"
-      ]
-    },
-    {
-      "relatesTo": {
-        "answers": [
-          "Yeah there is"
-        ],
-        "save": true,
-        "saveTag": "MORE"
-      },
-      "context": [],
-      "question": "What would you like to do?",
-      "answers": [
-        "/remind me in <days> to <message>",
-        "/reminders to show them",
-        "/notes to show them",
-        "Nah all good thanks"
-      ]
-    },
-    {
-      "relatesTo": {
-        "answers": [
-          "Nah all good thanks"
-        ],
-        "save": false,
-        "saveTag": ""
-      },
-      "context": [
-        "Thanks for that %s"
+        "Nice! We will let you get on with it then."
       ],
       "question": "👋 bye",
       "answers": [
