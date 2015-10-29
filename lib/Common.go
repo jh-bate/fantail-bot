@@ -88,8 +88,10 @@ func hasSubmisson(txt string, cmds ...string) bool {
 	log.Println("check for submisson", txt)
 
 	if isCmd(txt, cmds...) {
+		log.Println("getting submisson")
 		for i := range cmds {
 			if len(strings.SplitAfter(txt, cmds[i])) > 2 {
+				log.Println("it is a submisson")
 				return true
 			}
 		}
@@ -99,7 +101,7 @@ func hasSubmisson(txt string, cmds ...string) bool {
 
 func isCmd(txt string, cmds ...string) bool {
 
-	log.Println("check is cmd", txt)
+	//log.Println("check is cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true

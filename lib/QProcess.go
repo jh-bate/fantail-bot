@@ -13,6 +13,8 @@ import (
 const (
 	chat_cmd, remind_cmd, say_cmd, reminders_cmd, said_cmd = "/chat", "/remind", "/say", "/reminders", "/said"
 
+	remind_cmd_hint, say_cmd_hint = "/remind me in <days> to <message>", "/say [what you want to say]"
+
 	free_form      = "JUST_SAYING"
 	default_script = "default"
 )
@@ -53,7 +55,6 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 		for i := range r {
 			if r[i].RemindToday() {
 				this.Details.send(r[i].Text)
-
 			}
 		}
 	} else if isCmd(msg.Text, said_cmd) {

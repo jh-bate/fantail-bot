@@ -79,6 +79,7 @@ func NewNote(msg telebot.Message, tags ...string) Note {
 }
 
 func NewReminderNote(msg telebot.Message) (Note, error) {
+
 	const remind_pos, me_pos, in_pos, time_pos, to_pos, msg_pos = 0, 1, 2, 3, 4, 5
 	const remind, me, in, to = "/remind", "me", "in", "to"
 	words := strings.Fields(msg.Text)
@@ -87,7 +88,7 @@ func NewReminderNote(msg telebot.Message) (Note, error) {
 		strings.ToLower(words[me_pos]) != me ||
 		strings.ToLower(words[in_pos]) != in ||
 		strings.ToLower(words[to_pos]) != to {
-		return Note{}, errors.New("format is /remind me to <days> do <msg>")
+		return Note{}, errors.New("format is " + remind_cmd_hint)
 	}
 
 	days, err := strconv.Atoi(words[time_pos])
