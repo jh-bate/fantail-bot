@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	chat_cmd, remind_cmd, reminders_cmd, notes_cmd = "/chat", "/remind", "/reminders", "/notes"
+	chat_cmd, remind_cmd, say_cmd, reminders_cmd, said_cmd = "/chat", "/remind", "/say", "/reminders", "/said"
 
 	free_form      = "JUST_SAYING"
 	default_script = "default"
@@ -23,7 +23,6 @@ type QProcess struct {
 		questions `json:"QandA"`
 	}
 	next *Question
-	done bool
 }
 
 func NewQProcess(d *Details) *QProcess {
@@ -36,20 +35,20 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 		this.quickWinFirst(msg).
 			determineScript(msg).
 			findNextQuestion(msg).
-			orSaveNote(msg).
 			andAsk()
 	}
 }
 
 func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
-	/*if hasSubmisson(msg.Text, remind_cmd) {
-		log.Println("making submisson ", msg.Text)
+	if hasSubmisson(msg.Text, say_cmd) {
+		log.Println("save something said ", msg.Text)
+		this.Details.save(msg, say_cmd)
+	} else if hasSubmisson(msg.Text, remind_cmd) {
+		log.Println("save a reminder ", msg.Text)
 		this.Details.saveAsReminder(msg)
-	} else */
-	if isCmd(msg.Text, reminders_cmd) {
+	} else if isCmd(msg.Text, reminders_cmd) {
 		log.Println("showing reminders ", msg.Text)
-
 		r := this.Details.getReminders(fmt.Sprintf("%d", this.Details.User.ID))
 		for i := range r {
 			if r[i].RemindToday() {
@@ -57,9 +56,8 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 			}
 		}
-	} else if isCmd(msg.Text, notes_cmd) {
-		log.Println("showing notes ", msg.Text)
-
+	} else if isCmd(msg.Text, said_cmd) {
+		log.Println("showing things said ", msg.Text)
 		r := this.Details.getNotes(fmt.Sprintf("%d", this.Details.User.ID))
 		for i := range r {
 			if r[i].IsCurrent() {
@@ -83,9 +81,13 @@ func (this *QProcess) loadScript(scriptName string) {
 
 func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 
-	if isCmd(msg.Text, chat_cmd, notes_cmd) { //remind_cmd, chat_cmd, reminders_cmd, notes_cmd) {
+	if hasSubmisson(msg.Text, remind_cmd, say_cmd) {
+		log.Println("load default script after submisson")
+		this.loadScript(default_script)
+	} else if isCmd(msg.Text, chat_cmd, said_cmd, say_cmd, remind_cmd, reminders_cmd) {
 		words := strings.Fields(msg.Text)
 		scriptName := strings.SplitAfter(words[0], "/")[1]
+		log.Println("load command script", scriptName)
 		this.loadScript(scriptName)
 	}
 	return this
@@ -94,19 +96,9 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	/*if this.done || this.lang.questions == nil {
-		log.Println("unknown so will save as", free_form)
-		this.Details.save(msg, free_form)
-		//load default and start at the beginning
-		this.loadScript(default_script)
+	if isCmd(msg.Text, chat_cmd, said_cmd, say_cmd, remind_cmd, reminders_cmd) {
+		//start at the beginning - covers submissons also
 		this.next = this.lang.questions[0]
-		this.done = false
-		return this
-	} else */
-	if isCmd(msg.Text, chat_cmd, notes_cmd) { //|| hasSubmisson(msg.Text, remind_cmd) {
-		//start at the beginning
-		this.next = this.lang.questions[0]
-		//this.done = false
 		return this
 	} else {
 		//find the next question
@@ -119,24 +111,12 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
 					}
 					this.next = this.lang.questions[i]
-					//this.done = false
 					return this
 				}
 			}
 		}
 	}
 	log.Println("looks like we are all done!")
-	//this.done = true
-	return this
-}
-
-func (this *QProcess) orSaveNote(msg telebot.Message) *QProcess {
-	if this.next == nil {
-		log.Println("was just saying so we are just saving")
-		this.Details.save(msg, free_form)
-		this.loadScript(default_script)
-		this.next = this.lang.questions[0]
-	}
 	return this
 }
 
