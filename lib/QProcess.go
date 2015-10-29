@@ -33,11 +33,15 @@ func NewQProcess(d *Details) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.Details.User = msg.Chat
-		this.quickWin(msg).determineScript(msg).findNextQuestion(msg).andAsk()
+		this.quickWinFirst(msg).
+			determineScript(msg).
+			findNextQuestion(msg).
+			orSaveNote(msg).
+			andAsk()
 	}
 }
 
-func (this *QProcess) quickWin(msg telebot.Message) *QProcess {
+func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	/*if hasSubmisson(msg.Text, remind_cmd) {
 		log.Println("making submisson ", msg.Text)
@@ -106,11 +110,9 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 		return this
 	} else {
 		//find the next question
-		searched := false
 		for i := range this.lang.questions {
 			log.Println("looking next q ...")
 			for a := range this.lang.questions[i].RelatesTo.Answers {
-				searched = true
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
@@ -122,18 +124,19 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 				}
 			}
 		}
-		if !searched {
-			log.Println("was just saying so we are just saving")
-			this.Details.save(msg, free_form)
-			//load default and start at the beginning
-			this.loadScript(default_script)
-			this.next = this.lang.questions[0]
-			//this.done = false
-			return this
-		}
 	}
 	log.Println("looks like we are all done!")
 	//this.done = true
+	return this
+}
+
+func (this *QProcess) orSaveNote(msg telebot.Message) *QProcess {
+	if this.next == nil {
+		log.Println("was just saying so we are just saving")
+		this.Details.save(msg, free_form)
+		this.loadScript(default_script)
+		this.next = this.lang.questions[0]
+	}
 	return this
 }
 
