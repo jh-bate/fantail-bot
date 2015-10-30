@@ -95,12 +95,13 @@ func NewReminderNote(msg telebot.Message) (Note, error) {
 	if err != nil {
 		return Note{}, err
 	}
-	what := words[msg_pos]
+
+	what := strings.SplitAfterN(msg.Text, to, 2)[1]
 
 	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
-		Text:       what,
+		Text:       strings.TrimSpace(what),
 		Tag:        reminder_tag,
 		RemindNext: time.Now().AddDate(0, 0, days)}, nil
 }

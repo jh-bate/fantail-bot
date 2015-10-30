@@ -85,26 +85,17 @@ func (d *Details) takeThoughtfulPause() {
 
 func hasSubmisson(txt string, cmds ...string) bool {
 
-	log.Println("check for submisson", txt)
-
 	if isCmd(txt, cmds...) {
-		log.Println("getting submisson")
-		//for i := range cmds {
-
 		words := strings.Fields(txt)
-
 		if len(words) > 1 {
-			log.Println("it is a submisson")
 			return true
 		}
-		//}
 	}
 	return false
 }
 
 func isCmd(txt string, cmds ...string) bool {
 
-	//log.Println("check is cmd", txt)
 	for i := range cmds {
 		if strings.Contains(txt, cmds[i]) {
 			return true
