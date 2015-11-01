@@ -37,6 +37,6 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	q := lib.NewQProcess(&lib.Details{Bot: fBot.bot, Storage: fBot.store})
+	q := lib.NewQProcess(fBot.bot, fBot.store)
 	q.Run(messages)
 }

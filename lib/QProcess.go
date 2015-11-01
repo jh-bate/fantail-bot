@@ -15,25 +15,24 @@ const (
 
 	remind_cmd_hint, say_cmd_hint = "/remind me in <days> to <message>", "/say [what you want to say]"
 
-	free_form      = "JUST_SAYING"
 	default_script = "default"
 )
 
 type QProcess struct {
-	Details *Details
-	lang    struct {
+	s    *session
+	lang struct {
 		questions `json:"QandA"`
 	}
 	next *Question
 }
 
-func NewQProcess(d *Details) *QProcess {
-	return &QProcess{Details: d}
+func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
+	return &QProcess{s: newSession(b, s)}
 }
 
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
-		this.Details.User = msg.Chat
+		this.s.User = msg.Chat
 		this.quickWinFirst(msg).
 			determineScript(msg).
 			findNextQuestion(msg).
@@ -45,25 +44,22 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if hasSubmisson(msg.Text, say_cmd) {
 		log.Println("save something said ", msg.Text)
-		this.Details.save(msg, say_cmd)
+		this.s.save(msg, say_cmd)
 	} else if hasSubmisson(msg.Text, remind_cmd) {
 		log.Println("save a reminder ", msg.Text)
-		this.Details.saveAsReminder(msg)
-	} else if isCmd(msg.Text, reminders_cmd) {
+		this.s.saveAsReminder(msg)
+	} else if hasSubmisson(msg.Text, reminders_cmd) || isCmd(msg.Text, reminders_cmd) {
 		log.Println("showing reminders ", msg.Text)
-		r := this.Details.getReminders(fmt.Sprintf("%d", this.Details.User.ID))
+		r := this.s.getReminders(msg)
 		for i := range r {
-			if r[i].RemindToday() {
-				this.Details.send(r[i].ToString())
-			}
+			this.s.send(r[i].ToString())
+
 		}
-	} else if isCmd(msg.Text, said_cmd) {
+	} else if hasSubmisson(msg.Text, said_cmd) || isCmd(msg.Text, said_cmd) {
 		log.Println("showing things said ", msg.Text)
-		r := this.Details.getNotes(fmt.Sprintf("%d", this.Details.User.ID))
+		r := this.s.getNotes(msg)
 		for i := range r {
-			if r[i].IsCurrent() {
-				this.Details.send(r[i].ToString())
-			}
+			this.s.send(r[i].ToString())
 		}
 	}
 	return this
@@ -109,7 +105,7 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
-						this.Details.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
+						this.s.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
 					}
 					this.next = this.lang.questions[i]
 					return this
@@ -131,8 +127,8 @@ func (this *QProcess) makeKeyboard() Keyboard {
 
 func (this *QProcess) andAsk() {
 	if this.next != nil {
-		this.Details.send(this.next.Context...)
-		this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
+		this.s.send(this.next.Context...)
+		this.s.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
 	}
 
 	return

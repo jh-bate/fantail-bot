@@ -81,6 +81,30 @@ func (this Notes) FilterNotes() Notes {
 	return n
 }
 
+func (this Notes) ForToday() Notes {
+	var r Notes
+	for i := range this {
+		if this[i].RemindToday() {
+			r = append(r, this[i])
+		}
+	}
+	return r
+}
+
+func (this Notes) ForNextDays(days int) Notes {
+	var r Notes
+	t := time.Now()
+
+	t.AddDate(0, 0, days)
+
+	for i := range this {
+		if this[i].RemindNext.Before(t) {
+			r = append(r, this[i])
+		}
+	}
+	return r
+}
+
 func NewNote(msg telebot.Message, tags ...string) Note {
 
 	txt := msg.Text
