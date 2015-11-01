@@ -27,8 +27,11 @@ type (
 func (this *Note) RemindToday() bool {
 	today := time.Now()
 
-	return this.RemindNext.Year() == today.Year() &&
-		this.RemindNext.YearDay() == today.YearDay()
+	if this.RemindNext.Before(today) == false {
+		return this.RemindNext.Year() == today.Year() &&
+			this.RemindNext.YearDay() == today.YearDay()
+	}
+	return true
 }
 
 func (this *Note) IsReminder() bool {
@@ -43,10 +46,19 @@ func (this *Note) IsCurrent() bool {
 	return this.CompletedOn.IsZero()
 }
 
+func (this *Note) Complete() {
+	this.CompletedOn = time.Now()
+	return
+}
+
 func (this *Note) UpdateRemindNext() {
 	today := time.Now()
 	this.RemindNext = today.AddDate(0, 0, 7)
 	return
+}
+
+func (this *Note) ToString() string {
+	return strings.Join([]string{this.AddedOn.Format(time.Stamp), this.Text}, " ")
 }
 
 func (this Notes) FilterReminders() Notes {

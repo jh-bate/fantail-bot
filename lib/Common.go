@@ -40,18 +40,22 @@ type (
 	Keyboard [][]string
 )
 
-func (d *Details) send(msg string) {
-	d.takeThoughtfulPause()
+func (d *Details) send(msgs ...string) {
 
-	if strings.Contains(msg, "%s") {
-		msg = fmt.Sprintf(msg, d.User.FirstName)
+	for i := range msgs {
+		d.takeThoughtfulPause()
+
+		msg := msgs[i]
+		if strings.Contains(msg, "%s") {
+			msg = fmt.Sprintf(msg, d.User.FirstName)
+		}
+
+		d.Bot.SendMessage(
+			d.User,
+			msg,
+			nil,
+		)
 	}
-
-	d.Bot.SendMessage(
-		d.User,
-		msg,
-		nil,
-	)
 	return
 }
 

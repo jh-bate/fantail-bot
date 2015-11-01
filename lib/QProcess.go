@@ -54,7 +54,7 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 		r := this.Details.getReminders(fmt.Sprintf("%d", this.Details.User.ID))
 		for i := range r {
 			if r[i].RemindToday() {
-				this.Details.send(r[i].Text)
+				this.Details.send(r[i].ToString())
 			}
 		}
 	} else if isCmd(msg.Text, said_cmd) {
@@ -62,7 +62,7 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 		r := this.Details.getNotes(fmt.Sprintf("%d", this.Details.User.ID))
 		for i := range r {
 			if r[i].IsCurrent() {
-				this.Details.send(r[i].Text)
+				this.Details.send(r[i].ToString())
 			}
 		}
 	}
@@ -131,11 +131,7 @@ func (this *QProcess) makeKeyboard() Keyboard {
 
 func (this *QProcess) andAsk() {
 	if this.next != nil {
-		//context
-		for i := range this.next.Context {
-			this.Details.send(this.next.Context[i])
-		}
-		//the actual question
+		this.Details.send(this.next.Context...)
 		this.Details.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
 	}
 
