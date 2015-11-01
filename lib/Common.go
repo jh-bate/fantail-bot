@@ -109,6 +109,10 @@ func isCmd(txt string, cmds ...string) bool {
 }
 
 func (d *Details) saveAsReminder(msg telebot.Message) error {
+	if d.Storage == nil {
+		log.Println(StorageInitErr.Error())
+		return StorageInitErr
+	}
 	r, err := NewReminderNote(msg)
 	if err != nil {
 		return err

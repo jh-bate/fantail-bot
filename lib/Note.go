@@ -82,33 +82,38 @@ func (this Notes) FilterNotes() Notes {
 }
 
 func NewNote(msg telebot.Message, tags ...string) Note {
+
+	txt := msg.Text
+
+	//e.g. remove '/say' from the message
+	if strings.Contains(txt, tags[0]) {
+		txt = strings.Split(txt, tags[0])[1]
+	}
+
 	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
-		Text:       msg.Text,
+		Text:       txt,
 		Tag:        strings.Join(tags, ","),
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 }
 
 func NewReminderNote(msg telebot.Message) (Note, error) {
 
-	const remind_pos, me_pos, in_pos, time_pos, to_pos, msg_pos = 0, 1, 2, 3, 4, 5
-	const remind, me, in, to = "/remind", "me", "in", "to"
+	const remind_pos, time_pos, msg_pos = 0, 1, 2
 	words := strings.Fields(msg.Text)
 
-	if strings.ToLower(words[remind_pos]) != remind ||
-		strings.ToLower(words[me_pos]) != me ||
-		strings.ToLower(words[in_pos]) != in ||
-		strings.ToLower(words[to_pos]) != to {
+	days, err := strconv.Atoi(words[time_pos])
+
+	if err != nil {
 		return Note{}, errors.New("format is " + remind_cmd_hint)
 	}
 
-	days, err := strconv.Atoi(words[time_pos])
-	if err != nil {
-		return Note{}, err
-	}
+	what := strings.SplitAfterN(msg.Text, words[time_pos], 2)[1]
 
-	what := strings.SplitAfterN(msg.Text, to, 2)[1]
+	if what == "" {
+		return Note{}, errors.New("format is " + remind_cmd_hint)
+	}
 
 	return Note{
 		WhoId:      msg.Sender.ID,
