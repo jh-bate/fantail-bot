@@ -87,7 +87,7 @@ func NewNote(msg telebot.Message, tags ...string) Note {
 
 	//e.g. remove '/say' from the message
 	if strings.Contains(txt, tags[0]) {
-		txt = strings.Split(txt, tags[0])[1]
+		txt = strings.TrimSpace(strings.Split(txt, tags[0])[1])
 	}
 
 	return Note{
