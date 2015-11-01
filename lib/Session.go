@@ -118,6 +118,8 @@ func daysFromText(txt string) int {
 		log.Println("error getting number of days", err.Error())
 	}
 
+	log.Println("days", days)
+
 	return days
 }
 

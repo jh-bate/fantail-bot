@@ -2,6 +2,7 @@ package lib
 
 import (
 	"errors"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -96,6 +97,8 @@ func (this Notes) ForNextDays(days int) Notes {
 	t := time.Now()
 
 	t.AddDate(0, 0, days)
+
+	log.Println("getting all before ", t.Format(time.Stamp))
 
 	for i := range this {
 		if this[i].RemindNext.Before(t) {
