@@ -42,10 +42,9 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩 well %s no one enjoys that aye! But do remember we have all been there before!",
-        " 👍"
+        "💩 well %s no one enjoys that aye! But do remember we have all been there before!"
       ],
-      "question": "Was it a big deal",
+      "question": "Was it a big deal?",
       "answers": [
         "Yeah it was a pain",
         "Nah just a blip"
@@ -60,8 +59,25 @@
         "saveTag": "BG_PAIN"
       },
       "context": [
-        "Ahh stink!",
-        "Do remember though it happens to all of us ..."
+        "Ahh stink! Do remember though it happens to all of us ..."
+      ],
+      "question": "Do you want help",
+      "answers": [
+        "Yeah help would be good",
+        "Nah I have this thanks"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Yeah help would be good",
+          "Nah I have this thanks"
+        ],
+        "save": true,
+        "saveTag": "HELP"
+      },
+      "context": [
+        "Well thanks for opening up to us. Lets keep an eye on how things go"
       ],
       "question": "👋 bye",
       "answers": [
@@ -93,8 +109,7 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "🙌",
-        "great work %s lets take a moment ... and bask in the glory of that achievement! 🎉🎉"
+        "🙌 great work %s lets take a moment ... and bask in the glory of that achievement! 🎉🎉"
       ],
       "question": "Well - back to it then 👋",
       "answers": [
@@ -110,10 +125,9 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩! That probably sums up that experience aye %s!",
-        "Do remember we all have lows ... your not alone!"
+        "💩 probably sums up that experience aye %s! Do remember we all have lows ... your not alone!"
       ],
-      "question": "Was it a big deal",
+      "question": "Was it a big deal?",
       "answers": [
         "Yeah it was a pain",
         "Nah just a blip"
