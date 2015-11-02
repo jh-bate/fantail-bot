@@ -11,6 +11,9 @@ import (
 )
 
 const (
+	//being a good citizen
+	start_cmd, help_cmd = "/start", "/help"
+
 	chat_cmd, remind_cmd, say_cmd, reminders_cmd, said_cmd = "/chat", "/remind", "/say", "/reminders", "/said"
 
 	remind_cmd_hint, say_cmd_hint = "/remind me in <days> to <message>", "/say [what you want to say]"
@@ -38,6 +41,22 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 			findNextQuestion(msg).
 			andAsk()
 	}
+}
+
+func (this *QProcess) checkForDefaults(msg telebot.Message) *QProcess {
+
+	if isCmd(msg.Text, start_cmd, help_cmd) {
+		this.s.send(
+			"Fantail is your companion that is here to help you get the help you want quicker",
+			"You can control me by sending these commands:",
+			chat_cmd,
+			say_cmd_hint,
+			said_cmd,
+			remind_cmd_hint,
+			reminders_cmd,
+		)
+	}
+	return this
 }
 
 func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
