@@ -26,7 +26,8 @@ type QProcess struct {
 	lang struct {
 		questions `json:"QandA"`
 	}
-	next *Question
+	next     *Question
+	lastTime Notes
 }
 
 func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
@@ -40,7 +41,7 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 			quickWinFirst(msg).
 			determineScript(msg).
 			findNextQuestion(msg).
-			andAsk()
+			andChat()
 	}
 }
 
@@ -121,6 +122,7 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
 						this.s.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
+						this.lastTime = append(this.lastTime, this.s.getLastChat(this.lang.questions[i].RelatesTo.SaveTag)...)
 					}
 					this.next = this.lang.questions[i]
 					return this
@@ -140,11 +142,19 @@ func (this *QProcess) makeKeyboard() Keyboard {
 	return keyboard
 }
 
-func (this *QProcess) andAsk() {
+func (this *QProcess) andChat() {
 	if this.next != nil {
 		this.s.send(this.next.Context...)
 		this.s.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
+		return
 	}
 
+	if len(this.lastTime) > 0 {
+		this.s.send("### Last Time ###")
+		for i := range this.lastTime {
+			this.s.send(this.lastTime[i].ToString())
+		}
+		this.lastTime = nil
+	}
 	return
 }

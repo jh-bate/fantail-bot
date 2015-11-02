@@ -148,3 +148,12 @@ func (s *session) getNotes(msg telebot.Message) Notes {
 	}
 	return Notes{}
 }
+
+func (s *session) getLastChat(topic string) Notes {
+
+	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
+	if err == nil {
+		return all.FilterChat(topic)
+	}
+	return Notes{}
+}

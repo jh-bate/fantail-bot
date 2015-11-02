@@ -11,6 +11,8 @@ import (
 )
 
 const reminder_tag = remind_cmd
+const said_tag = say_cmd
+const chat_tag = chat_cmd
 
 type (
 	Note struct {
@@ -75,10 +77,21 @@ func (this Notes) FilterReminders() Notes {
 func (this Notes) FilterNotes() Notes {
 	var n Notes
 	for i := range this {
-		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, reminder_tag) == false {
+		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, said_tag) {
 			n = append(n, this[i])
 		}
 	}
+	return n
+}
+
+func (this Notes) FilterChat(topic string) Notes {
+	var n Notes
+	for i := range this {
+		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, chat_tag) && strings.Contains(this[i].Tag, topic) {
+			n = append(n, this[i])
+		}
+	}
+
 	return n
 }
 
