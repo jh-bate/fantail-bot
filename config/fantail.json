@@ -1,0 +1,6 @@
+{
+  "appInfo": ["Hey %s, Fantail aims to help you to pause and reflect. Then we can learn what is working and what isn’t!"],
+  "remindersInfo": ["Hey %s these are the things you wanted to be reminded of ... hope that helps!"],
+  "saidInfo": ["Hey %s here is what you have said to us before ... hope that helps!"],
+  "chatInfo": ["Hey %s just to remind you that is what you said last time ... hope that helps!"]
+}

@@ -21,17 +21,29 @@ const (
 	default_script = "default"
 )
 
-type QProcess struct {
-	s    *session
-	lang struct {
-		questions `json:"QandA"`
+type (
+	Info struct {
+		App       []string `json:"appInfo"`
+		Reminders []string `json:"remindersInfo"`
+		Chat      []string `json:"chatInfo"`
+		Said      []string `json:"saidInfo"`
 	}
-	next     *Question
-	lastTime Notes
-}
+
+	QProcess struct {
+		s    *session
+		lang struct {
+			questions `json:"QandA"`
+		}
+		info     *Info
+		next     *Question
+		lastTime Notes
+	}
+)
 
 func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
-	return &QProcess{s: newSession(b, s)}
+	q := &QProcess{s: newSession(b, s)}
+	q.loadInfo()
+	return q
 }
 
 func (this *QProcess) Run(input <-chan telebot.Message) {
@@ -48,10 +60,8 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, start_cmd, help_cmd) {
+		this.s.send(this.info.App...)
 		this.s.send(
-			"Diabetes can get all consuming, but sometimes just being able to pause a reflect on where you are at can help you get a better understanding of what is working and what isn’t",
-			"Fantail aims to do that, allowing you to pause and reflect",
-			"You can control me by sending these commands:",
 			chat_cmd+" - to have a quick chat about what your upto",
 			say_cmd_hint+" - to say anything thats on your mind",
 			said_cmd+" - to show all the things you have said",
@@ -67,6 +77,7 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 	} else if hasSubmisson(msg.Text, reminders_cmd) || isCmd(msg.Text, reminders_cmd) {
 		log.Println("showing reminders ", msg.Text)
 		r := this.s.getReminders(msg)
+		this.s.send(this.info.Reminders...)
 		for i := range r {
 			this.s.send(r[i].ToString())
 
@@ -74,11 +85,23 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 	} else if hasSubmisson(msg.Text, said_cmd) || isCmd(msg.Text, said_cmd) {
 		log.Println("showing things said ", msg.Text)
 		r := this.s.getNotes(msg)
+		this.s.send(this.info.Said...)
 		for i := range r {
 			this.s.send(r[i].ToString())
 		}
 	}
 	return this
+}
+
+func (this *QProcess) loadInfo() {
+	file, err := os.Open("./config/fantail.json")
+	if err != nil {
+		log.Panic("could not load App info", err.Error())
+	}
+	err = json.NewDecoder(file).Decode(&this.info)
+	if err != nil {
+		log.Panic("could not decode App info ", err.Error())
+	}
 }
 
 func (this *QProcess) loadScript(scriptName string) {
@@ -150,7 +173,7 @@ func (this *QProcess) andChat() {
 	}
 
 	if len(this.lastTime) > 0 {
-		this.s.send("### Last Time ###")
+		this.s.send(this.info.Chat...)
 		for i := range this.lastTime {
 			this.s.send(this.lastTime[i].ToString())
 		}
