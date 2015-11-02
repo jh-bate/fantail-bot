@@ -36,14 +36,15 @@ func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 		this.s.User = msg.Chat
-		this.quickWinFirst(msg).
+		this.
+			quickWinFirst(msg).
 			determineScript(msg).
 			findNextQuestion(msg).
 			andAsk()
 	}
 }
 
-func (this *QProcess) checkForDefaults(msg telebot.Message) *QProcess {
+func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, start_cmd, help_cmd) {
 		this.s.send(
@@ -55,13 +56,7 @@ func (this *QProcess) checkForDefaults(msg telebot.Message) *QProcess {
 			remind_cmd_hint,
 			reminders_cmd,
 		)
-	}
-	return this
-}
-
-func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
-
-	if hasSubmisson(msg.Text, say_cmd) {
+	} else if hasSubmisson(msg.Text, say_cmd) {
 		log.Println("save something said ", msg.Text)
 		this.s.save(msg, say_cmd)
 	} else if hasSubmisson(msg.Text, remind_cmd) {
