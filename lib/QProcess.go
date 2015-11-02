@@ -48,13 +48,14 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, start_cmd, help_cmd) {
 		this.s.send(
-			"Fantail is your companion that is here to help you get the help you want quicker",
+			"Diabetes can get all consuming, but sometimes just being able to pause a reflect on where you are at can help you get a better understanding of what is working and what isn’t",
+			"Fantail aims to do that, allowing you to pause and reflect",
 			"You can control me by sending these commands:",
-			chat_cmd,
-			say_cmd_hint,
-			said_cmd,
-			remind_cmd_hint,
-			reminders_cmd,
+			chat_cmd+" - to have a quick chat about what your upto",
+			say_cmd_hint+" - to say anything thats on your mind",
+			said_cmd+" - to show all the things you have said",
+			remind_cmd_hint+" - to keep track of the things you need to be reminded about",
+			reminders_cmd+" - to show all the reminders you have made",
 		)
 	} else if hasSubmisson(msg.Text, say_cmd) {
 		log.Println("save something said ", msg.Text)
