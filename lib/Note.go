@@ -62,7 +62,7 @@ func (this *Note) UpdateRemindNext() {
 }
 
 func (this *Note) ToString() string {
-	return fmt.Sprintf("On %s you said `%s`", this.AddedOn.Format("Mon Jan 2 03:04PM"), this.Text)
+	return fmt.Sprintf("On %s you said '%s'", this.AddedOn.Format("Mon Jan 2 03:04pm"), this.Text)
 }
 
 func (this Notes) FilterReminders() Notes {
