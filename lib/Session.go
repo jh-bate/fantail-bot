@@ -41,7 +41,7 @@ func (s *session) send(msgs ...string) {
 		s.Bot.SendMessage(
 			s.User,
 			msg,
-			nil,
+			&telebot.SendOptions{ParseMode: telebot.ModeMarkdown},
 		)
 	}
 	return
