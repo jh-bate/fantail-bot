@@ -62,11 +62,11 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 	if isCmd(msg.Text, start_cmd, help_cmd) {
 		this.s.send(this.info.App...)
 
-		availCmds := fmt.Sprintf("```%s %s %s %s %s```",
-			chat_cmd+" - to have a quick chat about what your upto",
-			say_cmd_hint+" - to say anything thats on your mind",
-			said_cmd+" - to show all the things you have said",
-			remind_cmd_hint+" - to keep track of the things you need to be reminded about",
+		availCmds := fmt.Sprintf("%s %s %s %s %s",
+			chat_cmd+" - to have a *quick* chat about what your upto \n\n",
+			say_cmd_hint+" - to say _anything_ thats on your mind \n\n",
+			said_cmd+" - to show all the things you have said \n\n",
+			remind_cmd_hint+" - to keep track of the things you need to be reminded about \n\n",
 			reminders_cmd+" - to show all the reminders you have made",
 		)
 
