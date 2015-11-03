@@ -84,15 +84,14 @@ func (this Notes) FilterNotes() Notes {
 	return n
 }
 
-func (this Notes) FilterChat(topic string) Notes {
-	var n Notes
+func (this Notes) FilterChat(topic string) *Note {
 	for i := range this {
 		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, chat_tag) && strings.Contains(this[i].Tag, topic) {
-			n = append(n, this[i])
+			return this[i]
 		}
 	}
 
-	return n
+	return nil
 }
 
 func (this Notes) ForToday() Notes {
