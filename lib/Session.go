@@ -61,9 +61,10 @@ func (s *session) sendWithKeyboard(msg string, kb Keyboard) {
 			ReplyMarkup: telebot.ReplyMarkup{
 				ForceReply:      false,
 				CustomKeyboard:  kb,
-				ResizeKeyboard:  true,
+				ResizeKeyboard:  false,
 				OneTimeKeyboard: true,
 			},
+			ParseMode: telebot.ModeMarkdown,
 		},
 	)
 	return
