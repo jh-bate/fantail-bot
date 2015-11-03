@@ -78,8 +78,8 @@ func (s *session) takeThoughtfulPause() {
 
 func (s *session) saveAsReminder(msg telebot.Message) error {
 	if s.Storage == nil {
-		log.Println(StorageInitErr.Error())
-		return StorageInitErr
+		log.Println(FantailStorageErr.Error())
+		return FantailStorageErr
 	}
 	r, err := NewReminderNote(msg)
 	if err != nil {
@@ -90,7 +90,7 @@ func (s *session) saveAsReminder(msg telebot.Message) error {
 
 func (s *session) save(msg telebot.Message, tags ...string) {
 	if s.Storage == nil {
-		log.Println(StorageInitErr.Error())
+		log.Println(FantailStorageErr.Error())
 		return
 	}
 	log.Println("Saving", msg.Text)
@@ -99,7 +99,7 @@ func (s *session) save(msg telebot.Message, tags ...string) {
 
 	if err != nil {
 		log.Println(err.Error())
-		log.Println(StorageSaveErr.Error())
+		log.Println(FantailSaveErr.Error())
 	}
 	return
 }

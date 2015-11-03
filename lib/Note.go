@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -146,13 +145,13 @@ func NewReminderNote(msg telebot.Message) (Note, error) {
 	days, err := strconv.Atoi(words[time_pos])
 
 	if err != nil {
-		return Note{}, errors.New("format is " + remind_cmd_hint)
+		return Note{}, fmt.Errorf("Reminder format is %s", remind_cmd_hint)
 	}
 
 	what := strings.SplitAfterN(msg.Text, words[time_pos], 2)[1]
 
 	if what == "" {
-		return Note{}, errors.New("format is " + remind_cmd_hint)
+		return Note{}, fmt.Errorf("Reminder format is %s", remind_cmd_hint)
 	}
 
 	return Note{

@@ -10,8 +10,8 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-var StorageInitErr = errors.New("Storage is not enabled")
-var StorageSaveErr = errors.New("Error trying to save to storage")
+var FantailStorageErr = errors.New("Fantail storage is not enabled")
+var FantailSaveErr = errors.New("Fantail issue trying to save to storage")
 
 type Storage struct {
 	store *redis.Pool
