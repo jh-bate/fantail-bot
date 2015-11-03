@@ -2,9 +2,7 @@
   "QandA": [
     {
       "relatesTo": null,
-      "context": [
-        "Hey %s, that is a reminder of what you said to us"
-      ],
+      "context": [],
       "question": "Keep on doing what you do!",
       "answers": [
         "Cheers, see you!"
