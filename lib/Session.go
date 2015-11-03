@@ -144,7 +144,7 @@ func (s *session) getNotes(msg telebot.Message) Notes {
 		if days > 0 {
 			return all.FilterNotes().ForNextDays(days)
 		}
-		return all.FilterNotes().ForToday()
+		return all.FilterNotes()
 	}
 	return Notes{}
 }
