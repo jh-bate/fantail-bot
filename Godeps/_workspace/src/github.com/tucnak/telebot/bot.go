@@ -32,34 +32,25 @@ func NewBot(token string) (*Bot, error) {
 
 // Listen periodically looks for updates and delivers new messages
 // to subscription channel.
-func (b Bot) Listen(subscription chan<- Message, interval time.Duration) {
-	updates := make(chan Update)
-	pulse := time.NewTicker(interval)
-	latestUpdate := 0
+func (b Bot) Listen(subscription chan<- Message, timeout time.Duration) {
 
 	go func() {
-		for _ = range pulse.C {
-			go getUpdates(b.Token,
-				latestUpdate+1,
-				updates)
-		}
-	}()
-
-	go func() {
-		for update := range updates {
-			if update.ID > latestUpdate {
-				latestUpdate = update.ID
+		latestUpdate := 0
+		for {
+			if updates, err := getUpdates(b.Token, latestUpdate+1, int(timeout/time.Second)); err == nil {
+				for _, update := range updates {
+					latestUpdate = update.ID
+					subscription <- update.Payload
+				}
 			}
-
-			subscription <- update.Payload
 		}
 	}()
 }
 
 // SendMessage sends a text message to recipient.
-func (b Bot) SendMessage(recipient User, message string, options *SendOptions) error {
+func (b Bot) SendMessage(recipient Recipient, message string, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 	params.Set("text", message)
 
 	if options != nil {
@@ -82,16 +73,16 @@ func (b Bot) SendMessage(recipient User, message string, options *SendOptions) e
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	return nil
 }
 
 // ForwardMessage forwards a message to recipient.
-func (b Bot) ForwardMessage(recipient User, message Message) error {
+func (b Bot) ForwardMessage(recipient Recipient, message Message) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 	params.Set("from_chat_id", strconv.Itoa(message.Origin().ID))
 	params.Set("message_id", strconv.Itoa(message.ID))
 
@@ -111,7 +102,7 @@ func (b Bot) ForwardMessage(recipient User, message Message) error {
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	return nil
@@ -123,9 +114,9 @@ func (b Bot) ForwardMessage(recipient User, message Message) error {
 // the Telegram servers, so sending the same photo object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b Bot) SendPhoto(recipient User, photo *Photo, options *SendOptions) error {
+func (b Bot) SendPhoto(recipient Recipient, photo *Photo, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 	params.Set("caption", photo.Caption)
 
 	if options != nil {
@@ -159,7 +150,7 @@ func (b Bot) SendPhoto(recipient User, photo *Photo, options *SendOptions) error
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	thumbnails := &responseRecieved.Result.Photo
@@ -176,9 +167,9 @@ func (b Bot) SendPhoto(recipient User, photo *Photo, options *SendOptions) error
 // the Telegram servers, so sending the same audio object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b Bot) SendAudio(recipient User, audio *Audio, options *SendOptions) error {
+func (b Bot) SendAudio(recipient Recipient, audio *Audio, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 
 	if options != nil {
 		embedSendOptions(&params, options)
@@ -211,7 +202,7 @@ func (b Bot) SendAudio(recipient User, audio *Audio, options *SendOptions) error
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	filename := audio.filename
@@ -227,9 +218,9 @@ func (b Bot) SendAudio(recipient User, audio *Audio, options *SendOptions) error
 // the Telegram servers, so sending the same document object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b Bot) SendDocument(recipient User, doc *Document, options *SendOptions) error {
+func (b Bot) SendDocument(recipient Recipient, doc *Document, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 
 	if options != nil {
 		embedSendOptions(&params, options)
@@ -262,7 +253,7 @@ func (b Bot) SendDocument(recipient User, doc *Document, options *SendOptions) e
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	filename := doc.filename
@@ -278,9 +269,9 @@ func (b Bot) SendDocument(recipient User, doc *Document, options *SendOptions) e
 // the Telegram servers, so sending the same sticker object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b *Bot) SendSticker(recipient User, sticker *Sticker, options *SendOptions) error {
+func (b *Bot) SendSticker(recipient Recipient, sticker *Sticker, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 
 	if options != nil {
 		embedSendOptions(&params, options)
@@ -313,7 +304,7 @@ func (b *Bot) SendSticker(recipient User, sticker *Sticker, options *SendOptions
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	filename := sticker.filename
@@ -329,9 +320,9 @@ func (b *Bot) SendSticker(recipient User, sticker *Sticker, options *SendOptions
 // the Telegram servers, so sending the same video object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b Bot) SendVideo(recipient User, video *Video, options *SendOptions) error {
+func (b Bot) SendVideo(recipient Recipient, video *Video, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 
 	if options != nil {
 		embedSendOptions(&params, options)
@@ -364,7 +355,7 @@ func (b Bot) SendVideo(recipient User, video *Video, options *SendOptions) error
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	filename := video.filename
@@ -380,9 +371,9 @@ func (b Bot) SendVideo(recipient User, video *Video, options *SendOptions) error
 // the Telegram servers, so sending the same video object
 // again, won't issue a new upload, but would make a use
 // of existing file on Telegram servers.
-func (b Bot) SendLocation(recipient User, geo *Location, options *SendOptions) error {
+func (b Bot) SendLocation(recipient Recipient, geo *Location, options *SendOptions) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 	params.Set("latitude", fmt.Sprintf("%f", geo.Latitude))
 	params.Set("longitude", fmt.Sprintf("%f", geo.Longitude))
 
@@ -408,7 +399,7 @@ func (b Bot) SendLocation(recipient User, geo *Location, options *SendOptions) e
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	return nil
@@ -423,9 +414,9 @@ func (b Bot) SendLocation(recipient User, geo *Location, options *SendOptions) e
 //
 // Currently, Telegram supports only a narrow range of possible
 // actions, these are aligned as constants of this package.
-func (b Bot) SendChatAction(recipient User, action string) error {
+func (b Bot) SendChatAction(recipient Recipient, action string) error {
 	params := url.Values{}
-	params.Set("chat_id", strconv.Itoa(recipient.ID))
+	params.Set("chat_id", strconv.Itoa(recipient.Destination()))
 	params.Set("action", action)
 
 	responseJSON, err := sendCommand("sendChatAction", b.Token, params)
@@ -445,7 +436,7 @@ func (b Bot) SendChatAction(recipient User, action string) error {
 	}
 
 	if !responseRecieved.Ok {
-		return SendError{responseRecieved.Description}
+		return fmt.Errorf("telebot: %s", responseRecieved.Description)
 	}
 
 	return nil

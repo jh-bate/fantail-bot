@@ -1,25 +1,49 @@
 package telebot
 
-// User object represents a Telegram user, bot or group chat.
+// Recipient is basically any possible endpoint you can send
+// messages to. It's usually a distinct user or a chat.
+type Recipient interface {
+	// Basically, ID of the endpoint.
+	Destination() int
+}
+
+// User object represents a Telegram user, bot
 //
-// Title field differs a group chat apart from users and bots:
 // object represents a group chat if Title is empty.
 type User struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Username  string `json:"username"`
 
-	Title string `json:"title"`
+	LastName string `json:"last_name"`
+	Username string `json:"username"`
 }
 
-// IsGroupChat returns true if user object represents a group chat.
-func (u User) IsGroupChat() bool {
-	if u.Title != "" {
-		return true
-	}
+// Destination is internal user ID.
+func (u User) Destination() int {
+	return u.ID
+}
 
-	return false
+// Chat object represents a Telegram user, bot or group chat.
+// Title for channels and group chats
+// Type of chat, can be either “private”, or “group”, or “channel”
+type Chat struct {
+	ID   int    `json:"id"`
+	Type string `json:"type"`
+
+	Title     string `json:"title"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Username  string `json:"username"`
+}
+
+// Destination is internal chat ID.
+func (c Chat) Destination() int {
+	return c.ID
+}
+
+// IsGroupChat returns true if chat object represents a group chat.
+func (c Chat) IsGroupChat() bool {
+	return c.Type == "group"
 }
 
 // Update object represents an incoming update.

@@ -2,6 +2,7 @@
 >Telebot is a convenient wrapper to Telegram Bots API, written in Golang.
 
 [![GoDoc](https://godoc.org/github.com/tucnak/telebot?status.svg)](https://godoc.org/github.com/tucnak/telebot)
+[![Travis](https://travis-ci.org/tucnak/telebot.svg?branch=master)](https://travis-ci.org/tucnak/telebot)
 
 Bots are special Telegram accounts designed to handle messages automatically. Users can interact with bots by sending them command messages in private or group chats. These accounts serve as an interface for code running somewhere on your server.
 
@@ -39,9 +40,11 @@ if err != nil {
     return err
 }
 
-// Next time you send &boom, telebot won't issue
+audio := telebot.Audio{File: boom}
+
+// Next time you send &audio, telebot won't issue
 // an upload, but would re-use existing file.
-err = bot.SendAudio(recipient, &boom, nil)
+err = bot.SendAudio(recipient, &audio, nil)
 ```
 
 Sometimes you might want to send a little bit complicated messages, with some optional parameters:
@@ -49,8 +52,8 @@ Sometimes you might want to send a little bit complicated messages, with some op
 ```go
 // Send a selective force reply message.
 bot.SendMessage(user, "pong", &telebot.SendOptions{
-        ForceReply: telebot.ForceReply{
-            Require: true,
+        ReplyMarkup: telebot.ReplyMarkup{
+            ForceReply: true,
             Selective: true,
         },
     },

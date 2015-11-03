@@ -6,9 +6,12 @@ import (
 
 // Message object represents a message.
 type Message struct {
-	ID       int  `json:"message_id"`
-	Sender   User `json:"from"`
-	Unixtime int  `json:"date"`
+	ID int `json:"message_id"`
+
+	// For message sent to channels, Sender may be empty
+	Sender User `json:"from"`
+
+	Unixtime int `json:"date"`
 
 	// For forwarded messages, sender of the original message.
 	OriginalSender User `json:"forward_from"`
@@ -47,7 +50,7 @@ type Message struct {
 	Location Location `json:"location"`
 
 	// A group chat message belongs to, empty if personal.
-	Chat User `json:"chat"`
+	Chat Chat `json:"chat"`
 
 	// For a service message, represents a user,
 	// that just got added to chat, this message came from.
@@ -95,9 +98,9 @@ type Message struct {
 
 // Origin returns an origin of message: group chat / personal.
 func (m Message) Origin() User {
-	if (m.Chat != User{}) {
-		return m.Chat
-	}
+	// if m.IsPersonal() {
+	// 	return m.Chat
+	// }
 
 	return m.Sender
 }
@@ -110,30 +113,18 @@ func (m Message) Time() time.Time {
 // IsForwarded says whether message is forwarded copy of another
 // message or not.
 func (m Message) IsForwarded() bool {
-	if (m.OriginalSender != User{}) {
-		return true
-	}
-
-	return false
+	return m.OriginalSender != User{}
 }
 
 // IsReply says whether message is reply to another message or not.
 func (m Message) IsReply() bool {
-	if m.ReplyTo != nil {
-		return true
-	}
-
-	return false
+	return m.ReplyTo != nil
 }
 
 // IsPersonal returns true, if message is a personal message,
 // returns false if sent to group chat.
 func (m Message) IsPersonal() bool {
-	if (m.Chat != User{}) {
-		return true
-	}
-
-	return false
+	return !m.Chat.IsGroupChat()
 }
 
 // IsService returns true, if message is a service message,

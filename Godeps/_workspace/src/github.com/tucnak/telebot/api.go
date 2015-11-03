@@ -74,6 +74,10 @@ func sendFile(method, token, name, path string, params url.Values) ([]byte, erro
 		return []byte{}, err
 	}
 
+	if resp.StatusCode == http.StatusInternalServerError {
+		return []byte{}, fmt.Errorf("Telegram API returned 500 internal server error")
+	}
+
 	json, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return []byte{}, err
@@ -93,6 +97,10 @@ func embedSendOptions(params *url.Values, options *SendOptions) {
 
 	if options.DisableWebPagePreview {
 		params.Set("disable_web_page_preview", "true")
+	}
+
+	if options.ParseMode != ModeDefault {
+		params.Set("parse_mode", string(options.ParseMode))
 	}
 
 	// process reply_markup
@@ -116,22 +124,23 @@ func getMe(token string) (User, error) {
 
 	err = json.Unmarshal(meJSON, &botInfo)
 	if err != nil {
-		return User{}, AuthError{"invalid token"}
+		return User{}, fmt.Errorf("telebot: invalid token")
 	}
 
 	if botInfo.Ok {
 		return botInfo.Result, nil
 	}
 
-	return User{}, AuthError{botInfo.Description}
+	return User{}, fmt.Errorf("telebot: %s", botInfo.Description)
 }
 
-func getUpdates(token string, offset int, updates chan<- Update) error {
+func getUpdates(token string, offset int, timeout int) (updates []Update, err error) {
 	params := url.Values{}
 	params.Set("offset", strconv.Itoa(offset))
+	params.Set("timeout", strconv.Itoa(timeout))
 	updatesJSON, err := sendCommand("getUpdates", token, params)
 	if err != nil {
-		return err
+		return
 	}
 
 	var updatesRecieved struct {
@@ -142,16 +151,14 @@ func getUpdates(token string, offset int, updates chan<- Update) error {
 
 	err = json.Unmarshal(updatesJSON, &updatesRecieved)
 	if err != nil {
-		return err
+		return
 	}
 
 	if !updatesRecieved.Ok {
-		return FetchError{updatesRecieved.Description}
+		err = fmt.Errorf("telebot: %s", updatesRecieved.Description)
+		return
 	}
 
-	for _, update := range updatesRecieved.Result {
-		updates <- update
-	}
-
-	return nil
+	updates = updatesRecieved.Result
+	return
 }
