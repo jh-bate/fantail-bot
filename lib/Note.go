@@ -2,6 +2,7 @@ package lib
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -61,7 +62,7 @@ func (this *Note) UpdateRemindNext() {
 }
 
 func (this *Note) ToString() string {
-	return strings.Join([]string{this.AddedOn.Format(time.Stamp), this.Text}, " ")
+	return fmt.Sprintf("On %s you said `%s`", this.AddedOn.Format("Mon Jan 2 03:04PM"), this.Text)
 }
 
 func (this Notes) FilterReminders() Notes {

@@ -139,7 +139,6 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	} else {
 		//find the next question
 		for i := range this.lang.questions {
-			log.Println("looking next q ...")
 			for a := range this.lang.questions[i].RelatesTo.Answers {
 				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
 					//was the answer a remainder to save?
