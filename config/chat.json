@@ -42,9 +42,9 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩 well %s no one enjoys that aye! But do remember we have all been there before!"
+        "Well %s no one enjoys that! But do remember we have all been there before!"
       ],
-      "question": "Was it a big deal?",
+      "question": "Was it a pain?",
       "answers": [
         "Yeah it was a pain",
         "Nah just a blip"
@@ -59,9 +59,9 @@
         "saveTag": "BG_PAIN"
       },
       "context": [
-        "Ahh stink! Do remember though it happens to all of us ..."
+        "Ahh stink, thats no good! Do remember it happens to the best of us ..."
       ],
-      "question": "Do you want help",
+      "question": "Do you want help?",
       "answers": [
         "Yeah help would be good",
         "Nah I have this thanks"
@@ -125,7 +125,7 @@
         "saveTag": "LAST_BG"
       },
       "context": [
-        "💩 probably sums up that experience aye %s! Do remember we all have lows ... your not alone!"
+        "Do remember we all have lows ... your not alone! But they still suck though aye %s!"
       ],
       "question": "Was it a big deal?",
       "answers": [
