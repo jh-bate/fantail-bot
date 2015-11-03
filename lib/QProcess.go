@@ -145,7 +145,7 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 					//was the answer a remainder to save?
 					if this.lang.questions[i].RelatesTo.Save {
 						this.s.save(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag)
-						this.lastTime = append(this.lastTime, this.s.getLastChat(this.lang.questions[i].RelatesTo.SaveTag)...)
+						this.lastTime = append(this.lastTime, this.s.getLastChat(this.lang.questions[i].RelatesTo.SaveTag))
 					}
 					this.next = this.lang.questions[i]
 					return this
