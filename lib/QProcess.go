@@ -49,7 +49,9 @@ func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 
-		log.Println("incoming ", msg)
+		if msg.Sticker.Exists() {
+			log.Println("incoming ", msg.Sticker.FileID)
+		}
 
 		this.s.User = msg.Sender
 		this.
