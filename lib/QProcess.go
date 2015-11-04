@@ -48,6 +48,9 @@ func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
 
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
+
+		log.Println("incoming ", msg)
+
 		this.s.User = msg.Sender
 		this.
 			quickWinFirst(msg).
@@ -60,9 +63,9 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, start_cmd, help_cmd) {
-		this.s.send(this.info.App...)
 
-		availCmds := fmt.Sprintf("%s %s %s %s %s",
+		appInfo := fmt.Sprintf("%s %s %s %s %s %s",
+			this.info.App,
 			chat_cmd+" - to have a *quick chat* about what your upto \n\n",
 			say_cmd_hint+" - to say *anything* thats on your mind \n\n",
 			said_cmd+" - to show all the things you have said \n\n",
@@ -70,7 +73,7 @@ func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 			reminders_cmd+" - to show all the reminders you have made",
 		)
 
-		this.s.send(availCmds)
+		this.s.send(appInfo)
 	} else if hasSubmisson(msg.Text, say_cmd) {
 		log.Println("save something said ", msg.Text)
 		this.s.save(msg, say_cmd)
