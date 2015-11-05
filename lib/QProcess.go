@@ -211,10 +211,11 @@ func (this *QProcess) andChat() {
 	}
 
 	if len(this.lastTime) > 0 {
-		this.s.send(this.info.Chat...)
+		lastTimeTxt := strings.Join(this.info.Chat, "\n\n")
 		for i := range this.lastTime {
-			this.s.send(this.lastTime[i].ToString())
+			lastTimeTxt = lastTimeTxt + "\n\n" + this.lastTime[i].ToString()
 		}
+		this.s.send(lastTimeTxt)
 		this.lastTime = nil
 	}
 	return
