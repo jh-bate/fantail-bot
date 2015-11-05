@@ -19,7 +19,7 @@ const (
 	remind_cmd_hint, say_cmd_hint = "/remind me in <days> to <message>", "/say [what you want to say]"
 
 	default_script = "default"
-	stickers_chat  = "stickers_chat"
+	stickers_chat  = "chat"
 )
 
 type (
