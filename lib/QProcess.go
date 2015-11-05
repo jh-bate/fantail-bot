@@ -215,7 +215,8 @@ func (this *QProcess) andChat() {
 		for i := range this.lastTime {
 			lastTimeTxt = lastTimeTxt + "\n\n" + this.lastTime[i].ToString()
 		}
-		this.s.send(lastTimeTxt)
+		//this.s.send(lastTimeTxt)
+		log.Println("Last Time ", lastTimeTxt)
 		this.lastTime = nil
 	}
 	return
