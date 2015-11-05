@@ -1,0 +1,37 @@
+[
+  {
+    "ids": [
+      "BQADAwADBAADt6a9BmghQvhrHev3Ag"
+    ],
+    "meaning": "Perfect",
+    "saveTag": "LAST_BG"
+  },
+  {
+    "ids": [
+      "BQADAwADCgADt6a9BtopSv1uQpPwAg"
+    ],
+    "meaning": "Low",
+    "saveTag": "LAST_BG"
+  },
+  {
+    "ids": [
+      "BQADAwADDAADt6a9BkUSLrxnvwHfAg"
+    ],
+    "meaning": "Super Low",
+    "saveTag": "LAST_BG"
+  },
+  {
+    "ids": [
+      "BQADAwADBgADt6a9Bhg_Vt47gG4OAg"
+    ],
+    "meaning": "High",
+    "saveTag": "LAST_BG"
+  },
+  {
+    "ids": [
+      "BQADAwADCAADt6a9Bqh_M_o19aEhAg"
+    ],
+    "meaning": "Super High",
+    "saveTag": "LAST_BG"
+  }
+]

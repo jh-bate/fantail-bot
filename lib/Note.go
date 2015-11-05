@@ -120,6 +120,10 @@ func (this Notes) ForNextDays(days int) Notes {
 	return r
 }
 
+func (this Note) IsEmpty() bool {
+	return this.Text == "" && this.Tag == ""
+}
+
 func NewNote(msg telebot.Message, tags ...string) Note {
 
 	txt := msg.Text
@@ -137,7 +141,7 @@ func NewNote(msg telebot.Message, tags ...string) Note {
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 }
 
-func NewReminderNote(msg telebot.Message) (Note, error) {
+func NewReminderNote(msg telebot.Message) Note {
 
 	const remind_pos, time_pos, msg_pos = 0, 1, 2
 	words := strings.Fields(msg.Text)
@@ -145,13 +149,15 @@ func NewReminderNote(msg telebot.Message) (Note, error) {
 	days, err := strconv.Atoi(words[time_pos])
 
 	if err != nil {
-		return Note{}, fmt.Errorf("Reminder format is %s", remind_cmd_hint)
+		log.Println(fmt.Errorf("Reminder format is %s", remind_cmd_hint).Error())
+		return Note{}
 	}
 
 	what := strings.SplitAfterN(msg.Text, words[time_pos], 2)[1]
 
 	if what == "" {
-		return Note{}, fmt.Errorf("Reminder format is %s", remind_cmd_hint)
+		log.Println(fmt.Errorf("Reminder format is %s", remind_cmd_hint).Error())
+		return Note{}
 	}
 
 	return Note{
@@ -159,5 +165,5 @@ func NewReminderNote(msg telebot.Message) (Note, error) {
 		AddedOn:    msg.Time(),
 		Text:       strings.TrimSpace(what),
 		Tag:        reminder_tag,
-		RemindNext: time.Now().AddDate(0, 0, days)}, nil
+		RemindNext: time.Now().AddDate(0, 0, days)}
 }

@@ -76,26 +76,18 @@ func (s *session) takeThoughtfulPause() {
 	return
 }
 
-func (s *session) saveAsReminder(msg telebot.Message) error {
-	if s.Storage == nil {
-		log.Println(FantailStorageErr.Error())
-		return FantailStorageErr
-	}
-	r, err := NewReminderNote(msg)
-	if err != nil {
-		return err
-	}
-	return s.Storage.Save(fmt.Sprintf("%d", s.User.ID), r)
-}
-
-func (s *session) save(msg telebot.Message, tags ...string) {
+func (s *session) save(n Note) {
 	if s.Storage == nil {
 		log.Println(FantailStorageErr.Error())
 		return
 	}
-	log.Println("Saving", msg.Text)
+	if n.IsEmpty() {
+		log.Println("Nothing to save")
+		return
+	}
+	log.Println("Saving", n.Text)
 
-	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), NewNote(msg, tags...))
+	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
 
 	if err != nil {
 		log.Println(err.Error())

@@ -1,0 +1,122 @@
+{
+  "QandA": [
+    {
+      "relatesTo": {
+        "answers": [
+          "BQADAwADBgADt6a9Bhg_Vt47gG4OAg",
+          "BQADAwADCAADt6a9Bqh_M_o19aEhAg"
+        ],
+        "save": true,
+        "saveTag": "LAST_BG"
+      },
+      "context": [
+        "Well %s no one enjoys that! But do remember we have all been there before!"
+      ],
+      "question": "Was it a pain?",
+      "answers": [
+        "Yeah it was a pain",
+        "Nah just a blip"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "BQADAwADBAADt6a9BmghQvhrHev3Ag"
+        ],
+        "save": true,
+        "saveTag": "LAST_BG"
+      },
+      "context": [
+        "🙌 great work %s lets take a moment ... and bask in the glory of that achievement! 🎉🎉"
+      ],
+      "question": "Well - back to it then 👋",
+      "answers": [
+        "Cheers!"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "BQADAwADCgADt6a9BtopSv1uQpPwAg"
+        ],
+        "save": true,
+        "saveTag": "LAST_BG"
+      },
+      "context": [
+        "Do remember we all have lows ... your not alone! But they still suck though aye %s!"
+      ],
+      "question": "Was it a big deal?",
+      "answers": [
+        "Yeah it was a pain",
+        "Nah just a blip"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "BQADAwADDAADt6a9BkUSLrxnvwHfAg"
+        ],
+        "save": true,
+        "saveTag": "LAST_BG"
+      },
+      "context": [
+        "Do remember we all have lows ... your not alone! But they still suck though aye %s!"
+      ],
+      "question": "Was it a big deal?",
+      "answers": [
+        "Yeah it was a pain",
+        "Nah just a blip"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Yeah it was a pain"
+        ],
+        "save": true,
+        "saveTag": "BG_PAIN"
+      },
+      "context": [
+        "Ahh stink, thats no good! Do remember it happens to the best of us ..."
+      ],
+      "question": "Do you want help?",
+      "answers": [
+        "Yeah help would be good",
+        "Nah I have this thanks"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Yeah help would be good",
+          "Nah I have this thanks"
+        ],
+        "save": true,
+        "saveTag": "HELP"
+      },
+      "context": [
+        "Well thanks for opening up to us. Lets keep an eye on how things go"
+      ],
+      "question": "👋 bye",
+      "answers": [
+        "See you!"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Nah just a blip"
+        ],
+        "save": true,
+        "saveTag": "BG_PAIN"
+      },
+      "context": [
+        "Cool, just wanted to check"
+      ],
+      "question": "👋 bye",
+      "answers": [
+        "See you!"
+      ]
+    },
+  ]
+}
