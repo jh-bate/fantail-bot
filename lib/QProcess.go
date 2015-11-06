@@ -33,7 +33,7 @@ type (
 	QProcess struct {
 		s    *session
 		lang struct {
-			questions `json:"QandA"`
+			Questions `json:"QandA"`
 		}
 		info     *Info
 		next     *Question
@@ -152,22 +152,15 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, chat_cmd, said_cmd, say_cmd, remind_cmd, reminders_cmd) {
 		//start at the beginning - covers submissons also
-		this.next = this.lang.questions[0]
+		this.next = this.lang.Questions[0]
 		return this
 	} else {
 		//find the next question
-		for i := range this.lang.questions {
-			for a := range this.lang.questions[i].RelatesTo.Answers {
-				if this.lang.questions[i].RelatesTo.Answers[a] == msg.Text {
-					//was the answer a remainder to save?
-					if this.lang.questions[i].RelatesTo.Save {
-						this.s.save(NewNote(msg, chat_cmd, this.lang.questions[i].RelatesTo.SaveTag))
-						this.lastTime = append(this.lastTime, this.s.getLastChat(this.lang.questions[i].RelatesTo.SaveTag))
-					}
-					this.next = this.lang.questions[i]
-					return this
-				}
-			}
+		nxt, sv := this.lang.Questions.next(msg.Text)
+		this.next = nxt
+		if sv {
+			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
+			this.lastTime = append(this.lastTime, this.s.getLastChat(this.next.RelatesTo.SaveTag))
 		}
 	}
 	log.Println("looks like we are all done!")
@@ -177,36 +170,20 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProcess {
 	this.next = nil
 
-	for i := range this.lang.questions {
-		for a := range this.lang.questions[i].RelatesTo.Answers {
-			for si := range s.Ids {
-				if this.lang.questions[i].RelatesTo.Answers[a] == s.Ids[si] {
-					if this.lang.questions[i].RelatesTo.Save {
-						this.s.save(s.ToNote(msg))
-					}
-					this.next = this.lang.questions[i]
-					return this
-				}
-			}
-		}
+	nxt, sv := this.lang.Questions.nextFrom(s.Ids...)
+	this.next = nxt
+	if sv {
+		this.s.save(s.ToNote(msg))
 	}
 
 	log.Println("looks like we are all done!")
 	return this
 }
 
-func (this *QProcess) makeKeyboard() Keyboard {
-	keyboard := Keyboard{}
-	for i := range this.next.PossibleAnswers {
-		keyboard = append(keyboard, []string{this.next.PossibleAnswers[i]})
-	}
-	return keyboard
-}
-
 func (this *QProcess) andChat() {
 	if this.next != nil {
 		this.s.send(this.next.Context...)
-		this.s.sendWithKeyboard(this.next.QuestionText, this.makeKeyboard())
+		this.s.sendWithKeyboard(this.next.QuestionText, this.next.makeKeyboard())
 		return
 	}
 

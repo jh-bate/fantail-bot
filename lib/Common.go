@@ -7,19 +7,6 @@ import (
 )
 
 type (
-	Question struct {
-		RelatesTo struct {
-			Answers []string `json:"answers"`
-			Save    bool     `json:"save"`
-			SaveTag string   `json:"saveTag"`
-		} `json:"relatesTo"`
-		Context         []string `json:"context"`
-		QuestionText    string   `json:"question"`
-		PossibleAnswers []string `json:"answers"`
-	}
-
-	questions []*Question
-
 	Process interface {
 		Run(input <-chan telebot.Message)
 	}
