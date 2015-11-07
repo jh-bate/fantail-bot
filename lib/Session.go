@@ -116,37 +116,24 @@ func daysFromText(txt string) int {
 	return days
 }
 
-func (s *session) getReminders(msg telebot.Message) Notes {
-
-	days := daysFromText(msg.Text)
-	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
-	if err == nil {
-		if days > 0 {
-			return all.FilterReminders().ForNextDays(days)
-		}
-		return all.FilterReminders().ForToday()
-	}
-	return Notes{}
-}
-
 func (s *session) getNotes(msg telebot.Message) Notes {
 
 	days := daysFromText(msg.Text)
 	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
 	if err == nil {
 		if days > 0 {
-			return all.FilterNotes().ForNextDays(days)
+			return all.ForNextDays(days)
 		}
-		return all.FilterNotes()
+		return all
 	}
 	return Notes{}
 }
 
-func (s *session) getLastChat(topic string) *Note {
+func (s *session) getLastChatForTopic(topic string) *Note {
 
 	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
 	if err == nil {
-		return all.FilterChat(topic)
+		return all.FilterBy(topic).SortByDate()[0]
 	}
 	return nil
 }

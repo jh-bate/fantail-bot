@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -10,9 +11,9 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const reminder_tag = remind_cmd
 const said_tag = say_cmd
 const chat_tag = chat_cmd
+const remind_tag = remind_cmd
 
 type (
 	Note struct {
@@ -37,14 +38,6 @@ func (this *Note) RemindToday() bool {
 	return true
 }
 
-func (this *Note) IsReminder() bool {
-	return strings.Contains(this.Tag, reminder_tag)
-}
-
-func (this *Note) IsCurrentReminder() bool {
-	return this.IsReminder() && this.IsCurrent()
-}
-
 func (this *Note) IsCurrent() bool {
 	return this.CompletedOn.IsZero()
 }
@@ -64,44 +57,14 @@ func (this *Note) ToString() string {
 	return fmt.Sprintf("On %s you said '%s'", this.AddedOn.Format("Mon Jan 2 03:04pm"), this.Text)
 }
 
-func (this Notes) FilterReminders() Notes {
-	var r Notes
-	for i := range this {
-		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, reminder_tag) {
-			r = append(r, this[i])
-		}
-	}
-	return r
-}
-
-func (this Notes) FilterNotes() Notes {
+func (this Notes) FilterBy(tag string) Notes {
 	var n Notes
 	for i := range this {
-		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, said_tag) {
+		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, tag) {
 			n = append(n, this[i])
 		}
 	}
 	return n
-}
-
-func (this Notes) FilterChat(topic string) *Note {
-	for i := range this {
-		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, chat_tag) && strings.Contains(this[i].Tag, topic) {
-			return this[i]
-		}
-	}
-
-	return nil
-}
-
-func (this Notes) ForToday() Notes {
-	var r Notes
-	for i := range this {
-		if this[i].RemindToday() {
-			r = append(r, this[i])
-		}
-	}
-	return r
 }
 
 func (this Notes) ForNextDays(days int) Notes {
@@ -118,6 +81,29 @@ func (this Notes) ForNextDays(days int) Notes {
 		}
 	}
 	return r
+}
+
+type ByDate Notes
+
+func (this ByDate) Len() int           { return len(this) }
+func (this ByDate) Swap(i, j int)      { this[i], this[j] = this[j], this[i] }
+func (this ByDate) Less(i, j int) bool { return this[i].AddedOn.Before(this[j].AddedOn) }
+
+func (this Notes) ToString() string {
+	str := ""
+	if len(this) > 0 {
+		str = fmt.Sprintf("%s \n\n", this[0].AddedOn.Format("Mon Jan 2"))
+		for i := range this {
+			str += fmt.Sprintf("  - %s '%s'", this[i].AddedOn.Format("Mon 03:04pm"), this[i].Text)
+		}
+	}
+
+	return str
+}
+
+func (this Notes) SortByDate() Notes {
+	sort.Sort(ByDate(this))
+	return this
 }
 
 func (this Note) IsEmpty() bool {
@@ -164,6 +150,6 @@ func NewReminderNote(msg telebot.Message) Note {
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       strings.TrimSpace(what),
-		Tag:        reminder_tag,
+		Tag:        remind_tag,
 		RemindNext: time.Now().AddDate(0, 0, days)}
 }

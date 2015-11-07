@@ -14,9 +14,9 @@ const (
 	//being a good citizen
 	start_cmd, help_cmd = "/start", "/help"
 
-	chat_cmd, remind_cmd, say_cmd, reminders_cmd, said_cmd = "/chat", "/remind", "/say", "/reminders", "/said"
+	chat_cmd, say_cmd, review_cmd, remind_cmd = "/chat", "/say", "/review", "/remind"
 
-	remind_cmd_hint, say_cmd_hint = "/remind me in <days> to <message>", "/say [what you want to say]"
+	remind_cmd_hint, review_cmd_hint, say_cmd_hint = "/remind in <days> to <msg>", "/review <days>", "/say [what you want to say]"
 
 	default_script = "default"
 	stickers_chat  = "chat"
@@ -54,59 +54,44 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 		this.s.User = msg.Sender
 		if msg.Sticker.Exists() {
 			log.Println("incoming sticker", msg.Sticker.FileID)
-
-			s := this.sLib.FindSticker(msg.Sticker.FileID)
-			if s != nil {
+			if s := this.sLib.FindSticker(msg.Sticker.FileID); s != nil {
 				log.Println("We know what to do with this sticker ...", s.Meaning, s.SaveTag)
 				this.loadScript(stickers_chat)
-				//get going
 				this.findNextStickerQ(s, msg).andChat()
 			}
-		} else {
-			this.
-				quickWinFirst(msg).
-				determineScript(msg).
-				findNextQuestion(msg).
-				andChat()
+			return
 		}
+		this.
+			quickWinFirst(msg).
+			determineScript(msg).
+			findNextQuestion(msg).
+			andChat()
+
 	}
 }
 
 func (this *QProcess) quickWinFirst(msg telebot.Message) *QProcess {
 
 	if isCmd(msg.Text, start_cmd, help_cmd) {
-
-		appInfo := fmt.Sprintf("%s %s %s %s %s %s",
+		appInfo := fmt.Sprintf("%s %s %s %s ",
 			this.info.App,
 			chat_cmd+" - to have a *quick chat* about what your upto \n\n",
 			say_cmd_hint+" - to say *anything* thats on your mind \n\n",
-			said_cmd+" - to show all the things you have said \n\n",
-			remind_cmd_hint+" - to keep track of the things you need to be reminded about \n\n",
-			reminders_cmd+" - to show all the reminders you have made",
+			review_cmd_hint+" - to review what has been happening \n\n",
 		)
-
 		this.s.send(appInfo)
 	} else if hasSubmisson(msg.Text, say_cmd) {
 		log.Println("save something said ", msg.Text)
 		this.s.save(NewNote(msg, say_cmd))
-	} else if hasSubmisson(msg.Text, remind_cmd) {
-		log.Println("save a reminder ", msg.Text)
-		this.s.save(NewReminderNote(msg))
-	} else if hasSubmisson(msg.Text, reminders_cmd) || isCmd(msg.Text, reminders_cmd) {
-		log.Println("showing reminders ", msg.Text)
-		r := this.s.getReminders(msg)
+	} else if hasSubmisson(msg.Text, review_cmd) || isCmd(msg.Text, review_cmd) {
+		log.Println("doing review ", msg.Text)
+		n := this.s.getNotes(msg)
 		this.s.send(this.info.Reminders...)
-		for i := range r {
-			this.s.send(r[i].ToString())
-
-		}
-	} else if hasSubmisson(msg.Text, said_cmd) || isCmd(msg.Text, said_cmd) {
-		log.Println("showing things said ", msg.Text)
-		r := this.s.getNotes(msg)
-		this.s.send(this.info.Said...)
-		for i := range r {
-			this.s.send(r[i].ToString())
-		}
+		this.s.send(n.FilterBy(said_tag).ToString())
+		this.s.send(n.FilterBy(chat_tag).ToString())
+	} else if hasSubmisson(msg.Text, remind_cmd) {
+		log.Println("save reminder ", msg.Text)
+		this.s.save(NewReminderNote(msg))
 	}
 	return this
 }
@@ -138,7 +123,7 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 	if hasSubmisson(msg.Text, remind_cmd, say_cmd) {
 		log.Println("load default script after submisson")
 		this.loadScript(default_script)
-	} else if isCmd(msg.Text, chat_cmd, said_cmd, say_cmd, remind_cmd, reminders_cmd) {
+	} else if isCmd(msg.Text, chat_cmd, say_cmd, remind_cmd) {
 		words := strings.Fields(msg.Text)
 		scriptName := strings.SplitAfter(words[0], "/")[1]
 		log.Println("load command script", scriptName)
@@ -150,17 +135,18 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	this.next = nil
 
-	if isCmd(msg.Text, chat_cmd, said_cmd, say_cmd, remind_cmd, reminders_cmd) {
+	if isCmd(msg.Text, chat_cmd, say_cmd, remind_cmd) {
 		//start at the beginning - covers submissons also
 		this.next = this.lang.Questions[0]
 		return this
 	} else {
 		//find the next question
-		nxt, sv := this.lang.Questions.next(msg.Text)
-		this.next = nxt
-		if sv {
+		if nxt, sv := this.lang.Questions.next(msg.Text); sv {
 			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
 			this.lastTime = append(this.lastTime, this.s.getLastChat(this.next.RelatesTo.SaveTag))
+			this.next = nxt
+		} else {
+			this.next = nxt
 		}
 	}
 	log.Println("looks like we are all done!")
@@ -170,10 +156,11 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProcess {
 	this.next = nil
 
-	nxt, sv := this.lang.Questions.nextFrom(s.Ids...)
-	this.next = nxt
-	if sv {
+	if nxt, sv := this.lang.Questions.nextFrom(s.Ids...); sv {
 		this.s.save(s.ToNote(msg))
+		this.next = nxt
+	} else {
+		this.next = nxt
 	}
 
 	log.Println("looks like we are all done!")
