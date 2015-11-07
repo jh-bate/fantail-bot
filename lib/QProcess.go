@@ -157,7 +157,7 @@ func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProces
 	this.next = nil
 
 	if nxt, sv := this.lang.Questions.nextFrom(s.Ids...); sv {
-		this.s.save(s.ToNote(msg))
+		this.s.save(s.ToNote(msg, chat_tag))
 		this.next = nxt
 		return this
 	} else {

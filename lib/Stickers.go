@@ -34,13 +34,16 @@ func LoadKnownStickers() Stickers {
 	return s
 }
 
-func (this Sticker) ToNote(msg telebot.Message) Note {
+func (this Sticker) ToNote(msg telebot.Message, tags ...string) Note {
+
+	tags = append(tags, this.Ids...)
+	tags = append(tags, this.SaveTag)
 
 	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       this.Meaning,
-		Tag:        strings.Join(append(this.Ids, this.SaveTag), ","),
+		Tag:        strings.Join(tags, ","),
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 
 }

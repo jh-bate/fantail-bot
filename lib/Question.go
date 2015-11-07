@@ -31,8 +31,8 @@ func (this Questions) next(prevAnswer string) (*Question, bool) {
 
 func (this Questions) nextFrom(prevAnswers ...string) (*Question, bool) {
 	for i := range prevAnswers {
-		nxt, sv := this.next(prevAnswers[i])
-		if nxt != nil {
+		if nxt, sv := this.next(prevAnswers[i]); nxt != nil {
+			log.Println("got it from sticker ...")
 			return nxt, sv
 		}
 	}
