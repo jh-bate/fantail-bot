@@ -174,10 +174,10 @@ func (this *QProcess) andChat() {
 	if this.next != nil {
 		this.s.send(this.next.Context...)
 		this.s.sendWithKeyboard(this.next.QuestionText, this.next.makeKeyboard())
-		return
+		//return
 	}
 
-	if len(this.lastTime) > 0 {
+	/*if len(this.lastTime) > 0 {
 		lastTimeTxt := strings.Join(this.info.Chat, "\n\n")
 		for i := range this.lastTime {
 			lastTimeTxt = lastTimeTxt + "\n\n" + this.lastTime[i].ToString()
@@ -185,6 +185,6 @@ func (this *QProcess) andChat() {
 		//this.s.send(lastTimeTxt)
 		log.Println("Last Time ", lastTimeTxt)
 		this.lastTime = nil
-	}
+	}*/
 	return
 }
