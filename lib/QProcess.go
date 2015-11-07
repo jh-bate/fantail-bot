@@ -171,9 +171,14 @@ func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProces
 }
 
 func (this *QProcess) andChat() {
+
+	log.Println("are we chatting? ", this.next != nil)
 	if this.next != nil {
+		log.Println("chatting sending context")
 		this.s.send(this.next.Context...)
+		log.Println("chatting sending question")
 		this.s.sendWithKeyboard(this.next.QuestionText, this.next.makeKeyboard())
+		log.Println("all good")
 		//return
 	}
 
