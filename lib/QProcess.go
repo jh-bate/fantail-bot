@@ -145,12 +145,12 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
 			this.lastTime = append(this.lastTime, this.s.getLastChatForTopic(this.next.RelatesTo.SaveTag))
 			this.next = nxt
+			return this
 		} else {
 			this.next = nxt
+			return this
 		}
 	}
-	log.Println("looks like we are all done!")
-	return this
 }
 
 func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProcess {
@@ -159,12 +159,11 @@ func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProces
 	if nxt, sv := this.lang.Questions.nextFrom(s.Ids...); sv {
 		this.s.save(s.ToNote(msg))
 		this.next = nxt
+		return this
 	} else {
 		this.next = nxt
+		return this
 	}
-
-	log.Println("looks like we are all done!")
-	return this
 }
 
 func (this *QProcess) andChat() {

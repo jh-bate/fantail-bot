@@ -1,5 +1,7 @@
 package lib
 
+import "log"
+
 type (
 	Question struct {
 		RelatesTo struct {
@@ -18,6 +20,7 @@ type (
 func (this Questions) next(prevAnswer string) (*Question, bool) {
 	for i := range this {
 		for a := range this[i].RelatesTo.Answers {
+			log.Println(this[i].RelatesTo.Answers[a], "matches", prevAnswer)
 			if this[i].RelatesTo.Answers[a] == prevAnswer {
 				return this[i], this[i].RelatesTo.Save
 			}
