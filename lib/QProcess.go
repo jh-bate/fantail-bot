@@ -59,13 +59,13 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 				this.loadScript(stickers_chat)
 				this.findNextStickerQ(s, msg).andChat()
 			}
-			return
+		} else {
+			this.
+				quickWinFirst(msg).
+				determineScript(msg).
+				findNextQuestion(msg).
+				andChat()
 		}
-		this.
-			quickWinFirst(msg).
-			determineScript(msg).
-			findNextQuestion(msg).
-			andChat()
 
 	}
 }
