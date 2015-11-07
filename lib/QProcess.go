@@ -55,15 +55,16 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 		if msg.Sticker.Exists() {
 			log.Println("incoming sticker", msg.Sticker.FileID)
 			if s := this.sLib.FindSticker(msg.Sticker.FileID); s != nil {
-				log.Println("We know what to do with this sticker ...", s.Meaning, s.SaveTag)
 				this.loadScript(stickers_chat)
-				this.findNextStickerQ(s, msg).andChat()
+				this.
+					nextStickerQ(s, msg).
+					andChat()
 			}
 		} else {
 			this.
 				quickWinFirst(msg).
 				determineScript(msg).
-				findNextQuestion(msg).
+				nextQ(msg).
 				andChat()
 		}
 
@@ -132,20 +133,16 @@ func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
 	return this
 }
 
-func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
+func (this *QProcess) nextQ(msg telebot.Message) *QProcess {
 	this.next = nil
 
 	if isCmd(msg.Text, chat_cmd, say_cmd, remind_cmd) {
-		//start at the beginning - covers submissons also
-		this.next = this.lang.Questions[0]
+		this.next = this.lang.Questions.First()
 		return this
 	} else {
-		//find the next question
 		if nxt, sv := this.lang.Questions.next(msg.Text); sv {
 			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
-			log.Println("After save")
 			this.next = nxt
-			log.Println("After setting next ", nxt.QuestionText)
 			return this
 		} else {
 			this.next = nxt
@@ -154,15 +151,12 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 	}
 }
 
-func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProcess {
+func (this *QProcess) nextStickerQ(s *Sticker, msg telebot.Message) *QProcess {
 	this.next = nil
 
 	if nxt, sv := this.lang.Questions.nextFrom(s.Ids...); sv {
-		log.Println("About to save save")
 		this.s.save(s.ToNote(msg, chat_tag))
-		log.Println("After save")
 		this.next = nxt
-		log.Println("After setting next ", nxt.QuestionText)
 		return this
 	} else {
 		this.next = nxt
@@ -171,25 +165,9 @@ func (this *QProcess) findNextStickerQ(s *Sticker, msg telebot.Message) *QProces
 }
 
 func (this *QProcess) andChat() {
-
-	log.Println("are we chatting? ", this.next != nil)
 	if this.next != nil {
-		log.Println("chatting sending context")
 		this.s.send(this.next.Context...)
-		log.Println("chatting sending question")
 		this.s.sendWithKeyboard(this.next.QuestionText, this.next.makeKeyboard())
-		log.Println("all good")
-		//return
 	}
-
-	/*if len(this.lastTime) > 0 {
-		lastTimeTxt := strings.Join(this.info.Chat, "\n\n")
-		for i := range this.lastTime {
-			lastTimeTxt = lastTimeTxt + "\n\n" + this.lastTime[i].ToString()
-		}
-		//this.s.send(lastTimeTxt)
-		log.Println("Last Time ", lastTimeTxt)
-		this.lastTime = nil
-	}*/
 	return
 }

@@ -17,6 +17,13 @@ type (
 	Questions []*Question
 )
 
+func (this Questions) First() *Question {
+	if len(this) > 0 {
+		return this[0]
+	}
+	return nil
+}
+
 func (this Questions) next(prevAnswer string) (*Question, bool) {
 	for i := range this {
 		for a := range this[i].RelatesTo.Answers {
