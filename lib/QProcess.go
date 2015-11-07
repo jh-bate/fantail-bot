@@ -143,7 +143,7 @@ func (this *QProcess) findNextQuestion(msg telebot.Message) *QProcess {
 		//find the next question
 		if nxt, sv := this.lang.Questions.next(msg.Text); sv {
 			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
-			this.lastTime = append(this.lastTime, this.s.getLastChat(this.next.RelatesTo.SaveTag))
+			this.lastTime = append(this.lastTime, this.s.getLastChatForTopic(this.next.RelatesTo.SaveTag))
 			this.next = nxt
 		} else {
 			this.next = nxt
