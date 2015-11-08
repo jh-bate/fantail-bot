@@ -81,9 +81,7 @@ func (this action) info() string {
 	return ""
 }
 
-func (this action) loadQuestions() Questions {
-
-	var q Questions
+func (this action) loadQuestions(q Questions) {
 
 	if this.typeIsSet() {
 
@@ -101,7 +99,7 @@ func (this action) loadQuestions() Questions {
 			log.Panic("could not decode QandA ", err.Error())
 		}
 	}
-	return q
+	return
 }
 
 func (this action) hasSubmisson() bool {
