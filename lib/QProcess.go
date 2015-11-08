@@ -96,7 +96,7 @@ func (this *QProcess) loadInfo() {
 }
 
 func (this *QProcess) determineScript(msg telebot.Message) *QProcess {
-	this.s.Action.loadQuestions(this.lang.Questions)
+	this.s.Action.loadQuestions(&this.lang.Questions)
 	return this
 }
 

@@ -81,7 +81,7 @@ func (this action) info() string {
 	return ""
 }
 
-func (this action) loadQuestions(q Questions) {
+func (this action) loadQuestions(q *Questions) {
 
 	if this.typeIsSet() {
 
@@ -94,7 +94,7 @@ func (this action) loadQuestions(q Questions) {
 		if err != nil {
 			log.Panic("could not load QandA language file ", err.Error())
 		}
-		err = json.NewDecoder(file).Decode(&q)
+		err = json.NewDecoder(file).Decode(q)
 		if err != nil {
 			log.Panic("could not decode QandA ", err.Error())
 		}
