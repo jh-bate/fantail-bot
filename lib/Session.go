@@ -19,7 +19,6 @@ type (
 		Bot     *telebot.Bot
 		User    telebot.User
 		Storage *Storage
-		Action  *action
 	}
 
 	Keyboard [][]string
@@ -27,12 +26,6 @@ type (
 
 func newSession(b *telebot.Bot, s *Storage) *session {
 	return &session{Bot: b, Storage: s}
-}
-
-func (s *session) addDetails(msg telebot.Message) {
-	s.Action = newAction(msg)
-	s.User = msg.Sender
-	return
 }
 
 func (s *session) send(msgs ...string) {
