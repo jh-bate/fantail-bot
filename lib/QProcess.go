@@ -141,8 +141,8 @@ func (this *QProcess) nextQ(msg telebot.Message) *QProcess {
 		return this
 	} else {
 		if nxt, sv := this.lang.Questions.next(msg.Text); sv {
-			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
 			this.next = nxt
+			this.s.save(NewNote(msg, chat_cmd, this.next.RelatesTo.SaveTag))
 			return this
 		} else {
 			this.next = nxt
