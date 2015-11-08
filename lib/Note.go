@@ -11,9 +11,9 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-const said_tag = say_cmd
-const chat_tag = chat_cmd
-const remind_tag = remind_cmd
+const said_tag = say_action
+const chat_tag = chat_action
+const remind_tag = remind_action
 
 type (
 	Note struct {
@@ -135,14 +135,14 @@ func NewReminderNote(msg telebot.Message) Note {
 	days, err := strconv.Atoi(words[time_pos])
 
 	if err != nil {
-		log.Println(fmt.Errorf("Reminder format is %s", remind_cmd_hint).Error())
+		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
 		return Note{}
 	}
 
 	what := strings.SplitAfterN(msg.Text, words[time_pos], 2)[1]
 
 	if what == "" {
-		log.Println(fmt.Errorf("Reminder format is %s", remind_cmd_hint).Error())
+		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
 		return Note{}
 	}
 
