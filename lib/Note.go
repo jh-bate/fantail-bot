@@ -93,7 +93,11 @@ func (this Notes) ToString() string {
 	str := ""
 	if len(this) > 0 {
 		str = fmt.Sprintf("%s \n\n", this[0].AddedOn.Format("Mon Jan 2"))
+		day := this[0].AddedOn.YearDay()
 		for i := range this {
+			if day != this[i].AddedOn.YearDay() {
+				str += fmt.Sprintf("%s \n\n", this[i].AddedOn.Format("Mon Jan 2"))
+			}
 			str += fmt.Sprintf("  - %s '%s'", this[i].AddedOn.Format("Mon 03:04pm"), this[i].Text)
 		}
 	}
