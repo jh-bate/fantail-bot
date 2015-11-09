@@ -10,13 +10,6 @@ import (
 )
 
 const (
-	//being a good citizen
-	start_cmd, help_cmd = "/start", "/help"
-
-	//chat_cmd, say_cmd, review_cmd, remind_cmd = "/chat", "/say", "/review", "/remind"
-
-	//remind_cmd_hint, review_cmd_hint, say_cmd_hint = "/remind in <days> to <msg>", "/review <days>", "/say [what you want to say]"
-
 	default_script = "default"
 	stickers_chat  = "chat"
 )
@@ -73,7 +66,7 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 }
 
 func (this *QProcess) quickWinFirst() *QProcess {
-	this.in.getAction(this.s).quickWin()
+	this.in.getAction(this.s).do()
 	return this
 }
 

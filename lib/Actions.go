@@ -8,10 +8,12 @@ import (
 type Action interface {
 	getName() string
 	getHint() string
-	quickWin()
+	do()
 }
 
 const (
+	start_action, help_action = "/start", "/help"
+
 	say_action      = "/say"
 	say_action_hint = "/say [what you want to say]"
 
@@ -35,6 +37,7 @@ func NewAction(in Incoming, s *session) Action {
 	} else if in.getCmd() == chat_action {
 		return &ChatAction{in: &in, s: s}
 	}
+	log.Println("asked ", in.getCmd())
 	return &HelpAction{in: &in, s: s}
 }
 
@@ -49,7 +52,7 @@ func (a SayAction) getName() string {
 func (a SayAction) getHint() string {
 	return say_action_hint
 }
-func (a SayAction) quickWin() {
+func (a SayAction) do() {
 	log.Println("say ...")
 	a.s.save(a.in.getNote())
 	return
@@ -66,9 +69,9 @@ func (a HelpAction) getName() string {
 func (a HelpAction) getHint() string {
 	return say_action_hint
 }
-func (a HelpAction) quickWin() {
+func (a HelpAction) do() {
 	helpInfo := fmt.Sprintf("%s %s %s %s ",
-		"Options:\n\n",
+		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.in.sender().Username),
 		chat_action+" - to have a *quick chat* about what your upto \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
@@ -88,7 +91,8 @@ func (a ChatAction) getName() string {
 func (a ChatAction) getHint() string {
 	return ""
 }
-func (a ChatAction) quickWin() {
+func (a ChatAction) do() {
+	//nothing to do
 	return
 }
 
@@ -103,14 +107,14 @@ func (a ReviewAction) getName() string {
 func (a ReviewAction) getHint() string {
 	return review_action_hint
 }
-func (a ReviewAction) quickWin() {
+func (a ReviewAction) do() {
 	log.Println("doing review ...")
 	n := a.s.getNotes(a.in.msg)
 
-	saidTxt := "You said: \n\n" + n.FilterBy(said_tag).ToString()
+	saidTxt := fmt.Sprintf("%s you said: \n\n %s", a.in.sender().Username, n.FilterBy(said_tag).ToString())
 	a.s.send(saidTxt)
-	chattedTxt := "We chatted: \n\n" + n.FilterBy(chat_tag).ToString()
-	a.s.send(chattedTxt)
+	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.in.sender().Username, n.FilterBy(chat_tag).ToString())
+	a.s.send(talkedTxt)
 	return
 }
 
@@ -125,7 +129,7 @@ func (a RemindAction) getName() string {
 func (a RemindAction) getHint() string {
 	return remind_action_hint
 }
-func (a RemindAction) quickWin() {
+func (a RemindAction) do() {
 	log.Println("remind me ...")
 	a.s.save(a.in.getNote())
 	return
