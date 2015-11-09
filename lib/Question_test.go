@@ -97,3 +97,30 @@ func TestQuestions_next(t *testing.T) {
 	}
 
 }
+
+func TestQuestions_nextFrom(t *testing.T) {
+
+	q := loadQuestions()
+
+	n, _ := q.nextFrom(q.First().PossibleAnswers...)
+
+	if n != q[1] {
+		t.Errorf("expected %v got %v", q[1], n)
+	}
+
+}
+
+func TestQuestion_makeKeyboard(t *testing.T) {
+
+	q := loadQuestions()
+
+	q1 := q.First()
+	kb := q1.makeKeyboard()
+
+	for i := range q1.PossibleAnswers {
+		if q1.PossibleAnswers[i] != kb[i][0] {
+			t.Errorf("expected %v got %v", q1.PossibleAnswers[i], kb[i][0])
+		}
+	}
+
+}
