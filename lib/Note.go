@@ -97,10 +97,10 @@ func (this Notes) ToString() string {
 		for i := range this {
 			if day != this[i].AddedOn.YearDay() {
 				log.Println("its a new day")
-				str += fmt.Sprintf("%s \n\n", this[i].AddedOn.Format("Mon Jan 2"))
+				str += fmt.Sprintf("\n\n %s", this[i].AddedOn.Format("Mon Jan 2"))
 				day = this[i].AddedOn.YearDay()
 			}
-			str += fmt.Sprintf("  - %s '%s'", this[i].AddedOn.Format("03:04pm"), this[i].Text)
+			str += fmt.Sprintf("\n\n- %s '%s'", this[i].AddedOn.Format("03:04pm"), this[i].Text)
 		}
 	}
 
