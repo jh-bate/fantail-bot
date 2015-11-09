@@ -92,15 +92,15 @@ func (this ByDate) Less(i, j int) bool { return this[i].AddedOn.Before(this[j].A
 func (this Notes) ToString() string {
 	str := ""
 	if len(this) > 0 {
-		str = fmt.Sprintf("%s \n\n", this[0].AddedOn.Format("Mon Jan 2"))
+		str = fmt.Sprintf("%s", this[0].AddedOn.Format("Monday Jan 2"))
 		day := this[0].AddedOn.YearDay()
 		for i := range this {
 			if day != this[i].AddedOn.YearDay() {
 				log.Println("its a new day")
-				str += fmt.Sprintf("\n\n %s", this[i].AddedOn.Format("Mon Jan 2"))
+				str += fmt.Sprintf("\n %s", this[i].AddedOn.Format("Monday Jan 2"))
 				day = this[i].AddedOn.YearDay()
 			}
-			str += fmt.Sprintf("\n\n- %s '%s'", this[i].AddedOn.Format("03:04pm"), this[i].Text)
+			str += fmt.Sprintf("\n- %s '%s'", this[i].AddedOn.Format("03:04pm"), this[i].Text)
 		}
 	}
 
