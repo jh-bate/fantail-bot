@@ -72,7 +72,7 @@ func (a HelpAction) getHint() string {
 func (a HelpAction) do() {
 	helpInfo := fmt.Sprintf("%s %s %s %s ",
 		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.in.sender().Username),
-		chat_action+" - to have a *quick chat* about what your upto \n\n",
+		chat_action+" - to have a *quick chat* about what your up-to \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
 	)
