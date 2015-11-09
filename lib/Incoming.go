@@ -20,12 +20,13 @@ func (this Incoming) hasSubmisson() bool {
 	return this.isCmd() && len(strings.Fields(this.msg.Text)) > 1
 }
 
-func (this Incoming) getAction() Action {
-	return NewAction(this)
+func (this Incoming) getAction(s *session) Action {
+	this.action = NewAction(this, s)
+	return this.action
 }
 
 func (this Incoming) getNote(tags ...string) Note {
-	if strings.Contains(this.msg.Text, remind_cmd) {
+	if strings.Contains(this.msg.Text, remind_action) {
 		return NewReminderNote(this.msg)
 	}
 	return NewNote(this.msg, this.getCmd())
