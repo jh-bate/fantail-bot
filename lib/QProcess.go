@@ -1,13 +1,6 @@
 package lib
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"os"
-
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
-)
+import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 
 const (
 	default_script = "default"
@@ -23,30 +16,36 @@ type (
 	}
 
 	QProcess struct {
-		s    *session
-		lang struct {
+		s *session
+		/*lang struct {
 			Questions `json:"QandA"`
 		}
 		info     *Info
 		next     *Question
 		in       *Incoming
 		lastTime Notes
-		sLib     Stickers
+		sLib     Stickers*/
 	}
 )
 
 func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
-	q := &QProcess{s: newSession(b, s), sLib: LoadKnownStickers()}
-	q.loadInfo()
+	q := &QProcess{s: newSession(b, s)}
+	//q.loadInfo()
 	return q
 }
 
 func (this *QProcess) Run(input <-chan telebot.Message) {
 	for msg := range input {
 
-		this.in = newIncoming(msg)
-		this.s.User = this.in.sender()
-		if this.in.isSticker() {
+		//this.in = newIncoming(msg).getAction(this.s)
+		//this.s.User = this.in.sender()
+
+		action := newIncoming(msg).getAction(this.s)
+		action.doFirst()
+		action.loadQuestions()
+		action.chat(action.findNext())
+
+		/*if this.in.isSticker() {
 			log.Println("incoming sticker", msg.Sticker.FileID)
 			if s := this.sLib.FindSticker(msg.Sticker.FileID); s != nil {
 				this.loadScript(stickers_chat)
@@ -60,13 +59,14 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 				determineScript().
 				nextQ().
 				andChat()
-		}
+		}*/
 
 	}
 }
 
+/*
 func (this *QProcess) quickWinFirst() *QProcess {
-	this.in.getAction(this.s).do()
+	this.in.getAction(this.s).doFirst()
 	return this
 }
 
@@ -142,3 +142,4 @@ func (this *QProcess) andChat() {
 	}
 	return
 }
+*/
