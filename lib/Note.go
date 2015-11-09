@@ -110,24 +110,34 @@ func (this Note) IsEmpty() bool {
 	return this.Text == "" && this.Tag == ""
 }
 
+func tagFromMsg(msgTxt string) string {
+	words := strings.Fields(msgTxt)
+	if strings.Contains(words[0], "/") {
+		return words[0]
+	}
+	return ""
+}
+
 func NewNote(msg telebot.Message, tags ...string) Note {
 
 	txt := msg.Text
 
+	cmdTag := tagFromMsg(txt)
+
 	//e.g. remove '/say' from the message
-	if strings.Contains(txt, tags[0]) {
-		txt = strings.TrimSpace(strings.Split(txt, tags[0])[1])
+	if strings.Contains(txt, cmdTag) {
+		txt = strings.TrimSpace(strings.Split(txt, cmdTag)[1])
 	}
 
 	return Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       txt,
-		Tag:        strings.Join(tags, ","),
+		Tag:        strings.Join(append(tags, cmdTag), ","),
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 }
 
-func NewReminderNote(msg telebot.Message) Note {
+func NewReminderNote(msg telebot.Message, tags ...string) Note {
 
 	const remind_pos, time_pos, msg_pos = 0, 1, 2
 	words := strings.Fields(msg.Text)
@@ -150,6 +160,6 @@ func NewReminderNote(msg telebot.Message) Note {
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       strings.TrimSpace(what),
-		Tag:        remind_tag,
+		Tag:        strings.Join(append(tags, remind_tag), ","),
 		RemindNext: time.Now().AddDate(0, 0, days)}
 }
