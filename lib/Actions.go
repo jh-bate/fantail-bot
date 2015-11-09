@@ -15,7 +15,7 @@ const (
 	start_action, help_action = "/start", "/help"
 
 	say_action      = "/say"
-	say_action_hint = "/say [what you want to say]"
+	say_action_hint = "/say <message>"
 
 	chat_action = "/chat"
 
@@ -23,7 +23,7 @@ const (
 	review_action_hint = "/review <days>"
 
 	remind_action      = "/remind"
-	remind_action_hint = "/remind in <days> to <msg>"
+	remind_action_hint = "/remind in <days> to <message>"
 )
 
 func NewAction(in Incoming, s *session) Action {
