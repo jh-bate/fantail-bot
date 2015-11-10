@@ -21,7 +21,7 @@ func (this Incoming) hasSubmisson() bool {
 }
 
 func (this Incoming) getAction(s *session) Action {
-	this.action = NewAction(this, s)
+	this.action = NewAction(&this, s)
 	return this.action
 }
 

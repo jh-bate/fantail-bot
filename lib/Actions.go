@@ -11,10 +11,10 @@ import (
 type Action interface {
 	getName() string
 	getHint() string
-	loadQuestions()
-	doFirst()
-	findNext() *Question
-	chat(q *Question)
+	firstUp() Action
+	getQuestions() Questions
+	nextQuestion() *Question
+	askQuestion()
 }
 
 const (
@@ -32,21 +32,21 @@ const (
 	remind_action_hint = "/remind in <days> to <message>"
 )
 
-func NewAction(in Incoming, s *session) Action {
+func NewAction(in *Incoming, s *session) Action {
 
 	if in.getCmd() == say_action {
-		return &SayAction{in: &in, s: s}
+		return SayAction{in: in, s: s}
 	} else if in.getCmd() == remind_action {
-		return &RemindAction{in: &in, s: s}
+		return &RemindAction{in: in, s: s}
 	} else if in.getCmd() == review_action {
-		return &ReviewAction{in: &in, s: s}
+		return &ReviewAction{in: in, s: s}
 	} else if in.getCmd() == chat_action {
-		return &ChatAction{in: &in, s: s}
+		return &ChatAction{in: in, s: s}
 	} else if in.isSticker() {
-		return &StickerChatAction{in: &in, s: s}
+		return &StickerChatAction{in: in, s: s}
 	}
 	log.Println("asked ", in.getCmd())
-	return &HelpAction{in: &in, s: s}
+	return &HelpAction{in: in, s: s}
 }
 
 func load(name string, q interface{}) {
@@ -55,22 +55,22 @@ func load(name string, q interface{}) {
 		name = strings.Split(name, "/")[1]
 	}
 
-	file, err := os.Open(fmt.Sprintf("./config/%s.json", name))
+	file, err := os.Open(fmt.Sprintf("../config/%s.json", name))
 	if err != nil {
 		log.Panic("could not load QandA language file ", err.Error())
 	}
+
 	err = json.NewDecoder(file).Decode(&q)
 	if err != nil {
 		log.Panic("could not decode QandA ", err.Error())
 	}
+
+	return
 }
 
 type SayAction struct {
 	s  *session
 	in *Incoming
-	q  struct {
-		Questions `json:"QandA"`
-	}
 }
 
 func (a SayAction) getName() string {
@@ -79,35 +79,44 @@ func (a SayAction) getName() string {
 func (a SayAction) getHint() string {
 	return say_action_hint
 }
-func (a SayAction) doFirst() {
-	log.Println("say ...")
+func (a SayAction) firstUp() Action {
 	a.s.save(a.in.getNote())
-	return
+	return a
 }
 
-func (a SayAction) findNext() *Question {
+func (a SayAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
 	if a.in.isCmd() {
-		return a.q.Questions.First()
+		return q.First()
 	}
-	next, save := a.q.next(a.in.msg.Text)
+
+	next, save := q.next(a.in.msg.Text)
 	if save {
 		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 	}
 	return next
 }
 
-func (a SayAction) chat(q *Question) {
+func (a SayAction) askQuestion() {
+	q := a.nextQuestion()
 	a.s.send(q.Context...)
 	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 }
 
-func (a SayAction) loadQuestions() {
-	if a.in.hasSubmisson() {
-		load(default_script, &a.q)
-		return
+func (a SayAction) getQuestions() Questions {
+
+	var q struct {
+		Questions `json:"QandA"`
 	}
-	load(a.getName(), &a.q)
-	return
+
+	if a.in.hasSubmisson() {
+		load(default_script, &q)
+		return q.Questions
+	}
+	load(a.getName(), &q)
+	return q.Questions
 }
 
 type HelpAction struct {
@@ -124,7 +133,7 @@ func (a HelpAction) getName() string {
 func (a HelpAction) getHint() string {
 	return say_action_hint
 }
-func (a HelpAction) doFirst() {
+func (a HelpAction) firstUp() Action {
 	helpInfo := fmt.Sprintf("%s %s %s %s ",
 		fmt.Sprintf("Hey %s! We can't doFirst it all but we can:\n\n", a.in.sender().Username),
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
@@ -132,27 +141,24 @@ func (a HelpAction) doFirst() {
 		review_action_hint+" - to review what has been happening \n\n",
 	)
 	a.s.send(helpInfo)
-	return
+	return a
 }
 
-func (a HelpAction) loadQuestions() {
-	return
-}
-
-func (a HelpAction) findNext() *Question {
+func (a HelpAction) nextQuestion() *Question {
 	return nil
 }
 
-func (a HelpAction) chat(q *Question) {
+func (a HelpAction) getQuestions() Questions {
+	return nil
+}
+
+func (a HelpAction) askQuestion() {
 	return
 }
 
 type ChatAction struct {
 	s  *session
 	in *Incoming
-	q  struct {
-		Questions `json:"QandA"`
-	}
 }
 
 func (a ChatAction) getName() string {
@@ -161,27 +167,37 @@ func (a ChatAction) getName() string {
 func (a ChatAction) getHint() string {
 	return ""
 }
-func (a ChatAction) doFirst() {
+func (a ChatAction) firstUp() Action {
 	//nothing to doFirst
-	return
-}
-func (a ChatAction) loadQuestions() {
-	load(a.getName(), &a.q)
-	return
+	return a
 }
 
-func (a ChatAction) findNext() *Question {
-	if a.in.isCmd() {
-		return a.q.Questions.First()
+func (a ChatAction) getQuestions() Questions {
+
+	var q struct {
+		Questions `json:"QandA"`
 	}
-	next, save := a.q.next(a.in.msg.Text)
+
+	load(a.getName(), &q)
+	return q.Questions
+}
+
+func (a ChatAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
+	if a.in.isCmd() {
+		return q.First()
+	}
+	next, save := q.next(a.in.msg.Text)
 	if save {
 		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 	}
 	return next
 }
 
-func (a ChatAction) chat(q *Question) {
+func (a ChatAction) askQuestion() {
+	q := a.nextQuestion()
 	a.s.send(q.Context...)
 	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	return
@@ -201,7 +217,7 @@ func (a ReviewAction) getName() string {
 func (a ReviewAction) getHint() string {
 	return review_action_hint
 }
-func (a ReviewAction) doFirst() {
+func (a ReviewAction) firstUp() Action {
 	log.Println("doFirsting review ...")
 	n := a.s.getNotes(a.in.msg)
 
@@ -209,26 +225,36 @@ func (a ReviewAction) doFirst() {
 	a.s.send(saidTxt)
 	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.in.sender().Username, n.FilterBy(chat_tag).ToString())
 	a.s.send(talkedTxt)
-	return
+	return a
 }
 
-func (a ReviewAction) loadQuestions() {
-	load(a.getName(), &a.q)
-	return
-}
+func (a ReviewAction) getQuestions() Questions {
 
-func (a ReviewAction) findNext() *Question {
-	if a.in.isCmd() {
-		return a.q.Questions.First()
+	var q struct {
+		Questions `json:"QandA"`
 	}
-	next, save := a.q.next(a.in.msg.Text)
+
+	load(a.getName(), &q)
+
+	return q.Questions
+}
+
+func (a ReviewAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
+	if a.in.isCmd() {
+		return q.First()
+	}
+	next, save := q.next(a.in.msg.Text)
 	if save {
 		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 	}
 	return next
 }
 
-func (a ReviewAction) chat(q *Question) {
+func (a ReviewAction) askQuestion() {
+	q := a.nextQuestion()
 	a.s.send(q.Context...)
 	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	return
@@ -237,9 +263,6 @@ func (a ReviewAction) chat(q *Question) {
 type RemindAction struct {
 	s  *session
 	in *Incoming
-	q  struct {
-		Questions `json:"QandA"`
-	}
 }
 
 func (a RemindAction) getName() string {
@@ -248,44 +271,51 @@ func (a RemindAction) getName() string {
 func (a RemindAction) getHint() string {
 	return remind_action_hint
 }
-func (a RemindAction) doFirst() {
+func (a RemindAction) firstUp() Action {
 	log.Println("remind me ...")
 	a.s.save(a.in.getNote())
-	return
+	return a
 }
 
-func (a RemindAction) loadQuestions() {
+func (a RemindAction) getQuestions() Questions {
+
+	var q struct {
+		Questions `json:"QandA"`
+	}
+
 	if a.in.hasSubmisson() {
-		load(default_script, &a.q)
-		return
+		load(default_script, &q)
+		return q.Questions
 	}
-	load(a.getName(), &a.q)
-	return
+	load(a.getName(), &q)
+
+	return q.Questions
 }
 
-func (a RemindAction) findNext() *Question {
+func (a RemindAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
 	if a.in.isCmd() {
-		return a.q.Questions.First()
+		return q.First()
 	}
-	next, save := a.q.next(a.in.msg.Text)
+	next, save := q.next(a.in.msg.Text)
 	if save {
 		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 	}
 	return next
 }
 
-func (a RemindAction) chat(q *Question) {
+func (a RemindAction) askQuestion() {
+	q := a.nextQuestion()
 	a.s.send(q.Context...)
 	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	return
 }
 
 type StickerChatAction struct {
-	s  *session
-	in *Incoming
-	q  struct {
-		Questions `json:"QandA"`
-	}
+	s        *session
+	in       *Incoming
 	stickers Stickers
 }
 
@@ -296,32 +326,39 @@ func (a StickerChatAction) getHint() string {
 	return ""
 }
 
-func (a StickerChatAction) doFirst() {
+func (a StickerChatAction) firstUp() Action {
 	a.stickers = LoadKnownStickers()
-	return
+	return a
 }
 
-func (a StickerChatAction) loadQuestions() {
-	load(a.getName(), &a.q)
-	return
+func (a StickerChatAction) getQuestions() Questions {
+	var q struct {
+		Questions `json:"QandA"`
+	}
+	load(a.getName(), &q)
+	return q.Questions
 }
 
-func (a StickerChatAction) findNext() *Question {
+func (a StickerChatAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
 	if a.in.isSticker() {
-		next, save := a.q.nextFrom(a.stickers.FindSticker(a.in.msg.Sticker.FileID).Ids...)
+		next, save := q.nextFrom(a.stickers.FindSticker(a.in.msg.Sticker.FileID).Ids...)
 		if save {
 			a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 		}
 		return next
 	}
-	next, save := a.q.next(a.in.msg.Text)
+	next, save := q.next(a.in.msg.Text)
 	if save {
 		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 	}
 	return next
 }
 
-func (a StickerChatAction) chat(q *Question) {
+func (a StickerChatAction) askQuestion() {
+	q := a.nextQuestion()
 	a.s.send(q.Context...)
 	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	return
