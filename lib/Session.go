@@ -40,6 +40,9 @@ func (s *session) send(msgs ...string) {
 			msg = fmt.Sprintf(msg, s.User.FirstName)
 		}
 
+		log.Println("sending from", s.Bot.Identity.Username)
+		log.Println("sending to", s.User.Username)
+
 		s.Bot.SendMessage(
 			s.User,
 			msg,
