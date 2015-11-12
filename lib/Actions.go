@@ -55,7 +55,12 @@ func load(name string, q interface{}) {
 		name = strings.Split(name, "/")[1]
 	}
 
-	file, err := os.Open(fmt.Sprintf("../config/%s.json", name))
+	dirPath, err := os.Getwd()
+	if err != nil {
+		log.Panic("could not working dir ", err.Error())
+	}
+
+	file, err := os.Open(fmt.Sprintf("%s/config/%s.json", dirPath, name))
 	if err != nil {
 		log.Panic("could not load QandA language file ", err.Error())
 	}
