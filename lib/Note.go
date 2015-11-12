@@ -128,13 +128,16 @@ func tagFromMsg(msgTxt string) string {
 
 func NewNote(msg telebot.Message, tags ...string) Note {
 
-	txt := msg.Text
+	log.Println("making note", msg.Text)
 
+	txt := msg.Text
 	cmdTag := tagFromMsg(txt)
 
-	//e.g. remove '/say' from the message
-	if strings.Contains(txt, cmdTag) {
-		txt = strings.TrimSpace(strings.Split(txt, cmdTag)[1])
+	if txt != "" && cmdTag != "" {
+		//e.g. remove '/say' from the message
+		if strings.Contains(txt, cmdTag) {
+			txt = strings.TrimSpace(strings.Split(txt, cmdTag)[1])
+		}
 	}
 
 	return Note{

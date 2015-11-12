@@ -134,6 +134,7 @@ func (a HelpAction) getHint() string {
 	return say_action_hint
 }
 func (a HelpAction) firstUp() Action {
+	log.Println("help first up")
 	helpInfo := fmt.Sprintf("%s %s %s %s ",
 		fmt.Sprintf("Hey %s! We can't doFirst it all but we can:\n\n", a.in.sender().Username),
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
