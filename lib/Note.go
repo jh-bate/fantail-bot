@@ -117,9 +117,11 @@ func (this Note) IsEmpty() bool {
 }
 
 func tagFromMsg(msgTxt string) string {
-	words := strings.Fields(msgTxt)
-	if strings.Contains(words[0], "/") {
-		return words[0]
+	if msgTxt != "" {
+		words := strings.Fields(msgTxt)
+		if strings.Contains(words[0], "/") {
+			return words[0]
+		}
 	}
 	return ""
 }

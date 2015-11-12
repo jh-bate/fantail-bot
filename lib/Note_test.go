@@ -54,3 +54,29 @@ func TestNote_NewReminderNote(t *testing.T) {
 	}
 
 }
+
+func TestNote_tagFromMsg(t *testing.T) {
+
+	empty := tagFromMsg("")
+
+	if empty != "" {
+		t.Errorf("should return no tage but got %s", empty)
+	}
+
+	hi := newMsg("/hi here I am")
+
+	hiTag := tagFromMsg(hi.Text)
+
+	if hiTag != "/hi" {
+		t.Errorf("expected %s got %s", "/hi", hiTag)
+	}
+
+	stuff := newMsg("/stuff")
+
+	stuffTag := tagFromMsg(stuff.Text)
+
+	if stuffTag != "/stuff" {
+		t.Errorf("expected %s got %s", "/stuff", stuffTag)
+	}
+
+}
