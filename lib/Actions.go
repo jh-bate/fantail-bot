@@ -345,7 +345,10 @@ func (a StickerChatAction) nextQuestion() *Question {
 	q := a.getQuestions()
 
 	if a.in.isSticker() {
-		next, save := q.nextFrom(a.stickers.FindSticker(a.in.msg.Sticker.FileID).Ids...)
+
+		sticker := a.stickers.FindSticker(a.in.msg.Sticker.FileID)
+		a.in.msg.Text = sticker.Meaning
+		next, save := q.nextFrom(sticker.Ids...)
 		if save {
 			a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
 		}

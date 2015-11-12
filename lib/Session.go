@@ -30,6 +30,8 @@ func newSession(b *telebot.Bot, s *Storage) *session {
 
 func (s *session) send(msgs ...string) {
 
+	log.Println("sending...", msgs)
+
 	for i := range msgs {
 		s.takeThoughtfulPause()
 
