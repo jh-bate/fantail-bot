@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -23,13 +22,8 @@ type (
 
 func LoadKnownStickers() Stickers {
 
-	dirPath, err := os.Getwd()
-	if err != nil {
-		log.Panic("could not working dir ", err.Error())
-	}
-
 	var s Stickers
-	file, err := os.Open(fmt.Sprintf("%s/config/stickers.json", dirPath))
+	file, err := os.Open("./lib/config/stickers.json")
 	if err != nil {
 		log.Panic("could not load stickers config ", err.Error())
 	}
