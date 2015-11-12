@@ -34,6 +34,8 @@ const (
 
 func NewAction(in *Incoming, s *session) Action {
 
+	s.User = in.msg.Sender
+
 	if in.getCmd() == say_action {
 		return SayAction{in: in, s: s}
 	} else if in.getCmd() == remind_action {
