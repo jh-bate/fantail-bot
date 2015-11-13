@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"log"
 	"strings"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -73,11 +72,7 @@ func (this Incoming) submissonMatches(cmds ...string) bool {
 
 func (this Incoming) isCmd() bool {
 	//eg /cmd
-
-	log.Println("Is a command?", this.msg.Text)
-
 	if this.msg.Text != "" && strings.Contains(this.msg.Text, "/") {
-		log.Println("Is a command from msg?", strings.Contains(strings.Fields(this.msg.Text)[0], "/"))
 		return strings.Contains(strings.Fields(this.msg.Text)[0], "/")
 	}
 

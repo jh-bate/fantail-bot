@@ -128,8 +128,6 @@ func tagFromMsg(msgTxt string) string {
 
 func NewNote(msg telebot.Message, tags ...string) Note {
 
-	log.Println("making note", msg.Text)
-
 	txt := msg.Text
 	cmdTag := tagFromMsg(txt)
 

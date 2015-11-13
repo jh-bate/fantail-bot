@@ -31,6 +31,8 @@ const (
 
 	remind_action      = "/remind"
 	remind_action_hint = "/remind in <days> to <message>"
+
+	default_script = "default"
 )
 
 func NewAction(in *Incoming, s *session, actionName string) Action {

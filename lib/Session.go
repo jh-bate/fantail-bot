@@ -30,8 +30,6 @@ func newSession(b *telebot.Bot, s *Storage) *session {
 
 func (s *session) send(msgs ...string) {
 
-	log.Println("sending...", msgs)
-
 	for i := range msgs {
 		s.takeThoughtfulPause()
 
@@ -39,9 +37,6 @@ func (s *session) send(msgs ...string) {
 		if strings.Contains(msg, "%s") {
 			msg = fmt.Sprintf(msg, s.User.FirstName)
 		}
-
-		log.Println("sending from", s.Bot.Identity.Username)
-		log.Println("sending to", s.User.Username)
 
 		s.Bot.SendMessage(
 			s.User,
@@ -90,7 +85,6 @@ func (s *session) save(n Note) {
 		log.Println("Nothing to save")
 		return
 	}
-	log.Println("Saving", n.Text)
 
 	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
 
