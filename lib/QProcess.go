@@ -33,7 +33,7 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 
 		in.getAction(this.s).firstUp().askQuestion()
 
-		this.p = in.action
+		this.p = in.getAction(this.s)
 
 	}
 }
