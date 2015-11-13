@@ -118,9 +118,10 @@ func (a SayAction) nextQuestion() *Question {
 }
 
 func (a SayAction) askQuestion() {
-	q := a.nextQuestion()
-	a.s.send(q.Context...)
-	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	if q := a.nextQuestion(); q != nil {
+		a.s.send(q.Context...)
+		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
 }
 
 func (a SayAction) getQuestions() Questions {
@@ -216,9 +217,10 @@ func (a ChatAction) nextQuestion() *Question {
 }
 
 func (a ChatAction) askQuestion() {
-	q := a.nextQuestion()
-	a.s.send(q.Context...)
-	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	if q := a.nextQuestion(); q != nil {
+		a.s.send(q.Context...)
+		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
 	return
 }
 
@@ -273,9 +275,10 @@ func (a ReviewAction) nextQuestion() *Question {
 }
 
 func (a ReviewAction) askQuestion() {
-	q := a.nextQuestion()
-	a.s.send(q.Context...)
-	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	if q := a.nextQuestion(); q != nil {
+		a.s.send(q.Context...)
+		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
 	return
 }
 
@@ -326,9 +329,10 @@ func (a RemindAction) nextQuestion() *Question {
 }
 
 func (a RemindAction) askQuestion() {
-	q := a.nextQuestion()
-	a.s.send(q.Context...)
-	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	if q := a.nextQuestion(); q != nil {
+		a.s.send(q.Context...)
+		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
 	return
 }
 
@@ -380,8 +384,9 @@ func (a StickerChatAction) nextQuestion() *Question {
 }
 
 func (a StickerChatAction) askQuestion() {
-	q := a.nextQuestion()
-	a.s.send(q.Context...)
-	a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	if q := a.nextQuestion(); q != nil {
+		a.s.send(q.Context...)
+		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
 	return
 }
