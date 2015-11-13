@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -34,7 +35,9 @@ const (
 
 func NewAction(in *Incoming, s *session) Action {
 
-	s.User = in.msg.Sender
+	if s != nil {
+		s.User = in.msg.Sender
+	}
 
 	if in.getCmd() == say_action {
 		return SayAction{in: in, s: s}
@@ -47,7 +50,6 @@ func NewAction(in *Incoming, s *session) Action {
 	} else if in.isSticker() {
 		return &StickerChatAction{in: in, s: s}
 	}
-	log.Println("asked ", in.getCmd())
 	return &HelpAction{in: in, s: s}
 }
 
@@ -57,7 +59,11 @@ func load(name string, q interface{}) {
 		name = strings.Split(name, "/")[1]
 	}
 
-	file, err := os.Open(fmt.Sprintf("./lib/config/%s.json", name))
+	absPath, _ := filepath.Abs(fmt.Sprintf("./config/%s.json", name))
+
+	log.Println("path ", absPath)
+
+	file, err := os.Open(absPath)
 	if err != nil {
 		log.Panic("could not load QandA language file ", err.Error())
 	}
