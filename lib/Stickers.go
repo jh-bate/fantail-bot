@@ -26,11 +26,15 @@ func LoadKnownStickers() Stickers {
 	var s Stickers
 
 	absPath, _ := filepath.Abs("config/stickers.json")
-	log.Println("path ", absPath)
+	log.Println("sticker path ", absPath)
 
 	file, err := os.Open(absPath)
 	if err != nil {
-		log.Panic("could not load stickers config ", err.Error())
+		log.Println("could not load stickers config ", err.Error())
+		absPath, _ = filepath.Abs("lib/config/stickers.json")
+		log.Println("sticker path ", absPath)
+
+		file, err = os.Open(absPath)
 	}
 	err = json.NewDecoder(file).Decode(&s)
 	if err != nil {
