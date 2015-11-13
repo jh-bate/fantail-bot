@@ -17,7 +17,6 @@ type (
 
 	QProcess struct {
 		s *session
-		p Action
 	}
 )
 
@@ -27,13 +26,13 @@ func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
 }
 
 func (this *QProcess) Run(input <-chan telebot.Message) {
+
+	prevActionName := ""
+
 	for msg := range input {
+		in := newIncoming(msg)
 
-		in := newIncoming(msg, this.p)
-
-		in.getAction(this.s).firstUp().askQuestion()
-
-		this.p = in.getAction(this.s)
-
+		in.getAction(this.s, prevActionName).firstUp().askQuestion()
+		prevActionName = in.action.getName()
 	}
 }

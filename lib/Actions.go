@@ -33,19 +33,25 @@ const (
 	remind_action_hint = "/remind in <days> to <message>"
 )
 
-func NewAction(in *Incoming, s *session) Action {
+func NewAction(in *Incoming, s *session, actionName string) Action {
 
 	if s != nil {
 		s.User = in.msg.Sender
 	}
 
-	if in.getCmd() == say_action {
+	cmd := actionName
+
+	if in.isCmd() {
+		cmd = in.getCmd()
+	}
+
+	if cmd == say_action {
 		return SayAction{in: in, s: s}
-	} else if in.getCmd() == remind_action {
+	} else if cmd == remind_action {
 		return &RemindAction{in: in, s: s}
-	} else if in.getCmd() == review_action {
+	} else if cmd == review_action {
 		return &ReviewAction{in: in, s: s}
-	} else if in.getCmd() == chat_action {
+	} else if cmd == chat_action {
 		return &ChatAction{in: in, s: s}
 	} else if in.isSticker() {
 		return &StickerChatAction{in: in, s: s}
