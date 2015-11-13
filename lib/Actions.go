@@ -156,11 +156,12 @@ func (a HelpAction) getHint() string {
 }
 func (a HelpAction) firstUp() Action {
 	log.Println("help first up")
-	helpInfo := fmt.Sprintf("%s %s %s %s ",
+	helpInfo := fmt.Sprintf("%s %s %s %s %s ",
 		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.in.sender().Username),
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
+		"Stickers - we have those to help express yourself!! [Get them here](https://telegram.me/addstickers/betes) \n\n",
 	)
 	a.s.send(helpInfo)
 	return a
