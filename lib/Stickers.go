@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -23,7 +24,11 @@ type (
 func LoadKnownStickers() Stickers {
 
 	var s Stickers
-	file, err := os.Open("./lib/config/stickers.json")
+
+	absPath, _ := filepath.Abs("./config/stickers.json")
+	log.Println("path ", absPath)
+
+	file, err := os.Open(absPath)
 	if err != nil {
 		log.Panic("could not load stickers config ", err.Error())
 	}
