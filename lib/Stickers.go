@@ -25,7 +25,7 @@ func LoadKnownStickers() Stickers {
 
 	var s Stickers
 
-	absPath, _ := filepath.Abs("./config/stickers.json")
+	absPath, _ := filepath.Abs("config/stickers.json")
 	log.Println("path ", absPath)
 
 	file, err := os.Open(absPath)

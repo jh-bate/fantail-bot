@@ -65,7 +65,7 @@ func load(name string, q interface{}) {
 		name = strings.Split(name, "/")[1]
 	}
 
-	absPath, _ := filepath.Abs(fmt.Sprintf("./config/%s.json", name))
+	absPath, _ := filepath.Abs(fmt.Sprintf("config/%s.json", name))
 
 	log.Println("path ", absPath)
 
