@@ -67,11 +67,15 @@ func load(name string, q interface{}) {
 
 	absPath, _ := filepath.Abs(fmt.Sprintf("config/%s.json", name))
 
-	log.Println("path ", absPath)
+	log.Println("QandA", absPath)
 
 	file, err := os.Open(absPath)
 	if err != nil {
-		log.Panic("could not load QandA language file ", err.Error())
+		log.Println("could not load QandA language file", err.Error())
+		absPath, _ = filepath.Abs(fmt.Sprintf("lib/config/%s.json", name))
+		log.Println("QandA path ", absPath)
+
+		file, err = os.Open(absPath)
 	}
 
 	err = json.NewDecoder(file).Decode(&q)
