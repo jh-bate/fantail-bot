@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"log"
 	"strings"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -9,10 +10,11 @@ import (
 type Incoming struct {
 	msg    telebot.Message
 	action Action
+	prev   Action
 }
 
-func newIncoming(msg telebot.Message) *Incoming {
-	return &Incoming{msg: msg}
+func newIncoming(msg telebot.Message, prev Action) *Incoming {
+	return &Incoming{msg: msg, prev: prev}
 }
 
 func (this Incoming) hasSubmisson() bool {
@@ -21,7 +23,11 @@ func (this Incoming) hasSubmisson() bool {
 }
 
 func (this Incoming) getAction(s *session) Action {
-	this.action = NewAction(&this, s)
+
+	if this.isCmd() || this.isSticker() {
+		this.action = NewAction(&this, s)
+	}
+	this.action = this.prev
 	return this.action
 }
 
@@ -42,7 +48,11 @@ func (this Incoming) sender() telebot.User {
 
 func (this Incoming) getCmd() string {
 	if this.isCmd() {
-		return strings.Fields(this.msg.Text)[0]
+		if strings.Contains(this.msg.Text, "/") {
+			return strings.Fields(this.msg.Text)[0]
+		} else if this.prev != nil {
+			return this.prev.getName()
+		}
 	}
 	return ""
 }
@@ -71,8 +81,15 @@ func (this Incoming) submissonMatches(cmds ...string) bool {
 
 func (this Incoming) isCmd() bool {
 	//eg /cmd
-	if this.msg.Text != "" {
+
+	log.Println("Is a command?", this.msg.Text)
+
+	if this.msg.Text != "" && strings.Contains(this.msg.Text, "/") {
+		log.Println("Is a command from msg?", strings.Contains(strings.Fields(this.msg.Text)[0], "/"))
 		return strings.Contains(strings.Fields(this.msg.Text)[0], "/")
+	} else if this.prev != nil {
+		log.Println("Is a command from prev?", this.prev.getName())
+		return this.prev.getName() != ""
 	}
 
 	return false

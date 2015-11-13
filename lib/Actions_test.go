@@ -4,7 +4,7 @@ import "testing"
 
 func TestActions_getName(t *testing.T) {
 
-	action := NewAction(newIncoming(newMsg("/say hi")), nil)
+	action := NewAction(newIncoming(newMsg("/say hi"), nil), nil)
 
 	if action.getName() != "/say" {
 		t.Errorf("expected %v got %v", "/say", action.getName())
@@ -14,7 +14,7 @@ func TestActions_getName(t *testing.T) {
 
 func TestActions_findNext(t *testing.T) {
 
-	action := NewAction(newIncoming(newMsg("/say hi")), nil)
+	action := NewAction(newIncoming(newMsg("/say hi"), nil), nil)
 
 	q := action.nextQuestion()
 
@@ -26,7 +26,7 @@ func TestActions_findNext(t *testing.T) {
 
 func TestActions_getQuestions(t *testing.T) {
 
-	action := NewAction(newIncoming(newMsg("/say hi")), nil)
+	action := NewAction(newIncoming(newMsg("/say hi"), nil), nil)
 
 	q := action.getQuestions()
 

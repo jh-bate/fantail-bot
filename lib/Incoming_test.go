@@ -31,19 +31,25 @@ func newStickerMsg() telebot.Message {
 
 func TestIncoming_isCmd(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.isCmd() == false {
 		t.Fail()
 	}
 
-	inString := newIncoming(newMsg("stuff do to"))
+	inString := newIncoming(newMsg("stuff do to"), nil)
 
 	if inString.isCmd() == true {
 		t.Fail()
 	}
 
-	inSticker := newIncoming(newStickerMsg())
+	inEmpty := newIncoming(newMsg(""), nil)
+
+	if inEmpty.isCmd() == true {
+		t.Fail()
+	}
+
+	inSticker := newIncoming(newStickerMsg(), nil)
 
 	if inSticker.isCmd() == true {
 		t.Fail()
@@ -53,19 +59,19 @@ func TestIncoming_isCmd(t *testing.T) {
 
 func TestIncoming_hasSubmisson(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.hasSubmisson() == false {
 		t.Error("command with text should be a submisson")
 	}
 
-	inString := newIncoming(newMsg("stuff do to"))
+	inString := newIncoming(newMsg("stuff do to"), nil)
 
 	if inString.hasSubmisson() == true {
 		t.Error("plain txt message should NOT a submisson")
 	}
 
-	inSticker := newIncoming(newStickerMsg())
+	inSticker := newIncoming(newStickerMsg(), nil)
 
 	if inSticker.hasSubmisson() == true {
 		t.Error("sticker message should NOT be a submisson")
@@ -75,19 +81,19 @@ func TestIncoming_hasSubmisson(t *testing.T) {
 
 func TestIncoming_isSticker(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.isSticker() == true {
 		t.Error("command with text is not a sticker")
 	}
 
-	inString := newIncoming(newMsg("stuff do to"))
+	inString := newIncoming(newMsg("stuff do to"), nil)
 
 	if inString.isSticker() == true {
 		t.Error("text is not a sticker")
 	}
 
-	inSticker := newIncoming(newStickerMsg())
+	inSticker := newIncoming(newStickerMsg(), nil)
 
 	if inSticker.isSticker() == false {
 		t.Error("should be a sticker")
@@ -97,7 +103,7 @@ func TestIncoming_isSticker(t *testing.T) {
 
 func TestIncoming_sender(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.sender() != inCmd.msg.Sender {
 		t.Error("should be the same as the telebot.Message.Sender")
@@ -107,7 +113,7 @@ func TestIncoming_sender(t *testing.T) {
 
 func TestIncoming_getNote(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff to do"))
+	inCmd := newIncoming(newMsg("/stuff to do"), nil)
 
 	n := inCmd.getNote()
 
@@ -123,7 +129,7 @@ func TestIncoming_getNote(t *testing.T) {
 		t.Error("should have created a note with /stuff tag")
 	}
 
-	inRemind := newIncoming(newMsg("/remind 3 to do some tests"))
+	inRemind := newIncoming(newMsg("/remind 3 to do some tests"), nil)
 
 	r := inRemind.getNote()
 
@@ -143,19 +149,19 @@ func TestIncoming_getNote(t *testing.T) {
 
 func TestIncoming_getCmd(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.getCmd() != "/stuff" {
 		t.Error("should be the command /stuff")
 	}
 
-	inNoCmd := newIncoming(newMsg("stuff do to"))
+	inNoCmd := newIncoming(newMsg("stuff do to"), nil)
 
 	if inNoCmd.getCmd() != "" {
 		t.Error("should be no command")
 	}
 
-	inSticker := newIncoming(newStickerMsg())
+	inSticker := newIncoming(newStickerMsg(), nil)
 
 	if inSticker.getCmd() != "" {
 		t.Error("should be no command for a sticker")
@@ -165,7 +171,7 @@ func TestIncoming_getCmd(t *testing.T) {
 
 func TestIncoming_cmdMatches(t *testing.T) {
 
-	inCmd := newIncoming(newMsg("/stuff do to"))
+	inCmd := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inCmd.cmdMatches("/no", "/match") {
 		t.Error("should be no command match")
@@ -179,7 +185,7 @@ func TestIncoming_cmdMatches(t *testing.T) {
 
 func TestIncoming_submissonMatches(t *testing.T) {
 
-	inSub := newIncoming(newMsg("/stuff do to"))
+	inSub := newIncoming(newMsg("/stuff do to"), nil)
 
 	if inSub.submissonMatches("/no", "/match") {
 		t.Error("should be no command match")
@@ -189,10 +195,22 @@ func TestIncoming_submissonMatches(t *testing.T) {
 		t.Error("should match /stuff")
 	}
 
-	inCmd := newIncoming(newMsg("/stuff"))
+	inCmd := newIncoming(newMsg("/stuff"), nil)
 
 	if inCmd.submissonMatches("/stuff") {
 		t.Error("should be no match as there isn't a submisson")
+	}
+
+}
+
+func TestIncoming_canSetPrevAction(t *testing.T) {
+
+	action := NewAction(newIncoming(newMsg("/say hi"), nil), nil)
+
+	chat2 := newIncoming(newMsg("no command just stuff"), action)
+
+	if action.getName() != chat2.getAction(nil).getName() {
+		t.Errorf("expected %s got %s", action.getName(), chat2.getAction(nil).getName())
 	}
 
 }
