@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/jh-bate/fantail-bot.png)](https://travis-ci.org/jh-bate/fantail-bot)
