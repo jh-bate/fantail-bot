@@ -146,19 +146,48 @@ func NewNote(msg telebot.Message, tags ...string) Note {
 		RemindNext: time.Now().AddDate(0, 0, 7)}
 }
 
+func setTimeOfDay(tod string) (time.Time, bool) {
+	const shortForm = "15:04" //24hr time
+	t, err := time.Parse(shortForm, tod)
+	if err != nil {
+		return time.Now(), false
+	}
+	n := time.Now()
+	h, m, _ := t.Clock()
+	return time.Date(n.Year(), n.Month(), n.Day(), h, m, 0, 0, time.UTC), true
+}
+
 func NewReminderNote(msg telebot.Message, tags ...string) Note {
 
-	const remind_pos, time_pos, msg_pos = 0, 1, 2
+	//remind 08:30am 1 to do stuff
+
+	const remind_pos, tod_pos, period_pos, msg_pos = 0, 1, 2, 3
+
 	words := strings.Fields(msg.Text)
+	tod := words[tod_pos]
+	when, timeOfDaySet := setTimeOfDay(tod)
 
-	days, err := strconv.Atoi(words[time_pos])
+	periodPostion := period_pos
 
+	if !timeOfDaySet {
+		periodPostion -= 1
+	}
+	period, err := strconv.Atoi(words[periodPostion])
 	if err != nil {
 		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
 		return Note{}
 	}
+	when.AddDate(0, 0, period)
 
-	what := strings.SplitAfterN(msg.Text, words[time_pos], 2)[1]
+	what := ""
+
+	if timeOfDaySet {
+		//double split incase the period matches one of the time vals e.g.  `08:32` `2`
+		what = strings.SplitAfterN(msg.Text, words[tod_pos], 2)[1]
+		what = strings.SplitAfterN(what, words[period_pos], 2)[1]
+	} else {
+		what = strings.SplitAfterN(msg.Text, words[periodPostion], 2)[1]
+	}
 
 	if what == "" {
 		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
@@ -170,5 +199,5 @@ func NewReminderNote(msg telebot.Message, tags ...string) Note {
 		AddedOn:    msg.Time(),
 		Text:       strings.TrimSpace(what),
 		Tag:        strings.Join(append(tags, remind_tag), ","),
-		RemindNext: time.Now().AddDate(0, 0, days)}
+		RemindNext: when}
 }

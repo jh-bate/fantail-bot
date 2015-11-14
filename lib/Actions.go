@@ -30,7 +30,7 @@ const (
 	review_action_hint = "/review <days>"
 
 	remind_action      = "/remind"
-	remind_action_hint = "/remind in <days> to <message>"
+	remind_action_hint = "/remind at <hh:mm> in <days> to <message>"
 
 	default_script = "default"
 )
