@@ -33,6 +33,16 @@ func TestNote_NewNote(t *testing.T) {
 
 }
 
+func TestNote_IsEmpty(t *testing.T) {
+
+	n := Note{}
+
+	if n.IsEmpty() == false {
+		t.Error("should be empty")
+	}
+
+}
+
 func TestNote_NewReminderNote(t *testing.T) {
 
 	remind := newMsg("/remind 3 to do stuff")
