@@ -14,6 +14,7 @@ import (
 const said_tag = say_action
 const chat_tag = chat_action
 const remind_tag = remind_action
+const help_tag = "HELP"
 
 type (
 	Note struct {

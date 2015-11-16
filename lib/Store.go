@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/garyburd/redigo/redis"
 )
 
 var FantailStorageErr = errors.New("Fantail storage is not enabled")
@@ -84,4 +84,38 @@ func (a *Storage) Get(userId string) (Notes, error) {
 		all = append(all, &n)
 	}
 	return all, nil
+}
+
+func (a *Storage) GetUsers() ([]int, error) {
+	c := a.store.Get()
+	return redis.Ints(c.Do("KEYS *"))
+}
+
+func (a *Storage) GetLatest(userId, count int) (Notes, error) {
+
+	c := a.store.Get()
+
+	end, err := redis.Int(c.Do("LLEN", userId))
+
+	if err != nil {
+		return nil, err
+	}
+
+	start := end - count
+
+	items, err := redis.Values(c.Do("LRANGE", userId, start, end))
+
+	if err != nil {
+		return nil, err
+	}
+
+	var latest Notes
+
+	for i := range items {
+		var n Note
+		serialized, _ := redis.Bytes(items[i], nil)
+		json.Unmarshal(serialized, &n)
+		latest = append(latest, &n)
+	}
+	return latest, nil
 }

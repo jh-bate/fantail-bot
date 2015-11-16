@@ -10,11 +10,13 @@ import (
 type (
 	QProcess struct {
 		s *session
+		f *FollowUp
 	}
 )
 
 func NewQProcess(b *telebot.Bot, s *Storage) *QProcess {
-	q := &QProcess{s: newSession(b, s)}
+	sess := newSession(b, s)
+	q := &QProcess{s: sess, f: NewFollowUp(sess)}
 	return q
 }
 
@@ -37,10 +39,15 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 
 		in := newIncoming(msg)
 		in.getAction(this.s, prevActionName).firstUp().askQuestion()
+
 		if update, name := getActionName(msg); update {
 			prevActionName = name
 		}
 
 		log.Println("prev name after", prevActionName)
 	}
+}
+
+func (this *QProcess) DoFollowUp() {
+	this.f.Start()
 }

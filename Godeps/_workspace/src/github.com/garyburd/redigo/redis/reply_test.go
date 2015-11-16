@@ -19,7 +19,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/garyburd/redigo/redis"
+	"github.com/garyburd/redigo/redis"
 )
 
 type valueError struct {

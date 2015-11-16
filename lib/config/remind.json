@@ -3,12 +3,11 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s",
-        "To get going all you need to do is type"
+        "Hey %s, to get going all you need to do is type"
       ],
       "question": "/remind me in <days> to <message>",
       "answers": [
-        "Cheers!"
+        "Got it - thanks!"
       ]
     }
   ]

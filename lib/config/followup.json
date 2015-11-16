@@ -1,0 +1,29 @@
+{
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [""],
+      "question": "See you, and remember you rock!",
+      "answers": [
+        "Ta, see you!"
+      ]
+    },
+    {
+      "relatesTo": {
+        "answers": [
+          "Eating",
+          "Sleeping",
+          "Exercising",
+          "Life and stuff"
+        ],
+        "save": true,
+        "saveTag": "LAST_DOING"
+      },
+      "context": [],
+      "question": "See you, and remember you rock!",
+      "answers": [
+        "Ta, see you!"
+      ]
+    }
+  ]
+}
