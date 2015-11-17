@@ -49,5 +49,6 @@ func (this *QProcess) Run(input <-chan telebot.Message) {
 }
 
 func (this *QProcess) DoFollowUp() {
+	log.Println("running the followup process ...")
 	this.f.Start()
 }

@@ -20,7 +20,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/garyburd/redigo/redis"
 )
 
 func publish(channel, value interface{}) {

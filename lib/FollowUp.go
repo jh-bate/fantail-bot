@@ -23,20 +23,20 @@ type (
 
 	FollowUp struct {
 		c *cron.Cron
-		s *session
-		u Users
+		*session
+		users Users
 	}
 )
 
 func NewFollowUp(s *session) *FollowUp {
 	sched := &FollowUp{
-		s: s,
-		c: cron.New(),
-		u: Users{},
+		session: s,
+		c:       cron.New(),
+		users:   Users{},
 	}
+	sched.setup([]Task{&GatherTask{}, &RemindersTask{}, &HelpMeTask{}, &YouThereTask{}})
 
-	sched.Setup([]Task{GatherTask{}, RemindersTask{}, HelpMeTask{}, YouThereTask{}})
-
+	return sched
 }
 
 func (this *FollowUp) setup(t Tasks) {
@@ -58,7 +58,7 @@ func (this *FollowUp) Stop() {
 func (this *GatherTask) run(fu *FollowUp) func() {
 	return func() {
 		//when did we last chat?
-		users, err := fu.s.Storage.GetUsers()
+		users, err := fu.session.Storage.GetUsers()
 		if err != nil {
 			log.Println("Trying to run scheduled task ", err.Error())
 			log.Println("Will bail ...")
@@ -67,14 +67,14 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			n, err := shed.s.Storage.GetLatest(users[i], 10)
+			n, err := fu.session.Storage.GetLatest(users[i], 10)
 
 			if err != nil {
 				log.Println("Error getting latest ", err.Error())
 				break
 			}
 
-			user := shed.u.GetUser(users[i])
+			user := fu.users.GetUser(users[i])
 			if user == nil {
 				user = &User{}
 			}
@@ -83,6 +83,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				user.recent = n
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
+			fu.users.AddUser(user)
 		}
 		return
 	}
@@ -94,13 +95,12 @@ func (this *GatherTask) spec() string {
 
 func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
-		now := time.Now()
-		for i := range fu.u {
-			for r := range fu.u[i].GetReminders() {
-				reminder := fu.u[i].GetReminders()[r]
+		for i := range fu.users {
+			for r := range fu.users[i].GetReminders() {
+				reminder := fu.users[i].GetReminders()[r]
 				if reminder.RemindToday() {
-					fu.s.User = fu.u[i].ToBotUser()
-					shed.s.send(reminder.Text)
+					fu.session.User = fu.users[i].ToBotUser()
+					fu.session.send(reminder.Text)
 				}
 			}
 
@@ -125,13 +125,13 @@ func (this *HelpMeTask) spec() string {
 func (this *YouThereTask) run(fu *FollowUp) func() {
 	return func() {
 		now := time.Now()
-		for i := range shed.u {
+		for i := range fu.users {
 
-			fu.s.User = fu.u[i].ToBotUser()
+			fu.session.User = fu.users[i].ToBotUser()
 
-			last := fu.u[i].lastChat
+			last := fu.users[i].lastChat
 			if now.YearDay()-last.YearDay() > 7 {
-				shed.s.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
+				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
 			}
 		}
 	}
