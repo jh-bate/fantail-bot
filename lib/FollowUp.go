@@ -80,12 +80,12 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 			}
 			user.id = users[i]
 			if len(n) > 0 {
-				log.Println("Adding last 10 notes for user ...", len(n))
 				user.recent = n
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
-			log.Printf("Adding user %v", user)
+			log.Printf("Adding user %#v", user)
 			fu.users.AddUser(user)
+			log.Printf("Have %d users", len(fu.users))
 		}
 		return
 	}
@@ -97,7 +97,7 @@ func (this *GatherTask) spec() string {
 
 func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
-		log.Println("Running reminders ....")
+		log.Printf("Running reminders for %d users", len(fu.users))
 		for i := range fu.users {
 			log.Println("quick hi", fu.users[i].lastChat)
 			fu.session.User = fu.users[i].ToBotUser()
