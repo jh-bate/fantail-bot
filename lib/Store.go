@@ -88,7 +88,7 @@ func (a *Storage) Get(userId string) (Notes, error) {
 
 func (a *Storage) GetUsers() ([]int, error) {
 	c := a.store.Get()
-	return redis.Ints(c.Do("KEYS *"))
+	return redis.Ints(c.Do("KEYS", "*"))
 }
 
 func (a *Storage) GetLatest(userId, count int) (Notes, error) {
