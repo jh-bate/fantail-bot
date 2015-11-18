@@ -92,7 +92,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 }
 
 func (this *GatherTask) spec() string {
-	return "@daily"
+	return "0 0/5 * * *"
 }
 
 func (this *RemindersTask) run(fu *FollowUp) func() {
@@ -112,7 +112,7 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 }
 
 func (this *RemindersTask) spec() string {
-	return "0 0/15 * * *"
+	return "0 0/5 * * *"
 }
 
 func (this *HelpMeTask) run(fu *FollowUp) func() {
@@ -123,7 +123,7 @@ func (this *HelpMeTask) run(fu *FollowUp) func() {
 }
 
 func (this *HelpMeTask) spec() string {
-	return "@daily"
+	return "0 0/5 * * *"
 }
 
 func (this *YouThereTask) run(fu *FollowUp) func() {
@@ -143,5 +143,5 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 }
 
 func (this *YouThereTask) spec() string {
-	return "@daily"
+	return "0 0/5 * * *"
 }
