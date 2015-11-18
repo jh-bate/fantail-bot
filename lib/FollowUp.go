@@ -84,7 +84,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
 			log.Printf("Adding user %#v", user)
-			fu.users.AddUser(user)
+			fu.users = append(fu.users, user)
 			log.Printf("Have %d users", len(fu.users))
 		}
 		return
