@@ -84,7 +84,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				user.recent = n
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
-			log.Println("Adding user after gathering info", user)
+			log.Printf("Adding user %v", user)
 			fu.users.AddUser(user)
 		}
 		return
@@ -99,7 +99,11 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running reminders ....")
 		for i := range fu.users {
+			log.Println("quick hi", fu.users[i].lastChat)
+			fu.session.User = fu.users[i].ToBotUser()
+			fu.session.send("Hi")
 			for r := range fu.users[i].GetReminders() {
+				log.Printf("User has reminders ...")
 				reminder := fu.users[i].GetReminders()[r]
 				if reminder.RemindToday() {
 					fu.session.User = fu.users[i].ToBotUser()
@@ -133,6 +137,8 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 		for i := range fu.users {
 
 			fu.session.User = fu.users[i].ToBotUser()
+
+			log.Println("User last chated", fu.users[i].lastChat)
 
 			last := fu.users[i].lastChat
 			if now.YearDay()-last.YearDay() > 7 {
