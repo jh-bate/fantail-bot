@@ -38,9 +38,9 @@ func main() {
 	fBot.bot.Listen(messages, 1*time.Second)
 
 	q := lib.NewQProcess(fBot.bot, fBot.store)
-	log.Println("start message process ....")
-	q.Run(messages)
 	log.Println("start followup process ....")
 	q.DoFollowUp()
 
+	log.Println("start message process ....")
+	q.Run(messages)
 }
