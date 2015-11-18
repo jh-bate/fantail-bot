@@ -57,7 +57,7 @@ func (this *FollowUp) Stop() {
 
 func (this *GatherTask) run(fu *FollowUp) func() {
 	return func() {
-		//when did we last chat?
+		log.Println("Running gather info ....")
 		users, err := fu.session.Storage.GetUsers()
 		if err != nil {
 			log.Println("Trying to run scheduled task ", err.Error())
@@ -80,9 +80,11 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 			}
 			user.id = users[i]
 			if len(n) > 0 {
+				log.Println("Adding last 10 notes for user ...", len(n))
 				user.recent = n
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
+			log.Println("Adding user after gathering info", user)
 			fu.users.AddUser(user)
 		}
 		return
@@ -95,6 +97,7 @@ func (this *GatherTask) spec() string {
 
 func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
+		log.Println("Running reminders ....")
 		for i := range fu.users {
 			for r := range fu.users[i].GetReminders() {
 				reminder := fu.users[i].GetReminders()[r]
@@ -109,11 +112,12 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 }
 
 func (this *RemindersTask) spec() string {
-	return "0 30"
+	return "0 0/15 * * *"
 }
 
 func (this *HelpMeTask) run(fu *FollowUp) func() {
 	return func() {
+		log.Println("Running `Help me` ....")
 		return
 	}
 }
@@ -124,6 +128,7 @@ func (this *HelpMeTask) spec() string {
 
 func (this *YouThereTask) run(fu *FollowUp) func() {
 	return func() {
+		log.Println("Running `you there?` ....")
 		now := time.Now()
 		for i := range fu.users {
 

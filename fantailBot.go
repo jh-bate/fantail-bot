@@ -39,5 +39,6 @@ func main() {
 
 	q := lib.NewQProcess(fBot.bot, fBot.store)
 	go q.Run(messages)
+	go q.DoFollowUp()
 
 }
