@@ -21,7 +21,7 @@ func (this Incoming) hasSubmisson() bool {
 }
 
 func (this Incoming) getAction(s *session, prevActionName string) Action {
-	return NewAction(&this, s, prevActionName)
+	return NewAction(s, prevActionName)
 }
 
 func (this Incoming) getNote(tags ...string) Note {

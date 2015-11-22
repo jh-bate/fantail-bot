@@ -35,30 +35,30 @@ const (
 	default_script = "default"
 )
 
-func NewAction(in *Incoming, s *session, actionName string) Action {
+func NewAction(s *session, actionName string) Action {
 
 	if s != nil {
-		s.User = in.msg.Sender
+		s.User = s.getSender()
 	}
 
 	cmd := actionName
 
-	if in.isCmd() {
-		cmd = in.getCmd()
+	if s.sentAsCommand() {
+		cmd = s.getSentCommand()
 	}
 
 	if cmd == say_action {
-		return SayAction{in: in, s: s}
+		return SayAction{session: s}
 	} else if cmd == remind_action {
-		return &RemindAction{in: in, s: s}
+		return &RemindAction{session: s}
 	} else if cmd == review_action {
-		return &ReviewAction{in: in, s: s}
+		return &ReviewAction{session: s}
 	} else if cmd == chat_action {
-		return &ChatAction{in: in, s: s}
-	} else if in.isSticker() {
-		return &StickerChatAction{in: in, s: s}
+		return &ChatAction{session: s}
+	} else if s.sentAsSticker() {
+		return &StickerChatAction{session: s}
 	}
-	return &HelpAction{in: in, s: s}
+	return &HelpAction{session: s}
 }
 
 func load(name string, q interface{}) {
@@ -89,8 +89,7 @@ func load(name string, q interface{}) {
 }
 
 type SayAction struct {
-	s  *session
-	in *Incoming
+	*session
 }
 
 func (a SayAction) getName() string {
@@ -100,7 +99,7 @@ func (a SayAction) getHint() string {
 	return say_action_hint
 }
 func (a SayAction) firstUp() Action {
-	a.s.save(a.in.getNote())
+	a.session.saveSentAsNote()
 	return a
 }
 
@@ -108,21 +107,21 @@ func (a SayAction) nextQuestion() *Question {
 
 	q := a.getQuestions()
 
-	if a.in.isCmd() {
+	if a.session.sentAsCommand() {
 		return q.First()
 	}
 
-	next, save := q.next(a.in.msg.Text)
+	next, save := q.next(a.getSentMsgText())
 	if save {
-		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a SayAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
-		a.s.send(q.Context...)
-		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	}
 }
 
@@ -132,7 +131,7 @@ func (a SayAction) getQuestions() Questions {
 		Questions `json:"QandA"`
 	}
 
-	if a.in.hasSubmisson() {
+	if a.session.sentAsSubmission() {
 		load(default_script, &q)
 		return q.Questions
 	}
@@ -141,9 +140,8 @@ func (a SayAction) getQuestions() Questions {
 }
 
 type HelpAction struct {
-	s  *session
-	in *Incoming
-	q  struct {
+	*session
+	q struct {
 		Questions `json:"QandA"`
 	}
 }
@@ -157,13 +155,13 @@ func (a HelpAction) getHint() string {
 func (a HelpAction) firstUp() Action {
 	log.Println("help first up")
 	helpInfo := fmt.Sprintf("%s %s %s %s %s ",
-		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.in.sender().Username),
+		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.session.getSentUsername()),
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
 		"Stickers - we have those to help express yourself!! [Get them here](https://telegram.me/addstickers/betes) \n\n",
 	)
-	a.s.send(helpInfo)
+	a.session.send(helpInfo)
 	return a
 }
 
@@ -180,8 +178,7 @@ func (a HelpAction) askQuestion() {
 }
 
 type ChatAction struct {
-	s  *session
-	in *Incoming
+	*session
 }
 
 func (a ChatAction) getName() string {
@@ -209,28 +206,27 @@ func (a ChatAction) nextQuestion() *Question {
 
 	q := a.getQuestions()
 
-	if a.in.isCmd() {
+	if a.session.sentAsCommand() {
 		return q.First()
 	}
-	next, save := q.next(a.in.msg.Text)
+	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a ChatAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
-		a.s.send(q.Context...)
-		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	}
 	return
 }
 
 type ReviewAction struct {
-	s  *session
-	in *Incoming
-	q  struct {
+	*session
+	q struct {
 		Questions `json:"QandA"`
 	}
 }
@@ -243,12 +239,12 @@ func (a ReviewAction) getHint() string {
 }
 func (a ReviewAction) firstUp() Action {
 	log.Println("doFirsting review ...")
-	n := a.s.getNotes(a.in.msg)
+	n := a.session.getNotes()
 
-	saidTxt := fmt.Sprintf("%s you said: \n\n %s", a.in.sender().Username, n.FilterBy(said_tag).ToString())
-	a.s.send(saidTxt)
-	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.in.sender().Username, n.FilterBy(chat_tag).ToString())
-	a.s.send(talkedTxt)
+	saidTxt := fmt.Sprintf("%s you said: \n\n %s", a.session.getSentUsername(), n.FilterBy(said_tag).ToString())
+	a.session.send(saidTxt)
+	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.session.getSentUsername(), n.FilterBy(chat_tag).ToString())
+	a.session.send(talkedTxt)
 	return a
 }
 
@@ -267,27 +263,26 @@ func (a ReviewAction) nextQuestion() *Question {
 
 	q := a.getQuestions()
 
-	if a.in.isCmd() {
+	if a.session.sentAsCommand() {
 		return q.First()
 	}
-	next, save := q.next(a.in.msg.Text)
+	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a ReviewAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
-		a.s.send(q.Context...)
-		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	}
 	return
 }
 
 type RemindAction struct {
-	s  *session
-	in *Incoming
+	*session
 }
 
 func (a RemindAction) getName() string {
@@ -298,7 +293,7 @@ func (a RemindAction) getHint() string {
 }
 func (a RemindAction) firstUp() Action {
 	log.Println("remind me ...")
-	a.s.save(a.in.getNote())
+	a.session.saveSentAsNote()
 	return a
 }
 
@@ -308,7 +303,7 @@ func (a RemindAction) getQuestions() Questions {
 		Questions `json:"QandA"`
 	}
 
-	if a.in.hasSubmisson() {
+	if a.session.sentAsSubmission() {
 		load(default_script, &q)
 		return q.Questions
 	}
@@ -321,27 +316,26 @@ func (a RemindAction) nextQuestion() *Question {
 
 	q := a.getQuestions()
 
-	if a.in.isCmd() {
+	if a.session.sentAsCommand() {
 		return q.First()
 	}
-	next, save := q.next(a.in.msg.Text)
+	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a RemindAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
-		a.s.send(q.Context...)
-		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	}
 	return
 }
 
 type StickerChatAction struct {
-	s        *session
-	in       *Incoming
+	*session
 	stickers Stickers
 }
 
@@ -369,27 +363,27 @@ func (a StickerChatAction) nextQuestion() *Question {
 
 	q := a.getQuestions()
 
-	if a.in.isSticker() {
+	if a.session.sentAsSticker() {
 
-		sticker := a.stickers.FindSticker(a.in.msg.Sticker.FileID)
-		a.in.msg.Text = sticker.Meaning
+		sticker := a.stickers.FindSticker(a.session.getSentStickerId())
+		a.session.setSentMsgText(sticker.Meaning)
 		next, save := q.nextFrom(sticker.Ids...)
 		if save {
-			a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+			a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 		}
 		return next
 	}
-	next, save := q.next(a.in.msg.Text)
+	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.s.save(a.in.getNote(a.getName(), next.RelatesTo.SaveTag))
+		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a StickerChatAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
-		a.s.send(q.Context...)
-		a.s.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
 	}
 	return
 }
