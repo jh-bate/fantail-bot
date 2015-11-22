@@ -83,9 +83,8 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				user.recent = n
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
-			log.Printf("Adding user %#v", user)
-			fu.users = append(fu.users, user)
-			log.Printf("Have %d users", len(fu.users))
+
+			fu.users = user.AddOrUpdate(fu.users)
 		}
 		return
 	}
@@ -101,7 +100,6 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 		for i := range fu.users {
 			log.Println("quick hi", fu.users[i].lastChat)
 			fu.session.User = fu.users[i].ToBotUser()
-			fu.session.send("Hi")
 			for r := range fu.users[i].GetReminders() {
 				log.Printf("User has reminders ...")
 				reminder := fu.users[i].GetReminders()[r]
