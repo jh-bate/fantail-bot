@@ -37,10 +37,10 @@ func main() {
 	messages := make(chan telebot.Message)
 	fBot.bot.Listen(messages, 1*time.Second)
 
-	q := lib.NewQProcess(fBot.bot, fBot.store)
+	w := lib.NewWorker(fBot.bot, fBot.store)
 	log.Println("start followup process ....")
-	q.DoFollowUp()
+	w.DoFollowUp()
 
 	log.Println("start message process ....")
-	q.Run(messages)
+	w.ProcessMessages(messages)
 }
