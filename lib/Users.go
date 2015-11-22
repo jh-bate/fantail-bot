@@ -28,6 +28,18 @@ func (this *User) ToBotUser() telebot.User {
 	return telebot.User{ID: this.id}
 }
 
+func (this *User) AddOrUpdate(users Users) Users {
+	var updated Users
+
+	for i := range users {
+		if users[i].id != this.id {
+			//already exists so remove and then we will add the new one
+			updated = append(updated, users[i])
+		}
+	}
+	return append(updated, this)
+}
+
 func (this Users) GetUser(id int) *User {
 
 	for i := range this {
@@ -36,9 +48,4 @@ func (this Users) GetUser(id int) *User {
 		}
 	}
 	return nil
-}
-
-func (this Users) AddUser(u *User) {
-	this = append(this, u)
-	return
 }
