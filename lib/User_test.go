@@ -10,9 +10,8 @@ func testUser(id int) *User {
 	n := NewNote(newMsg("/say hi"), test_tag)
 
 	return &User{
-		id:       id,
-		recent:   Notes{&rn, &n},
-		lastChat: n.AddedOn,
+		id:     id,
+		recent: Notes{&rn, &n},
 	}
 }
 
@@ -105,8 +104,7 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be THREE users but have ", len(users))
 	}
 
-	u3.lastChat = time.Now().Add(3)
-	u3.recent = nil
+	u3.recent = Notes{&Note{AddedOn: time.Now().Add(3)}}
 
 	users = u3.AddOrUpdate(users)
 
@@ -114,12 +112,12 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be TWO users but have ", len(users))
 	}
 
-	if users[2].lastChat != u3.lastChat {
-		t.Errorf("expetced [%s] found [%s]", u3.lastChat.String(), users[2].lastChat.String())
+	if users[2].LastChated().YearDay() != u3.LastChated().YearDay() {
+		t.Errorf("expetced [%s] found [%s]", u3.LastChated().String(), users[2].LastChated().String())
 	}
 
-	if users[2].recent != nil {
-		t.Errorf("expetced none found [%d] recent notes", len(users[2].recent))
+	if len(users[2].recent) != 1 {
+		t.Errorf("expected one found [%d] recent notes", len(users[2].recent))
 	}
 
 }

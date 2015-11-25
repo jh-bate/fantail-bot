@@ -8,9 +8,8 @@ import (
 
 type (
 	User struct {
-		id       int
-		lastChat time.Time
-		recent   Notes
+		id     int
+		recent Notes
 	}
 
 	Users []*User
@@ -22,6 +21,10 @@ func (this *User) GetReminders() Notes {
 
 func (this *User) HelpAskedFor() Notes {
 	return this.recent.FilterBy(help_tag)
+}
+
+func (this *User) LastChated() time.Time {
+	return this.recent.MostRecent().AddedOn
 }
 
 func (this *User) ToBotUser() telebot.User {

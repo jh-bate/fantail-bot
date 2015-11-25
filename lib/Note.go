@@ -59,7 +59,7 @@ func (this *Note) ToString() string {
 }
 
 func (this Notes) FilterBy(tag string) Notes {
-	var n Notes
+	n := Notes{}
 	for i := range this {
 		if this[i].CompletedOn.IsZero() && strings.Contains(this[i].Tag, tag) {
 			n = append(n, this[i])
@@ -114,8 +114,11 @@ func (this Notes) SortByDate() Notes {
 }
 
 func (this Notes) MostRecent() *Note {
-	this.SortByDate()
-	return this[0]
+	if len(this) > 0 {
+		this.SortByDate()
+		return this[0]
+	}
+	return &Note{}
 }
 
 func (this Note) IsEmpty() bool {

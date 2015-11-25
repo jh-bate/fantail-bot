@@ -81,9 +81,6 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 			user.id = users[i]
 			if len(n) > 0 {
 				user.recent = n
-				log.Println("adding notes for user")
-				user.lastChat = n.MostRecent().AddedOn
-				log.Println("set most recent as", user.lastChat)
 			}
 
 			fu.users = user.AddOrUpdate(fu.users)
@@ -100,7 +97,7 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Printf("Running reminders for %d users", len(fu.users))
 		for i := range fu.users {
-			log.Println("quick hi", fu.users[i].lastChat)
+			log.Println("quick hi", fu.users[i].LastChated())
 			fu.session.User = fu.users[i].ToBotUser()
 			for r := range fu.users[i].GetReminders() {
 				log.Printf("User has reminders ...")
@@ -126,6 +123,15 @@ func (this *RemindersTask) spec() string {
 func (this *HelpMeTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `Help me` ....")
+		for i := range fu.users {
+
+			help := fu.users[i].HelpAskedFor()
+
+			if len(help) > 0 {
+				fu.session.User = fu.users[i].ToBotUser()
+				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
+			}
+		}
 		return
 	}
 }
@@ -142,13 +148,8 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 
 			fu.session.User = fu.users[i].ToBotUser()
 
-			log.Println("User last chated", fu.users[i].lastChat)
-
-			last := fu.users[i].lastChat
-			if now.YearDay()-last.YearDay() > 3 {
+			if now.YearDay()-fu.users[i].LastChated().YearDay() > 3 {
 				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
-				//remove the users rescent history
-				fu.users[i].recent = nil
 			}
 		}
 	}

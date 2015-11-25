@@ -173,3 +173,15 @@ func TestNote_Notes_MostRecent(t *testing.T) {
 	}
 
 }
+
+func TestNote_Notes_MostRecent_whenEmpty(t *testing.T) {
+
+	notes := Notes{}
+
+	latest := notes.MostRecent()
+
+	if !latest.AddedOn.IsZero() {
+		t.Error("there are no notes so the most recent should be empty")
+	}
+
+}
