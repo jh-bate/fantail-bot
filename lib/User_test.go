@@ -29,7 +29,7 @@ func TestUser_ToBotUser(t *testing.T) {
 func TestUser_GetReminders(t *testing.T) {
 	u1 := testUser(111)
 
-	r := u1.GetReminders()
+	r := u1.Reminders()
 
 	if len(r) != 1 {
 		t.Error("there should be one reminder")
@@ -40,7 +40,7 @@ func TestUser_GetReminders(t *testing.T) {
 func TestUser_HelpAskedFor(t *testing.T) {
 	u1 := testUser(111)
 
-	r := u1.HelpAskedFor()
+	r := u1.HelpWanted()
 
 	if len(r) != 0 {
 		t.Error("there should be NO help notes")
@@ -112,8 +112,8 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be TWO users but have ", len(users))
 	}
 
-	if users[2].LastChated().YearDay() != u3.LastChated().YearDay() {
-		t.Errorf("expetced [%s] found [%s]", u3.LastChated().String(), users[2].LastChated().String())
+	if users[2].LastChatted().YearDay() != u3.LastChatted().YearDay() {
+		t.Errorf("expetced [%s] found [%s]", u3.LastChatted().String(), users[2].LastChatted().String())
 	}
 
 	if len(users[2].recent) != 1 {

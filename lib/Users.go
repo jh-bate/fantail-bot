@@ -15,15 +15,15 @@ type (
 	Users []*User
 )
 
-func (this *User) GetReminders() Notes {
+func (this *User) Reminders() Notes {
 	return this.recent.FilterBy(remind_tag)
 }
 
-func (this *User) HelpAskedFor() Notes {
+func (this *User) HelpWanted() Notes {
 	return this.recent.FilterBy(help_tag)
 }
 
-func (this *User) LastChated() time.Time {
+func (this *User) LastChatted() time.Time {
 	return this.recent.MostRecent().AddedOn
 }
 

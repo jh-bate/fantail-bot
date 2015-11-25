@@ -97,11 +97,11 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Printf("Running reminders for %d users", len(fu.users))
 		for i := range fu.users {
-			log.Println("quick hi", fu.users[i].LastChated())
+			log.Println("quick hi", fu.users[i].LastChatted())
 			fu.session.User = fu.users[i].ToBotUser()
-			for r := range fu.users[i].GetReminders() {
+			for r := range fu.users[i].Reminders() {
 				log.Printf("User has reminders ...")
-				reminder := fu.users[i].GetReminders()[r]
+				reminder := fu.users[i].Reminders()[r]
 				if reminder.RemindToday() {
 					fu.session.User = fu.users[i].ToBotUser()
 					fu.session.send(reminder.Text)
@@ -125,7 +125,7 @@ func (this *HelpMeTask) run(fu *FollowUp) func() {
 		log.Println("Running `Help me` ....")
 		for i := range fu.users {
 
-			help := fu.users[i].HelpAskedFor()
+			help := fu.users[i].HelpWanted()
 
 			if len(help) > 0 {
 				fu.session.User = fu.users[i].ToBotUser()
@@ -148,7 +148,7 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 
 			fu.session.User = fu.users[i].ToBotUser()
 
-			if now.YearDay()-fu.users[i].LastChated().YearDay() > 3 {
+			if now.YearDay()-fu.users[i].LastChatted().YearDay() > 3 {
 				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
 			}
 		}
