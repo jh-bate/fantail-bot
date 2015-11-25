@@ -83,6 +83,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				user.recent = n
 				log.Println("adding notes for user")
 				user.lastChat = n.MostRecent().AddedOn
+				log.Println("set most recent as", user.lastChat)
 			}
 
 			fu.users = user.AddOrUpdate(fu.users)
