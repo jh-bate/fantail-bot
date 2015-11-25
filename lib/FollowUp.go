@@ -67,19 +67,21 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			n, err := fu.session.Storage.GetLatest(string(users[i]), 10)
-
-			if err != nil {
-				log.Println("Error getting latest ", err.Error())
-				break
-			}
-
 			user := fu.users.GetUser(users[i])
 			if user == nil {
 				user = &User{}
 			}
 			user.id = users[i]
+
+			n, err := fu.session.Storage.Get(string(users[i]))
+
+			if err != nil {
+				log.Println("Error getting latest ", err.Error())
+				break
+			}
 			if len(n) > 0 {
+				n.SortByDate()
+				log.Println("sorted all notes, last spoke on ", n.MostRecent().AddedOn.String())
 				user.recent = n
 			}
 
