@@ -108,15 +108,7 @@ func (a *Storage) GetLatest(userId, count int) (Notes, error) {
 
 	c := a.store.Get()
 
-	end, err := redis.Int(c.Do("LLEN", userId))
-
-	if err != nil {
-		return nil, err
-	}
-
-	start := end - count
-
-	items, err := redis.Values(c.Do("LRANGE", userId, start, end))
+	items, err := redis.Values(c.Do("LRANGE", userId, 0, count))
 
 	if err != nil {
 		return nil, err
