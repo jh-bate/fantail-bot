@@ -76,7 +76,7 @@ func TestStore_GetLatest(t *testing.T) {
 		}
 	}
 
-	latestTwo, err := store.GetLatest(user.id, 2)
+	latestTwo, err := store.GetLatest(string(user.id), 2)
 
 	if err != nil {
 		t.Error("Error getting notes from store during tests", err.Error())
@@ -85,4 +85,34 @@ func TestStore_GetLatest(t *testing.T) {
 	if len(latestTwo) != 2 {
 		t.Errorf("expected %d got %d latest", 2, len(latestTwo))
 	}
+}
+
+func TestStore_Update(t *testing.T) {
+
+	user := testData(999)
+	store := storeSetup(string(user.id))
+
+	for i := range user.recent {
+		err := store.Save(string(user.id), user.recent[i])
+		if err != nil {
+			t.Error("Error saving to store during tests", err.Error())
+		}
+	}
+
+	original := user.recent[0]
+	updated := original
+	updated.Text = "updated"
+
+	err := store.Update(string(user.id), original, updated)
+
+	if err != nil {
+		t.Error("Error updating note during tests", err.Error())
+	}
+
+	latest, err := store.GetLatest(string(user.id), 1)
+
+	if latest[0].Text != updated.Text {
+		t.Errorf("expected %s got %s ", updated.Text, latest[0].Text)
+	}
+
 }

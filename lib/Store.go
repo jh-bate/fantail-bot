@@ -104,9 +104,11 @@ func (a *Storage) GetUsers() ([]int, error) {
 	return redis.Ints(c.Do("KEYS", "*"))
 }
 
-func (a *Storage) GetLatest(userId, count int) (Notes, error) {
+func (a *Storage) GetLatest(userId string, count int) (Notes, error) {
 
 	c := a.store.Get()
+
+	count = count - 1
 
 	items, err := redis.Values(c.Do("LRANGE", userId, 0, count))
 

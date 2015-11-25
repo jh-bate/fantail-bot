@@ -67,7 +67,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			n, err := fu.session.Storage.GetLatest(users[i], 10)
+			n, err := fu.session.Storage.GetLatest(string(users[i]), 10)
 
 			if err != nil {
 				log.Println("Error getting latest ", err.Error())
