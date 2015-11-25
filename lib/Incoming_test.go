@@ -169,6 +169,16 @@ func TestIncoming_getCmd(t *testing.T) {
 
 }
 
+func TestIncoming_getCmd_returnsLowerCase(t *testing.T) {
+
+	inCmd := newIncoming(newMsg("/Stuff do to"))
+
+	if inCmd.getCmd() != "/stuff" {
+		t.Error("should be the command /stuff")
+	}
+
+}
+
 func TestIncoming_cmdMatches(t *testing.T) {
 
 	inCmd := newIncoming(newMsg("/stuff do to"))
@@ -179,6 +189,16 @@ func TestIncoming_cmdMatches(t *testing.T) {
 
 	if inCmd.cmdMatches("/no", "/stuff") == false {
 		t.Error("should match /stuff")
+	}
+
+}
+
+func TestIncoming_cmdMatches_ingoresCase(t *testing.T) {
+
+	inCmd := newIncoming(newMsg("/Stuff do to"))
+
+	if !inCmd.cmdMatches("/no", "/stuff") {
+		t.Error("should be a match on stuff")
 	}
 
 }

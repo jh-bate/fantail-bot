@@ -42,7 +42,9 @@ func (this Incoming) sender() telebot.User {
 func (this Incoming) getCmd() string {
 	if this.isCmd() {
 		if strings.Contains(this.msg.Text, "/") {
-			return strings.Fields(this.msg.Text)[0]
+			theCmd := strings.Fields(this.msg.Text)[0]
+			//lowercase it
+			return strings.ToLower(theCmd)
 		}
 	}
 	return ""
@@ -51,7 +53,7 @@ func (this Incoming) getCmd() string {
 func (this Incoming) cmdMatches(cmds ...string) bool {
 	if this.isCmd() {
 		for i := range cmds {
-			if cmds[i] == this.getCmd() {
+			if strings.ToLower(cmds[i]) == strings.ToLower(this.getCmd()) {
 				return true
 			}
 		}
