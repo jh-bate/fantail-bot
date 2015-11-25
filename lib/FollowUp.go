@@ -82,7 +82,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 			if len(n) > 0 {
 				user.recent = n
 				log.Println("adding notes for user")
-				user.lastChat = n.SortByDate()[0].AddedOn
+				user.lastChat = n.MostRecent().AddedOn
 			}
 
 			fu.users = user.AddOrUpdate(fu.users)

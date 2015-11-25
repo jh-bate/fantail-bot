@@ -113,6 +113,11 @@ func (this Notes) SortByDate() Notes {
 	return this
 }
 
+func (this Notes) MostRecent() *Note {
+	this.SortByDate()
+	return this[0]
+}
+
 func (this Note) IsEmpty() bool {
 	return this.Text == "" && this.Tag == ""
 }
