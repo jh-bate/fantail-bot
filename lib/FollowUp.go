@@ -106,6 +106,10 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 				if reminder.RemindToday() {
 					fu.session.User = fu.users[i].ToBotUser()
 					fu.session.send(reminder.Text)
+					//complete the reminder and save the update
+					updated := reminder
+					updated.CompletedOn = time.Now()
+					fu.session.Storage.Update(string(fu.users[i].id), *reminder, *updated)
 				}
 			}
 
@@ -139,7 +143,7 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 			log.Println("User last chated", fu.users[i].lastChat)
 
 			last := fu.users[i].lastChat
-			if now.YearDay()-last.YearDay() > 7 {
+			if now.YearDay()-last.YearDay() > 3 {
 				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
 			}
 		}

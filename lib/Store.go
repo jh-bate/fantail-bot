@@ -59,6 +59,19 @@ func (a *Storage) Save(userId string, n Note) error {
 	return err
 }
 
+func (a *Storage) Update(userId string, o Note, n Note) error {
+
+	serializedOriginal, err := json.Marshal(o)
+	if err != nil {
+		return err
+	}
+	_, err = a.store.Get().Do("LREM", userId, -1, serializedOriginal)
+	if err != nil {
+		return err
+	}
+	return a.Save(userId, n)
+}
+
 func (a *Storage) Get(userId string) (Notes, error) {
 
 	c := a.store.Get()
