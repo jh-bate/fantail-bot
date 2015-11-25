@@ -11,7 +11,7 @@ func testUser(id int) *User {
 
 	return &User{
 		id:     id,
-		recent: Notes{&rn, &n},
+		recent: Notes{rn, n},
 	}
 }
 

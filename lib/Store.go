@@ -49,7 +49,7 @@ func newPool() *redis.Pool {
 	}
 }
 
-func (a *Storage) Save(userId string, n Note) error {
+func (a *Storage) Save(userId string, n *Note) error {
 
 	serialized, err := json.Marshal(n)
 	if err != nil {
@@ -59,7 +59,7 @@ func (a *Storage) Save(userId string, n Note) error {
 	return err
 }
 
-func (a *Storage) Update(userId string, o Note, n Note) error {
+func (a *Storage) Update(userId string, o *Note, n *Note) error {
 
 	serializedOriginal, err := json.Marshal(o)
 	if err != nil {

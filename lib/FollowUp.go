@@ -108,7 +108,7 @@ func (this *RemindersTask) run(fu *FollowUp) func() {
 					//complete the reminder and save the update
 					updated := reminder
 					updated.CompletedOn = time.Now()
-					fu.session.Storage.Update(string(fu.users[i].id), *reminder, *updated)
+					fu.session.Storage.Update(string(fu.users[i].id), reminder, updated)
 				}
 			}
 
@@ -129,7 +129,10 @@ func (this *HelpMeTask) run(fu *FollowUp) func() {
 
 			if len(help) > 0 {
 				fu.session.User = fu.users[i].ToBotUser()
-				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
+
+				helpTxt := help.ToString()
+
+				fu.session.send(fmt.Sprintf("Hey, so these are the things you wanted help with /n/n%s", helpTxt))
 			}
 		}
 		return

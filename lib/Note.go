@@ -135,7 +135,7 @@ func tagFromMsg(msgTxt string) string {
 	return ""
 }
 
-func NewNote(msg telebot.Message, tags ...string) Note {
+func NewNote(msg telebot.Message, tags ...string) *Note {
 
 	txt := msg.Text
 	cmdTag := tagFromMsg(txt)
@@ -147,7 +147,7 @@ func NewNote(msg telebot.Message, tags ...string) Note {
 		}
 	}
 
-	return Note{
+	return &Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       txt,
@@ -166,7 +166,7 @@ func setTimeOfDay(tod string) (time.Time, bool) {
 	return time.Date(n.Year(), n.Month(), n.Day(), h, m, 0, 0, time.UTC), true
 }
 
-func NewReminderNote(msg telebot.Message, tags ...string) Note {
+func NewReminderNote(msg telebot.Message, tags ...string) *Note {
 
 	//remind 08:30am 1 to do stuff
 
@@ -184,7 +184,7 @@ func NewReminderNote(msg telebot.Message, tags ...string) Note {
 	period, err := strconv.Atoi(words[periodPostion])
 	if err != nil {
 		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
-		return Note{}
+		return &Note{}
 	}
 	when.AddDate(0, 0, period)
 
@@ -200,10 +200,10 @@ func NewReminderNote(msg telebot.Message, tags ...string) Note {
 
 	if what == "" {
 		log.Println(fmt.Errorf("Reminder format is %s", remind_action_hint).Error())
-		return Note{}
+		return &Note{}
 	}
 
-	return Note{
+	return &Note{
 		WhoId:      msg.Sender.ID,
 		AddedOn:    msg.Time(),
 		Text:       strings.TrimSpace(what),

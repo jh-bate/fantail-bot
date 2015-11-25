@@ -139,7 +139,7 @@ func TestNote_Notes_SortByDate(t *testing.T) {
 	n3 := NewReminderNote(newMsg("/remind 08:32 5 whats up"), test_tag)
 	n3.AddedOn = time.Now().Add(5)
 
-	notes := Notes{&n, &n2, &n3}
+	notes := Notes{n, n2, n3}
 
 	if notes.SortByDate()[0].AddedOn.YearDay() != n3.AddedOn.YearDay() {
 		t.Errorf("expected %d got %d", n3.AddedOn.YearDay(), notes.SortByDate()[0].AddedOn.YearDay())
@@ -164,7 +164,7 @@ func TestNote_Notes_MostRecent(t *testing.T) {
 	n3 := NewReminderNote(newMsg("/remind 08:32 5 whats up"), test_tag)
 	n3.AddedOn = time.Now().Add(5)
 
-	notes := Notes{&n, &n2, &n3}
+	notes := Notes{n, n2, n3}
 
 	latest := notes.MostRecent()
 

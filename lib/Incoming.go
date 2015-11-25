@@ -24,7 +24,7 @@ func (this Incoming) getAction(s *session, prevActionName string) Action {
 	return NewAction(s, prevActionName)
 }
 
-func (this Incoming) getNote(tags ...string) Note {
+func (this Incoming) getNote(tags ...string) *Note {
 	if strings.Contains(this.msg.Text, remind_action) {
 		return NewReminderNote(this.msg)
 	}

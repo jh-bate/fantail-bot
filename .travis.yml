@@ -3,5 +3,8 @@ language: go
 go:
  - 1.5
 
+services:
+  - redis-server
+
 script:
  - go test -v ./...

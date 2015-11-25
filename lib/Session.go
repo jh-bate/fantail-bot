@@ -150,7 +150,7 @@ func (s *session) takeThoughtfulPause() {
 	return
 }
 
-func (s *session) save(n Note) {
+func (s *session) save(n *Note) {
 	if s.Storage == nil {
 		log.Println(FantailStorageErr.Error())
 		return
