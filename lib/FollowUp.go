@@ -81,6 +81,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 			user.id = users[i]
 			if len(n) > 0 {
 				user.recent = n
+				log.Println("adding notes for user")
 				user.lastChat = n.SortByDate()[0].AddedOn
 			}
 
@@ -145,6 +146,8 @@ func (this *YouThereTask) run(fu *FollowUp) func() {
 			last := fu.users[i].lastChat
 			if now.YearDay()-last.YearDay() > 3 {
 				fu.session.send(fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action))
+				//remove the users rescent history
+				fu.users[i].recent = nil
 			}
 		}
 	}

@@ -33,7 +33,7 @@ func (this *User) AddOrUpdate(users Users) Users {
 
 	for i := range users {
 		if users[i].id != this.id {
-			//already exists so remove and then we will add the new one
+			//rebuild the list from those that don't match the user we are trying to add or update
 			updated = append(updated, users[i])
 		}
 	}

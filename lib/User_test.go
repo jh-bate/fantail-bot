@@ -1,6 +1,9 @@
 package lib
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func testUser(id int) *User {
 	rn := NewReminderNote(newMsg("/remind 3 to do stuff"), test_tag)
@@ -50,11 +53,24 @@ func TestUser_AddOrUpdate(t *testing.T) {
 	users := Users{}
 	u1 := testUser(111)
 	users = u1.AddOrUpdate(users)
+
+	if len(users) != 1 {
+		t.Error("there should be ONE users but have ", len(users))
+	}
+
+	if users[0].id != u1.id {
+		t.Errorf("expected [%d] found [%d]", u1.id, users[0].id)
+	}
+
 	u2 := testUser(222)
 	users = u2.AddOrUpdate(users)
 
 	if len(users) != 2 {
 		t.Error("there should be TWO users but have ", len(users))
+	}
+
+	if users[1].id != u2.id {
+		t.Errorf("expected [%d] found [%d]", u2.id, users[1].id)
 	}
 
 	u3 := testUser(333)
@@ -64,10 +80,46 @@ func TestUser_AddOrUpdate(t *testing.T) {
 		t.Error("there should be THREE users but have ", len(users))
 	}
 
+	if users[2].id != u3.id {
+		t.Errorf("expected [%d] found [%d]", u3.id, users[2].id)
+	}
+
 	users = u2.AddOrUpdate(users)
 
 	if len(users) != 3 {
 		t.Error("there should still be THREE users but have ", len(users))
+	}
+
+}
+
+func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
+	users := Users{}
+	u1 := testUser(111)
+	users = u1.AddOrUpdate(users)
+	u2 := testUser(222)
+	users = u2.AddOrUpdate(users)
+	u3 := testUser(333)
+	users = u3.AddOrUpdate(users)
+
+	if len(users) != 3 {
+		t.Error("there should be THREE users but have ", len(users))
+	}
+
+	u3.lastChat = time.Now().Add(3)
+	u3.recent = nil
+
+	users = u3.AddOrUpdate(users)
+
+	if len(users) != 3 {
+		t.Error("there should be TWO users but have ", len(users))
+	}
+
+	if users[2].lastChat != u3.lastChat {
+		t.Errorf("expetced [%s] found [%s]", u3.lastChat.String(), users[2].lastChat.String())
+	}
+
+	if users[2].recent != nil {
+		t.Errorf("expetced none found [%d] recent notes", len(users[2].recent))
 	}
 
 }

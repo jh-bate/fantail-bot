@@ -129,3 +129,28 @@ func TestNote_tagFromMsg(t *testing.T) {
 	}
 
 }
+
+func TestNote_Notes_SortByDate(t *testing.T) {
+
+	n := NewReminderNote(newMsg("/remind 08:32 2 to do stuff"), test_tag)
+	n.AddedOn = time.Now().Add(-5)
+	n2 := NewReminderNote(newMsg("/remind 08:34 3 hmmm"), test_tag)
+	n2.AddedOn = time.Now()
+	n3 := NewReminderNote(newMsg("/remind 08:32 5 whats up"), test_tag)
+	n3.AddedOn = time.Now().Add(5)
+
+	notes := Notes{&n, &n2, &n3}
+
+	if notes.SortByDate()[0].AddedOn.YearDay() != n3.AddedOn.YearDay() {
+		t.Errorf("expected %d got %d", n3.AddedOn.YearDay(), notes.SortByDate()[0].AddedOn.YearDay())
+	}
+
+	if notes.SortByDate()[1].AddedOn.YearDay() != n2.AddedOn.YearDay() {
+		t.Errorf("expected %d got %d", n2.AddedOn.YearDay(), notes.SortByDate()[1].AddedOn.YearDay())
+	}
+
+	if notes.SortByDate()[2].AddedOn.YearDay() != n.AddedOn.YearDay() {
+		t.Errorf("expected %d got %d", n.AddedOn.YearDay(), notes.SortByDate()[2].AddedOn.YearDay())
+	}
+
+}
