@@ -7,11 +7,11 @@ import (
 
 func testUser(id int) *User {
 	rn := NewReminderNote(newMsg("/remind 3 to do stuff"), test_tag)
-	n := NewNote(newMsg("/say hi"), test_tag)
+	n := NewNote(newMsg("/say hi"), help_tag)
 
 	return &User{
-		id:     id,
-		recent: Notes{rn, n},
+		id:    id,
+		notes: Notes{rn, n},
 	}
 }
 
@@ -26,24 +26,13 @@ func TestUser_ToBotUser(t *testing.T) {
 	}
 }
 
-func TestUser_GetReminders(t *testing.T) {
+func TestUser_FollowUp(t *testing.T) {
 	u1 := testUser(111)
 
-	r := u1.Reminders()
+	r := u1.FollowUp()
 
 	if len(r) != 1 {
-		t.Error("there should be one reminder")
-	}
-
-}
-
-func TestUser_HelpAskedFor(t *testing.T) {
-	u1 := testUser(111)
-
-	r := u1.HelpWanted()
-
-	if len(r) != 0 {
-		t.Error("there should be NO help notes")
+		t.Error("there should be ONE help note", len(r))
 	}
 
 }
@@ -104,20 +93,20 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be THREE users but have ", len(users))
 	}
 
-	u3.recent = Notes{&Note{AddedOn: time.Now().Add(3)}}
+	u3.notes = Notes{&Note{AddedOn: time.Now().Add(3)}}
 
 	users = u3.AddOrUpdate(users)
 
 	if len(users) != 3 {
-		t.Error("there should be TWO users but have ", len(users))
+		t.Error("there should be THREE users but have ", len(users))
 	}
 
-	if users[2].LastChatted().YearDay() != u3.LastChatted().YearDay() {
-		t.Errorf("expetced [%s] found [%s]", u3.LastChatted().String(), users[2].LastChatted().String())
+	if users[2].notes[0].AddedOn.YearDay() != u3.notes[0].AddedOn.YearDay() {
+		t.Errorf("expetced [%s] found [%s]", u3.notes[0].AddedOn.String(), users[2].notes[0].AddedOn.String())
 	}
 
-	if len(users[2].recent) != 1 {
-		t.Errorf("expected one found [%d] recent notes", len(users[2].recent))
+	if len(users[2].notes) != 1 {
+		t.Errorf("expected one found [%d] recent notes", len(users[2].notes))
 	}
 
 }

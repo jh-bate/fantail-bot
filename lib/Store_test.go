@@ -22,7 +22,7 @@ func testData(id int) *User {
 		id: id,
 	}
 
-	u.recent = append(u.recent,
+	u.notes = append(u.notes,
 		NewNote(newMsg("/say hi")),
 		NewReminderNote(newMsg("/remind 3 to do moar stuff"), remind_tag),
 		NewNote(newMsg("/say hello")),
@@ -39,8 +39,8 @@ func TestStore_Save_and_Get(t *testing.T) {
 	user := testData(123)
 	store := storeSetup(string(user.id))
 
-	for i := range user.recent {
-		err := store.Save(string(user.id), user.recent[i])
+	for i := range user.notes {
+		err := store.Save(string(user.id), user.notes[i])
 		if err != nil {
 			t.Error("Error saving to store during tests", err.Error())
 		}
@@ -51,7 +51,7 @@ func TestStore_Save_and_Get(t *testing.T) {
 		t.Error("Error getting notes from store during tests", err.Error())
 	}
 
-	if len(retreived) != len(user.recent) {
+	if len(retreived) != len(user.notes) {
 		t.Errorf("expected %d got %d reminders", 2, len(retreived.FilterBy(remind_tag)))
 	}
 
@@ -69,8 +69,8 @@ func TestStore_GetLatest(t *testing.T) {
 	user := testData(999)
 	store := storeSetup(string(user.id))
 
-	for i := range user.recent {
-		err := store.Save(string(user.id), user.recent[i])
+	for i := range user.notes {
+		err := store.Save(string(user.id), user.notes[i])
 		if err != nil {
 			t.Error("Error saving to store during tests", err.Error())
 		}
@@ -92,14 +92,14 @@ func TestStore_Update(t *testing.T) {
 	user := testData(999)
 	store := storeSetup(string(user.id))
 
-	for i := range user.recent {
-		err := store.Save(string(user.id), user.recent[i])
+	for i := range user.notes {
+		err := store.Save(string(user.id), user.notes[i])
 		if err != nil {
 			t.Error("Error saving to store during tests", err.Error())
 		}
 	}
 
-	original := user.recent[0]
+	original := user.notes[0]
 	updated := original
 	updated.Text = "updated"
 

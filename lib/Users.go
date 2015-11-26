@@ -1,30 +1,17 @@
 package lib
 
-import (
-	"time"
-
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
-)
+import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 
 type (
 	User struct {
-		id     int
-		recent Notes
+		id    int
+		notes Notes
 	}
-
 	Users []*User
 )
 
-func (this *User) Reminders() Notes {
-	return this.recent.FilterBy(remind_tag)
-}
-
-func (this *User) HelpWanted() Notes {
-	return this.recent.FilterBy(help_tag)
-}
-
-func (this *User) LastChatted() time.Time {
-	return this.recent.MostRecent().AddedOn
+func (this *User) FollowUp() Notes {
+	return this.notes.FilterBy(help_tag).SortByDate()
 }
 
 func (this *User) ToBotUser() telebot.User {
