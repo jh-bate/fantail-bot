@@ -16,7 +16,7 @@ func newMsg(txt string) telebot.Message {
 
 func newStickerMsg() telebot.Message {
 
-	file, _ := telebot.NewFile("./config/fantail.json")
+	file, _ := telebot.NewFile("./config/default.json")
 	file.FileID = "BQADAwADCgADt6a9BtopSv1uQpPwAg"
 
 	sticker := telebot.Sticker{File: file}

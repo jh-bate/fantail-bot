@@ -3,11 +3,11 @@
     {
       "relatesTo": null,
       "context": [
-        "Hey %s, to say something just type"
+        "Hey %s, glad you could tell us that."
       ],
-      "question": "/say [what you want to say]",
+      "question": "Just wanted to add ... you rock! ✋",
       "answers": [
-        "OK got it!"
+        "Thanks!"
       ]
     }
   ]

@@ -24,6 +24,9 @@ const (
 	say_action      = "/say"
 	say_action_hint = "/say <message>"
 
+	ask_action      = "/ask"
+	ask_action_hint = "/ask <message>"
+
 	chat_action = "/chat"
 
 	review_action      = "/review"
@@ -46,6 +49,8 @@ func NewAction(s *session, actionName string) Action {
 
 	if cmd == say_action {
 		return SayAction{session: s}
+	} else if cmd == ask_action {
+		return AskAction{session: s}
 	} else if cmd == review_action {
 		return &ReviewAction{session: s}
 	} else if cmd == chat_action {
@@ -125,6 +130,52 @@ func (a SayAction) getQuestions() Questions {
 	var q struct {
 		Questions `json:"QandA"`
 	}
+	load(a.getName(), &q)
+	return q.Questions
+}
+
+type AskAction struct {
+	*session
+}
+
+func (a AskAction) getName() string {
+	return ask_action
+}
+func (a AskAction) getHint() string {
+	return ask_action_hint
+}
+func (a AskAction) firstUp() Action {
+	a.session.save(a.getName(), help_tag)
+	return a
+}
+
+func (a AskAction) nextQuestion() *Question {
+
+	q := a.getQuestions()
+
+	if a.session.sentAsCommand() {
+		return q.First()
+	}
+
+	next, save := q.next(a.getSentMsgText())
+	if save {
+		a.session.save(a.getName(), next.RelatesTo.SaveTag)
+	}
+	return next
+}
+
+func (a AskAction) askQuestion() {
+	if q := a.nextQuestion(); q != nil {
+		a.session.send(q.Context...)
+		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
+	}
+}
+
+func (a AskAction) getQuestions() Questions {
+
+	var q struct {
+		Questions `json:"QandA"`
+	}
 
 	if a.session.sentAsSubmission() {
 		load(default_script, &q)
@@ -149,10 +200,11 @@ func (a HelpAction) getHint() string {
 }
 func (a HelpAction) firstUp() Action {
 	log.Println("help first up")
-	helpInfo := fmt.Sprintf("%s %s %s %s %s ",
+	helpInfo := fmt.Sprintf("%s %s %s %s %s %s ",
 		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.session.getSentUsername()),
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
+		ask_action_hint+" - to ask *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
 		"Stickers - we have those to help express yourself!! [Get them here](https://telegram.me/addstickers/betes) \n\n",
 	)

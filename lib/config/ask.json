@@ -1,0 +1,14 @@
+{
+  "QandA": [
+    {
+      "relatesTo": null,
+      "context": [
+        "Hey %s, glad you could ask us "
+      ],
+      "question": "We will follow up with an answer later. \n\nIn the mean time ✋",
+      "answers": [
+        "See you!"
+      ]
+    }
+  ]
+}
