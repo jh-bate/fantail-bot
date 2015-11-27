@@ -6,12 +6,12 @@ import (
 )
 
 func testUser(id int) *User {
-	rn := NewReminderNote(newMsg("/remind 3 to do stuff"), test_tag)
-	n := NewNote(newMsg("/say hi"), help_tag)
+	n1 := NewNote(newMsg("to do stuff"), test_tag)
+	n2 := NewNote(newMsg("/say hi"), help_tag)
 
 	return &User{
 		id:    id,
-		notes: Notes{rn, n},
+		notes: Notes{n1, n2},
 	}
 }
 
@@ -93,7 +93,7 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be THREE users but have ", len(users))
 	}
 
-	u3.notes = Notes{&Note{AddedOn: time.Now().Add(3)}}
+	u3.notes = Notes{&Note{Added: time.Now().Add(3)}}
 
 	users = u3.AddOrUpdate(users)
 
@@ -101,8 +101,8 @@ func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
 		t.Error("there should be THREE users but have ", len(users))
 	}
 
-	if users[2].notes[0].AddedOn.YearDay() != u3.notes[0].AddedOn.YearDay() {
-		t.Errorf("expetced [%s] found [%s]", u3.notes[0].AddedOn.String(), users[2].notes[0].AddedOn.String())
+	if users[2].notes[0].Added.YearDay() != u3.notes[0].Added.YearDay() {
+		t.Errorf("expetced [%s] found [%s]", u3.notes[0].Added.String(), users[2].notes[0].Added.String())
 	}
 
 	if len(users[2].notes) != 1 {

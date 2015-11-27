@@ -47,11 +47,11 @@ func (this Sticker) ToNote(msg telebot.Message, tags ...string) Note {
 	tags = append(tags, this.SaveTag)
 
 	return Note{
-		WhoId:      msg.Sender.ID,
-		AddedOn:    msg.Time(),
-		Text:       this.Meaning,
-		Tag:        strings.Join(tags, ","),
-		RemindNext: time.Now().AddDate(0, 0, 7)}
+		UserId: msg.Sender.ID,
+		Added:  msg.Time(),
+		Text:   this.Meaning,
+		Tag:    strings.Join(tags, ","),
+		Remind: time.Now().AddDate(0, 0, 7)}
 
 }
 

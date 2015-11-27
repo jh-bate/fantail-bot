@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
@@ -108,43 +107,6 @@ func TestIncoming_sender(t *testing.T) {
 	if inCmd.sender() != inCmd.msg.Sender {
 		t.Error("should be the same as the telebot.Message.Sender")
 	}
-
-}
-
-func TestIncoming_getNote(t *testing.T) {
-
-	inCmd := newIncoming(newMsg("/stuff to do"))
-
-	n := inCmd.getNote()
-
-	if n.IsEmpty() {
-		t.Error("should have created a note")
-	}
-
-	if n.Text != "to do" {
-		t.Error("should have created a note")
-	}
-
-	if strings.Contains(n.Tag, "/stuff") == false {
-		t.Error("should have created a note with /stuff tag")
-	}
-
-	inRemind := newIncoming(newMsg("/remind 3 to do some tests"))
-
-	r := inRemind.getNote()
-
-	if r.IsEmpty() {
-		t.Error("should have created a note")
-	}
-
-	if r.Text != "to do some tests" {
-		t.Error("should have created a note")
-	}
-
-	if strings.Contains(r.Tag, "/remind") == false {
-		t.Error("should have created a note with /remind tag")
-	}
-
 }
 
 func TestIncoming_getCmd(t *testing.T) {

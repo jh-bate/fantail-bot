@@ -91,34 +91,6 @@ func (this *GatherTask) spec() string {
 	return "0 0/5 * * *"
 }
 
-/*
-func (this *RemindersTask) run(fu *FollowUp) func() {
-	return func() {
-		log.Printf("Running reminders for %d users", len(fu.users))
-		for i := range fu.users {
-			log.Println("quick hi", fu.users[i].LastChatted())
-			fu.session.User = fu.users[i].ToBotUser()
-			for r := range fu.users[i].Reminders() {
-				log.Printf("User has reminders ...")
-				reminder := fu.users[i].Reminders()[r]
-				if reminder.RemindToday() {
-					fu.session.User = fu.users[i].ToBotUser()
-					fu.session.send(reminder.Text)
-					//complete the reminder and save the update
-					updated := reminder
-					updated.CompletedOn = time.Now()
-					fu.session.Storage.Update(string(fu.users[i].id), reminder, updated)
-				}
-			}
-
-		}
-	}
-}
-
-func (this *RemindersTask) spec() string {
-	return "0 0/5 * * *"
-}*/
-
 func (this *FollowupTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `Help me` ....")

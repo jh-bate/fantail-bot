@@ -97,8 +97,48 @@ func (s *session) getSentStickerId() string {
 	return ""
 }
 
-func (s *session) saveSentAsNote(tags ...string) {
-	s.save(s.in.getNote(tags...))
+func (s *session) saveWithContext(context []string, tags ...string) {
+
+	if s.Storage == nil {
+		log.Println(FantailStorageErr.Error())
+		return
+	}
+	n := s.in.createNote(tags...)
+	n.SetContext(context...)
+	if n.IsEmpty() {
+		log.Println("Nothing to save")
+		return
+	}
+
+	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
+
+	if err != nil {
+		log.Println(err.Error())
+		log.Println(FantailSaveErr.Error())
+	}
+	return
+}
+
+func (s *session) save(tags ...string) {
+
+	if s.Storage == nil {
+		log.Println(FantailStorageErr.Error())
+		return
+	}
+
+	n := s.in.createNote(tags...)
+
+	if n.IsEmpty() {
+		log.Println("Nothing to save")
+		return
+	}
+
+	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
+
+	if err != nil {
+		log.Println(err.Error())
+		log.Println(FantailSaveErr.Error())
+	}
 	return
 }
 
@@ -147,25 +187,6 @@ func (s *session) sendWithKeyboard(msg string, kb Keyboard) {
 func (s *session) takeThoughtfulPause() {
 	s.Bot.SendChatAction(s.User, typing_action)
 	time.Sleep(1 * time.Second)
-	return
-}
-
-func (s *session) save(n *Note) {
-	if s.Storage == nil {
-		log.Println(FantailStorageErr.Error())
-		return
-	}
-	if n.IsEmpty() {
-		log.Println("Nothing to save")
-		return
-	}
-
-	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
-
-	if err != nil {
-		log.Println(err.Error())
-		log.Println(FantailSaveErr.Error())
-	}
 	return
 }
 

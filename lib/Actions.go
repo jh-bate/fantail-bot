@@ -29,9 +29,6 @@ const (
 	review_action      = "/review"
 	review_action_hint = "/review <days>"
 
-	remind_action      = "/remind"
-	remind_action_hint = "/remind at <hh:mm> in <days> to <message>"
-
 	default_script = "default"
 )
 
@@ -49,8 +46,6 @@ func NewAction(s *session, actionName string) Action {
 
 	if cmd == say_action {
 		return SayAction{session: s}
-	} else if cmd == remind_action {
-		return &RemindAction{session: s}
 	} else if cmd == review_action {
 		return &ReviewAction{session: s}
 	} else if cmd == chat_action {
@@ -99,7 +94,7 @@ func (a SayAction) getHint() string {
 	return say_action_hint
 }
 func (a SayAction) firstUp() Action {
-	a.session.saveSentAsNote()
+	a.session.save(a.getName())
 	return a
 }
 
@@ -113,7 +108,7 @@ func (a SayAction) nextQuestion() *Question {
 
 	next, save := q.next(a.getSentMsgText())
 	if save {
-		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
+		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
@@ -211,7 +206,7 @@ func (a ChatAction) nextQuestion() *Question {
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
+		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
@@ -268,65 +263,12 @@ func (a ReviewAction) nextQuestion() *Question {
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
+		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
 
 func (a ReviewAction) askQuestion() {
-	if q := a.nextQuestion(); q != nil {
-		a.session.send(q.Context...)
-		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
-	}
-	return
-}
-
-type RemindAction struct {
-	*session
-}
-
-func (a RemindAction) getName() string {
-	return remind_action
-}
-func (a RemindAction) getHint() string {
-	return remind_action_hint
-}
-func (a RemindAction) firstUp() Action {
-	log.Println("remind me ...")
-	a.session.saveSentAsNote()
-	return a
-}
-
-func (a RemindAction) getQuestions() Questions {
-
-	var q struct {
-		Questions `json:"QandA"`
-	}
-
-	if a.session.sentAsSubmission() {
-		load(default_script, &q)
-		return q.Questions
-	}
-	load(a.getName(), &q)
-
-	return q.Questions
-}
-
-func (a RemindAction) nextQuestion() *Question {
-
-	q := a.getQuestions()
-
-	if a.session.sentAsCommand() {
-		return q.First()
-	}
-	next, save := q.next(a.session.getSentMsgText())
-	if save {
-		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
-	}
-	return next
-}
-
-func (a RemindAction) askQuestion() {
 	if q := a.nextQuestion(); q != nil {
 		a.session.send(q.Context...)
 		a.session.sendWithKeyboard(q.QuestionText, q.makeKeyboard())
@@ -369,13 +311,13 @@ func (a StickerChatAction) nextQuestion() *Question {
 		a.session.setSentMsgText(sticker.Meaning)
 		next, save := q.nextFrom(sticker.Ids...)
 		if save {
-			a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
+			a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
 		}
 		return next
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveSentAsNote(a.getName(), next.RelatesTo.SaveTag)
+		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }

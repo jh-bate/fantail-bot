@@ -24,11 +24,8 @@ func (this Incoming) getAction(s *session, prevActionName string) Action {
 	return NewAction(s, prevActionName)
 }
 
-func (this Incoming) getNote(tags ...string) *Note {
-	if strings.Contains(this.msg.Text, remind_action) {
-		return NewReminderNote(this.msg)
-	}
-	return NewNote(this.msg, this.getCmd())
+func (this Incoming) createNote(tags ...string) *Note {
+	return NewNote(this.msg, tags...)
 }
 
 func (this Incoming) isSticker() bool {

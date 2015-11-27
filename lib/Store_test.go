@@ -24,10 +24,9 @@ func testData(id int) *User {
 
 	u.notes = append(u.notes,
 		NewNote(newMsg("/say hi")),
-		NewReminderNote(newMsg("/remind 3 to do moar stuff"), remind_tag),
 		NewNote(newMsg("/say hello")),
+		NewNote(newMsg("answering another question")),
 		NewNote(newMsg("/say need help to figure stuff out"), help_tag),
-		NewReminderNote(newMsg("/remind 1 to do stuff"), remind_tag),
 		NewNote(newMsg("/say bye")),
 	)
 
@@ -52,15 +51,11 @@ func TestStore_Save_and_Get(t *testing.T) {
 	}
 
 	if len(retreived) != len(user.notes) {
-		t.Errorf("expected %d got %d reminders", 2, len(retreived.FilterBy(remind_tag)))
-	}
-
-	if len(retreived.FilterBy(remind_tag)) != 2 {
-		t.Errorf("expected %d got %d reminders", 2, len(retreived.FilterBy(remind_tag)))
+		t.Errorf("expected %d got %d", len(user.notes), len(retreived))
 	}
 
 	if len(retreived.FilterBy(help_tag)) != 1 {
-		t.Errorf("expected %d got %d reminders", 1, len(retreived.FilterBy(help_tag)))
+		t.Errorf("expected %d got %d help items", 1, len(retreived.FilterBy(help_tag)))
 	}
 }
 
