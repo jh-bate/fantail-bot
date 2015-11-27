@@ -99,7 +99,9 @@ func (a SayAction) getHint() string {
 	return say_action_hint
 }
 func (a SayAction) firstUp() Action {
-	a.session.save(a.getName())
+	if a.sentAsSubmission() {
+		a.session.save()
+	}
 	return a
 }
 
@@ -145,7 +147,9 @@ func (a AskAction) getHint() string {
 	return ask_action_hint
 }
 func (a AskAction) firstUp() Action {
-	a.session.save(a.getName(), help_tag)
+	if a.sentAsSubmission() {
+		a.session.save(help_tag)
+	}
 	return a
 }
 
@@ -175,11 +179,6 @@ func (a AskAction) getQuestions() Questions {
 
 	var q struct {
 		Questions `json:"QandA"`
-	}
-
-	if a.session.sentAsSubmission() {
-		load(default_script, &q)
-		return q.Questions
 	}
 	load(a.getName(), &q)
 	return q.Questions
