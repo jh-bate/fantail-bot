@@ -108,7 +108,7 @@ func (a SayAction) nextQuestion() *Question {
 
 	next, save := q.next(a.getSentMsgText())
 	if save {
-		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
+		a.session.save(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
@@ -206,7 +206,7 @@ func (a ChatAction) nextQuestion() *Question {
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
+		a.session.save(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
@@ -263,7 +263,7 @@ func (a ReviewAction) nextQuestion() *Question {
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
+		a.session.save(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
@@ -311,13 +311,13 @@ func (a StickerChatAction) nextQuestion() *Question {
 		a.session.setSentMsgText(sticker.Meaning)
 		next, save := q.nextFrom(sticker.Ids...)
 		if save {
-			a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
+			a.session.save(a.getName(), next.RelatesTo.SaveTag)
 		}
 		return next
 	}
 	next, save := q.next(a.session.getSentMsgText())
 	if save {
-		a.session.saveWithContext(next.RelatesTo.Answers, a.getName(), next.RelatesTo.SaveTag)
+		a.session.save(a.getName(), next.RelatesTo.SaveTag)
 	}
 	return next
 }
