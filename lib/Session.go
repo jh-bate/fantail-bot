@@ -226,7 +226,7 @@ func (s *session) getLastChatForTopic(topic string) *Note {
 
 	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
 	if err == nil {
-		return all.FilterBy(topic).SortByDate()[0]
+		return all.FilterOnTag(topic).SortByDate()[0]
 	}
 	return nil
 }

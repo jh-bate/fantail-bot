@@ -50,7 +50,7 @@ func (this Incoming) getCmd() string {
 func (this Incoming) cmdMatches(cmds ...string) bool {
 	if this.isCmd() {
 		for i := range cmds {
-			if strings.ToLower(cmds[i]) == strings.ToLower(this.getCmd()) {
+			if strings.EqualFold(cmds[i], this.getCmd()) {
 				return true
 			}
 		}
@@ -61,7 +61,7 @@ func (this Incoming) cmdMatches(cmds ...string) bool {
 func (this Incoming) submissonMatches(cmds ...string) bool {
 	if this.hasSubmisson() {
 		for i := range cmds {
-			if cmds[i] == this.getCmd() {
+			if strings.EqualFold(cmds[i], this.getCmd()) {
 				return true
 			}
 		}

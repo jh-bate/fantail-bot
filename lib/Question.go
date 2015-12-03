@@ -1,6 +1,9 @@
 package lib
 
-import "log"
+import (
+	"log"
+	"strings"
+)
 
 type (
 	Question struct {
@@ -27,7 +30,7 @@ func (this Questions) First() *Question {
 func (this Questions) next(prevAnswer string) (*Question, bool) {
 	for i := range this {
 		for a := range this[i].RelatesTo.Answers {
-			if this[i].RelatesTo.Answers[a] == prevAnswer {
+			if strings.EqualFold(this[i].RelatesTo.Answers[a], prevAnswer) {
 				return this[i], this[i].RelatesTo.Save
 			}
 		}

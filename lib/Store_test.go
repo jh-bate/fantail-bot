@@ -54,8 +54,8 @@ func TestStore_Save_and_Get(t *testing.T) {
 		t.Errorf("expected %d got %d", len(user.notes), len(retreived))
 	}
 
-	if len(retreived.FilterBy(help_tag)) != 1 {
-		t.Errorf("expected %d got %d help items", 1, len(retreived.FilterBy(help_tag)))
+	if len(retreived.FilterOnTag(help_tag)) != 1 {
+		t.Errorf("expected %d got %d help items", 1, len(retreived.FilterOnTag(help_tag)))
 	}
 }
 

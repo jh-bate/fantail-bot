@@ -68,12 +68,9 @@ func load(name string, q interface{}) {
 	}
 
 	absPath, _ := filepath.Abs(fmt.Sprintf("config/%s.json", name))
-
-	log.Println("QandA", absPath)
-
 	file, err := os.Open(absPath)
+
 	if err != nil {
-		log.Println("could not load QandA language file", err.Error())
 		absPath, _ = filepath.Abs(fmt.Sprintf("lib/config/%s.json", name))
 		log.Println("QandA path ", absPath)
 
@@ -205,7 +202,7 @@ func (a HelpAction) firstUp() Action {
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		ask_action_hint+" - to ask *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
-		"Stickers - we have those to help express yourself!! [Get them here](https://telegram.me/addstickers/betes) \n\n",
+		"Stickers - we have those to help express yourself!! \n\n [Get them here](https://telegram.me/addstickers/betes)",
 	)
 	a.session.send(helpInfo)
 	return a
@@ -287,9 +284,9 @@ func (a ReviewAction) firstUp() Action {
 	log.Println("doFirsting review ...")
 	n := a.session.getNotes()
 
-	saidTxt := fmt.Sprintf("%s you said: \n\n %s", a.session.getSentUsername(), n.FilterBy(said_tag).ToString())
+	saidTxt := fmt.Sprintf("%s you said: \n\n %s", a.session.getSentUsername(), n.FilterOnTag(said_tag).ToString())
 	a.session.send(saidTxt)
-	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.session.getSentUsername(), n.FilterBy(chat_tag).ToString())
+	talkedTxt := fmt.Sprintf("%s we talked about: \n\n %s", a.session.getSentUsername(), n.FilterOnTag(chat_tag).ToString())
 	a.session.send(talkedTxt)
 	return a
 }

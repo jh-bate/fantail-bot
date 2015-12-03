@@ -62,10 +62,20 @@ func (this *Note) ToString() string {
 	return fmt.Sprintf("On %s you said '%s'", this.Added.Format("Mon Jan 2 03:04pm"), this.Text)
 }
 
-func (this Notes) FilterBy(tag string) Notes {
+func (this Notes) FilterOnTag(tag string) Notes {
 	n := Notes{}
 	for i := range this {
-		if this[i].Completed.IsZero() && strings.Contains(this[i].Tag, tag) {
+		if this[i].Completed.IsZero() && strings.Contains(strings.ToLower(this[i].Tag), strings.ToLower(tag)) {
+			n = append(n, this[i])
+		}
+	}
+	return n
+}
+
+func (this Notes) FilterOnTxt(txt string) Notes {
+	n := Notes{}
+	for i := range this {
+		if this[i].Completed.IsZero() && strings.Contains(strings.ToLower(this[i].Text), strings.ToLower(txt)) {
 			n = append(n, this[i])
 		}
 	}

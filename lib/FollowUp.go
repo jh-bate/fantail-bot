@@ -88,6 +88,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 }
 
 func (this *GatherTask) spec() string {
+	//every 5 mins
 	return "0 0/5 * * *"
 }
 
@@ -111,6 +112,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 }
 
 func (this *FollowupTask) spec() string {
+	//every 10 mins
 	return "0 0/10 * * *"
 }
 

@@ -11,7 +11,7 @@ type (
 )
 
 func (this *User) FollowUp() Notes {
-	return this.notes.FilterBy(help_tag).SortByDate()
+	return this.notes.FilterOnTag(help_tag).SortByDate()
 }
 
 func (this *User) ToBotUser() telebot.User {
