@@ -38,8 +38,9 @@ func main() {
 	fBot.bot.Listen(messages, 1*time.Second)
 
 	w := lib.NewWorker(fBot.bot, fBot.store)
-	log.Println("start followup process ....")
-	w.DoFollowUp()
+	//TODO: add in followup process
+	//log.Println("start followup process ....")
+	//w.DoFollowUp()
 
 	log.Println("start message process ....")
 	w.ProcessMessages(messages)
