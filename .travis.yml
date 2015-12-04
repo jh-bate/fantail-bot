@@ -2,7 +2,9 @@ language: go
 
 go:
  - 1.5
- - tip
+
+services:
+  - redis-server
 
 script:
- - cd lib && go test -v
+ - go test -v ./...

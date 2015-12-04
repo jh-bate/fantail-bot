@@ -21,14 +21,11 @@ func (this Incoming) hasSubmisson() bool {
 }
 
 func (this Incoming) getAction(s *session, prevActionName string) Action {
-	return NewAction(&this, s, prevActionName)
+	return NewAction(s, prevActionName)
 }
 
-func (this Incoming) getNote(tags ...string) Note {
-	if strings.Contains(this.msg.Text, remind_action) {
-		return NewReminderNote(this.msg)
-	}
-	return NewNote(this.msg, this.getCmd())
+func (this Incoming) createNote(tags ...string) *Note {
+	return NewNote(this.msg, tags...)
 }
 
 func (this Incoming) isSticker() bool {
@@ -42,7 +39,9 @@ func (this Incoming) sender() telebot.User {
 func (this Incoming) getCmd() string {
 	if this.isCmd() {
 		if strings.Contains(this.msg.Text, "/") {
-			return strings.Fields(this.msg.Text)[0]
+			theCmd := strings.Fields(this.msg.Text)[0]
+			//lowercase it
+			return strings.ToLower(theCmd)
 		}
 	}
 	return ""
@@ -51,7 +50,7 @@ func (this Incoming) getCmd() string {
 func (this Incoming) cmdMatches(cmds ...string) bool {
 	if this.isCmd() {
 		for i := range cmds {
-			if cmds[i] == this.getCmd() {
+			if strings.EqualFold(cmds[i], this.getCmd()) {
 				return true
 			}
 		}
@@ -62,7 +61,7 @@ func (this Incoming) cmdMatches(cmds ...string) bool {
 func (this Incoming) submissonMatches(cmds ...string) bool {
 	if this.hasSubmisson() {
 		for i := range cmds {
-			if cmds[i] == this.getCmd() {
+			if strings.EqualFold(cmds[i], this.getCmd()) {
 				return true
 			}
 		}

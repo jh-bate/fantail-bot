@@ -13,7 +13,7 @@ const (
 func TestNote_NewNote(t *testing.T) {
 
 	hi := newMsg("/say hi")
-	n := NewNote(hi, test_tag)
+	n := NewNote(hi, "", test_tag)
 
 	if n.IsEmpty() {
 		t.Error("should not be empty")
@@ -43,65 +43,34 @@ func TestNote_IsEmpty(t *testing.T) {
 
 }
 
-func TestNote_NewReminderNote(t *testing.T) {
+func TestNote_Complete(t *testing.T) {
 
-	remind := newMsg("/remind 3 to do stuff")
-	n := NewReminderNote(remind, test_tag)
+	n := NewNote(newMsg("/say hi"), "", test_tag)
 
-	if n.IsEmpty() {
-		t.Error("should not be empty")
+	if !n.Completed.IsZero() {
+		t.Error("note should not be complete on creation")
 	}
 
-	if !strings.Contains(n.Tag, remind_tag) {
-		t.Errorf("be tagged with remind_tag Tag=%s", n.Tag)
-	}
+	n.Complete()
 
-	if !strings.Contains(n.Tag, test_tag) {
-		t.Errorf("be tagged with passed tags Tag=%s", n.Tag)
+	if n.Completed.IsZero() {
+		t.Error("note should now be complete")
 	}
-
-	if n.Text != "to do stuff" {
-		t.Error("but is ", n.Text)
-	}
-
 }
 
-func TestNote_NewReminderNote_OnTime(t *testing.T) {
+func TestNote_Update(t *testing.T) {
 
-	const shortForm = "15:04"
-	expectedTime, _ := time.Parse(shortForm, "08:32")
-	expectedDay := time.Now().Day()
+	n := NewNote(newMsg("/say hi"), "", test_tag)
 
-	remind := newMsg("/remind 08:32 2 to do stuff")
-	n := NewReminderNote(remind, test_tag)
-
-	if n.IsEmpty() {
-		t.Error("should not be empty")
+	if !n.Updated.IsZero() {
+		t.Error("note should not be updated on creation")
 	}
 
-	if !strings.Contains(n.Tag, remind_tag) {
-		t.Errorf("be tagged with remind_tag Tag=%s", n.Tag)
+	n.Update()
+
+	if n.Updated.IsZero() {
+		t.Error("note should now be updated")
 	}
-
-	if !strings.Contains(n.Tag, test_tag) {
-		t.Errorf("be tagged with passed tags Tag=%s", n.Tag)
-	}
-
-	if n.Text != "to do stuff" {
-		t.Error("but is ", n.Text)
-	}
-
-	if n.RemindNext.Day() != expectedDay {
-		t.Errorf("expected days %d got days %d", expectedDay, n.RemindNext.Day())
-	}
-
-	eH, eM, _ := expectedTime.Clock()
-	aH, aM, _ := n.RemindNext.Clock()
-
-	if aH != eH || aM != aM {
-		t.Errorf("expected %dh:%dm got %dh:%dm ", eH, eM, aH, aM)
-	}
-
 }
 
 func TestNote_tagFromMsg(t *testing.T) {
@@ -126,6 +95,62 @@ func TestNote_tagFromMsg(t *testing.T) {
 
 	if stuffTag != "/stuff" {
 		t.Errorf("expected %s got %s", "/stuff", stuffTag)
+	}
+
+}
+
+func TestNote_Notes_SortByDate(t *testing.T) {
+
+	n := NewNote(newMsg("/say stuff"), "", test_tag)
+	n.Added = time.Now().Add(-5)
+	n2 := NewNote(newMsg("/say moar"), "", test_tag)
+	n2.Added = time.Now()
+	n3 := NewNote(newMsg("/say moar stuff"), "", test_tag)
+	n3.Added = time.Now().Add(5)
+
+	notes := Notes{n, n2, n3}
+
+	if notes.SortByDate()[0].Added.YearDay() != n3.Added.YearDay() {
+		t.Errorf("expected %d got %d", n3.Added.YearDay(), notes.SortByDate()[0].Added.YearDay())
+	}
+
+	if notes.SortByDate()[1].Added.YearDay() != n2.Added.YearDay() {
+		t.Errorf("expected %d got %d", n2.Added.YearDay(), notes.SortByDate()[1].Added.YearDay())
+	}
+
+	if notes.SortByDate()[2].Added.YearDay() != n.Added.YearDay() {
+		t.Errorf("expected %d got %d", n.Added.YearDay(), notes.SortByDate()[2].Added.YearDay())
+	}
+
+}
+
+func TestNote_Notes_MostRecent(t *testing.T) {
+
+	n := NewNote(newMsg("/say stuff"), "", test_tag)
+	n.Added = time.Now().Add(-5)
+	n2 := NewNote(newMsg("/say moar"), "", test_tag)
+	n2.Added = time.Now()
+	n3 := NewNote(newMsg("/say moar stuff"), "", test_tag)
+	n3.Added = time.Now().Add(5)
+
+	notes := Notes{n, n2, n3}
+
+	latest := notes.MostRecent()
+
+	if latest.Added.YearDay() != n3.Added.YearDay() {
+		t.Errorf("expected %d got %d", n3.Added.YearDay(), latest.Added.YearDay())
+	}
+
+}
+
+func TestNote_Notes_MostRecent_whenEmpty(t *testing.T) {
+
+	notes := Notes{}
+
+	latest := notes.MostRecent()
+
+	if !latest.Added.IsZero() {
+		t.Error("there are no notes so the most recent should be empty")
 	}
 
 }
