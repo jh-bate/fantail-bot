@@ -62,10 +62,8 @@ func NewAction(s *session, actionName string) Action {
 		return &ChatAction{session: s}
 	} else if s.sentAsSticker() {
 		return &StickerChatAction{session: s}
-	} else if cmd == help_action || cmd == start_action {
-		return &HelpAction{session: s}
 	}
-	return nil
+	return &HelpAction{session: s}
 }
 
 func load(name string, q interface{}) {
