@@ -5,7 +5,7 @@ import "testing"
 func test_makeHappyNotes() Notes {
 	return Notes{
 		NewNote(newMsg("/say really happy")),
-		NewNote(newMsg("/say hello")),
+		NewNote(newMsg("/say hello all good")),
 		NewNote(newMsg("all going well")),
 		NewNote(newMsg("/say need help to figure stuff out"), help_tag),
 		NewNote(newMsg("/say bad day today, too many lows")),

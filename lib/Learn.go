@@ -32,7 +32,7 @@ func (this Name) toBayesianClass() bayesian.Class {
 	return bayesian.Class(this)
 }
 
-func (this *LearningType) loadWords() {
+func (this *LearningType) loadWords() *LearningType {
 
 	if this.Name == Postive {
 		this.Words = []string{
@@ -45,20 +45,19 @@ func (this *LearningType) loadWords() {
 		this.Words = []string{
 			"low",
 			"high",
+			"bad",
 			"depressed",
 			"over it",
 			"sick",
 		}
 	}
-	return
+	return this
 }
 
 func NewLearner() *Learn {
 
-	pos := NewLearningType(Postive)
-	pos.loadWords()
-	neg := NewLearningType(Negative)
-	neg.loadWords()
+	pos := NewLearningType(Postive).loadWords()
+	neg := NewLearningType(Negative).loadWords()
 	mc := &Learn{
 		classifier: bayesian.NewClassifier(pos.Name.toBayesianClass(), neg.Name.toBayesianClass()),
 	}
