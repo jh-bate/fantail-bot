@@ -11,6 +11,11 @@
 			"Rev": "764a32c188f6ce0bc2565349f0125b3ad4021ea9"
 		},
 		{
+			"ImportPath": "github.com/jbrukh/bayesian",
+			"Comment": "1.0-19-g78b283a",
+			"Rev": "78b283ad3339530e700f96c41b960dccecde991c"
+		},
+		{
 			"ImportPath": "github.com/robfig/cron",
 			"Comment": "v1-3-gb024fc5",
 			"Rev": "b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4"
