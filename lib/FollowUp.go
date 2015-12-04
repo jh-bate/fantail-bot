@@ -15,9 +15,10 @@ type (
 
 	Tasks []Task
 
-	GatherTask   struct{}
-	FollowupTask struct{}
-	CheckInTask  struct{}
+	GatherTask    struct{}
+	FollowupTask  struct{}
+	CheckInTask   struct{}
+	LearnFromTask struct{}
 
 	FollowUp struct {
 		c *cron.Cron
@@ -32,7 +33,7 @@ func NewFollowUp(s *session) *FollowUp {
 		c:       cron.New(),
 		users:   Users{},
 	}
-	sched.setup([]Task{&GatherTask{}, &FollowupTask{}, &CheckInTask{}})
+	sched.setup([]Task{&GatherTask{}, &FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
 
 	return sched
 }
@@ -136,4 +137,42 @@ func (this *CheckInTask) run(fu *FollowUp) func() {
 func (this *CheckInTask) spec() string {
 	//every day at 7am
 	return "0 0 6 * * *"
+}
+
+func (this *LearnFromTask) run(fu *FollowUp) func() {
+
+	learn := NewLearner()
+
+	return func() {
+		log.Println("Running `learning task` ....")
+		for i := range fu.users {
+			fu.session.User = fu.users[i].ToBotUser()
+
+			good := learn.isPositive(fu.users[i].notes)
+			keyboard := Keyboard{}
+
+			if !good {
+
+				keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
+
+				fu.session.sendWithKeyboard(
+					"Hey, looks like things might not be going as well as you would like?",
+					keyboard,
+				)
+				break
+			}
+
+			keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
+
+			fu.session.sendWithKeyboard(
+				"Hey, it looks like your doing well!!",
+				keyboard,
+			)
+
+		}
+	}
+}
+
+func (this *LearnFromTask) spec() string {
+	return "@weekly"
 }
