@@ -48,6 +48,7 @@ func NewAction(s *session, actionName string) Action {
 	}
 
 	log.Println("incoming sticker?", s.sentAsSticker())
+	log.Println("cmd", cmd)
 	log.Println("txt", s.getIncoming().msg.Text)
 	log.Println("sticker", s.getIncoming().msg.Sticker.FileID)
 
@@ -61,8 +62,10 @@ func NewAction(s *session, actionName string) Action {
 		return &ChatAction{session: s}
 	} else if s.sentAsSticker() {
 		return &StickerChatAction{session: s}
+	} else if cmd == help_action || cmd == start_action {
+		return &HelpAction{session: s}
 	}
-	return &HelpAction{session: s}
+	return nil
 }
 
 func load(name string, q interface{}) {
