@@ -29,7 +29,7 @@ func TestUser_ToBotUser(t *testing.T) {
 func TestUser_FollowUp(t *testing.T) {
 	u1 := testUser(111)
 
-	r := u1.FollowUp()
+	r := u1.FollowUpAbout()
 
 	if len(r) != 1 {
 		t.Error("there should be ONE help note", len(r))

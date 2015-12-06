@@ -98,13 +98,11 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 		log.Println("Running `Help me` ....")
 		for i := range fu.users {
 
-			help := fu.users[i].FollowUp()
+			help := fu.users[i].FollowUpAbout()
 
 			if len(help) > 0 {
 				fu.session.User = fu.users[i].ToBotUser()
-
 				helpTxt := help.ToString()
-
 				fu.session.send(fmt.Sprintf("Hey, so these are the things you wanted help with /n/n%s", helpTxt))
 			}
 		}
@@ -141,14 +139,14 @@ func (this *CheckInTask) spec() string {
 
 func (this *LearnFromTask) run(fu *FollowUp) func() {
 
-	classify := NewClassification()
+	const check_for_days = 3
 
 	return func() {
 		log.Println("Running `learning task` ....")
 		for i := range fu.users {
 			fu.session.User = fu.users[i].ToBotUser()
 
-			pos := classify.ArePositive(fu.users[i].notes.GetWords())
+			pos := fu.users[i].IsPostive(check_for_days)
 			keyboard := Keyboard{}
 
 			if !pos {

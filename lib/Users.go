@@ -10,8 +10,13 @@ type (
 	Users []*User
 )
 
-func (this *User) FollowUp() Notes {
+func (this *User) FollowUpAbout() Notes {
 	return this.notes.FilterOnTag(help_tag).SortByDate()
+}
+
+func (this *User) IsPostive(days int) bool {
+	classify := NewClassification()
+	return classify.ArePositive(this.notes.ForNextDays(days).GetWords())
 }
 
 func (this *User) ToBotUser() telebot.User {
