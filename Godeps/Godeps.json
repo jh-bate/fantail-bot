@@ -1,9 +1,6 @@
 {
 	"ImportPath": "github.com/jh-bate/fantail-bot",
 	"GoVersion": "go1.5.1",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
