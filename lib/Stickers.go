@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+
+	"github.com/jh-bate/fantail-bot/lib/config"
 )
 
 type (
@@ -19,7 +21,7 @@ type (
 
 func LoadKnownStickers() Stickers {
 	var s Stickers
-	ConfigLoader(&s, "stickers.json")
+	config.Load(&s, "stickers.json")
 	return s
 }
 
