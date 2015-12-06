@@ -4,7 +4,7 @@ go:
 	- 1.5
 
 services:
-  - redis-server
+	- redis-server
 
 before_script:
 	- go vet -v ./...
