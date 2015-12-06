@@ -82,8 +82,8 @@ func (this Notes) FilterOnTxt(txt string) Notes {
 	return n
 }
 
-func (this Notes) GetWords() Words {
-	var w Words
+func (this Notes) GetWords() ClassificationWords {
+	var w ClassificationWords
 	for i := range this {
 		w = append(w, strings.Fields(this[i].Text)...)
 		w = append(w, strings.Fields(this[i].Tag)...)

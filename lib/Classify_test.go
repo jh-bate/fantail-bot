@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func test_makeHappyWords() Words {
-	w := Words{}
+func test_makeHappyWords() ClassificationWords {
+	w := ClassificationWords{}
 	w = append(w, strings.Fields("/say really happy")...)
 	w = append(w, strings.Fields("/say hello all good")...)
 	w = append(w, strings.Fields("things very good, went really well today")...)
@@ -14,8 +14,8 @@ func test_makeHappyWords() Words {
 	return w
 }
 
-func test_makeNeutralWords() Words {
-	w := Words{}
+func test_makeNeutralWords() ClassificationWords {
+	w := ClassificationWords{}
 	w = append(w, strings.Fields("/say low happy")...)
 	w = append(w, strings.Fields("/say bad happy")...)
 	w = append(w, strings.Fields("all going well bad")...)
@@ -25,8 +25,8 @@ func test_makeNeutralWords() Words {
 
 }
 
-func test_makeUnhappyWords() Words {
-	w := Words{}
+func test_makeUnhappyWords() ClassificationWords {
+	w := ClassificationWords{}
 	w = append(w, strings.Fields("/say help")...)
 	w = append(w, strings.Fields("/say more highs, sick of it!")...)
 	w = append(w, strings.Fields("things went really well today")...)
@@ -37,9 +37,9 @@ func test_makeUnhappyWords() Words {
 
 func TestLearn_Postive(t *testing.T) {
 
-	learn := NewLearner()
+	classify := NewClassification()
 
-	if !learn.ArePositive(test_makeHappyWords()) {
+	if !classify.ArePositive(test_makeHappyWords()) {
 		t.Error("this should have been recorded as positive")
 	}
 
@@ -47,9 +47,9 @@ func TestLearn_Postive(t *testing.T) {
 
 func TestLearn_Postive_WhenBalanced(t *testing.T) {
 
-	learn := NewLearner()
+	classify := NewClassification()
 
-	if !learn.ArePositive(test_makeNeutralWords()) {
+	if !classify.ArePositive(test_makeNeutralWords()) {
 		t.Error("this should have been recorded as positive when notes are neutral")
 	}
 
@@ -57,9 +57,9 @@ func TestLearn_Postive_WhenBalanced(t *testing.T) {
 
 func TestLearn_Negative(t *testing.T) {
 
-	learn := NewLearner()
+	classify := NewClassification()
 
-	if learn.ArePositive(test_makeUnhappyWords()) {
+	if classify.ArePositive(test_makeUnhappyWords()) {
 		t.Error("this should have been recorded as negative")
 	}
 

@@ -141,14 +141,14 @@ func (this *CheckInTask) spec() string {
 
 func (this *LearnFromTask) run(fu *FollowUp) func() {
 
-	learn := NewLearner()
+	classify := NewClassification()
 
 	return func() {
 		log.Println("Running `learning task` ....")
 		for i := range fu.users {
 			fu.session.User = fu.users[i].ToBotUser()
 
-			pos := learn.ArePositive(fu.users[i].notes.GetWords())
+			pos := classify.ArePositive(fu.users[i].notes.GetWords())
 			keyboard := Keyboard{}
 
 			if !pos {
