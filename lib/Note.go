@@ -82,6 +82,15 @@ func (this Notes) FilterOnTxt(txt string) Notes {
 	return n
 }
 
+func (this Notes) GetWords() Words {
+	var w Words
+	for i := range this {
+		w = append(w, strings.Fields(this[i].Text)...)
+		w = append(w, strings.Fields(this[i].Tag)...)
+	}
+	return w
+}
+
 func (this Notes) ForNextDays(days int) Notes {
 	var r Notes
 	t := time.Now()

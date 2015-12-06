@@ -1,12 +1,8 @@
 package lib
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 type Action interface {
@@ -35,6 +31,10 @@ const (
 	default_script = "default"
 )
 
+var Config struct {
+	Questions `json:"QandA"`
+}
+
 func NewAction(s *session, actionName string) Action {
 
 	if s != nil {
@@ -59,30 +59,6 @@ func NewAction(s *session, actionName string) Action {
 		return &StickerChatAction{session: s}
 	}
 	return &HelpAction{session: s}
-}
-
-func load(name string, q interface{}) {
-
-	if strings.Contains(name, "/") {
-		name = strings.Split(name, "/")[1]
-	}
-
-	absPath, _ := filepath.Abs(fmt.Sprintf("config/%s.json", name))
-	file, err := os.Open(absPath)
-
-	if err != nil {
-		absPath, _ = filepath.Abs(fmt.Sprintf("lib/config/%s.json", name))
-		log.Println("QandA path ", absPath)
-
-		file, err = os.Open(absPath)
-	}
-
-	err = json.NewDecoder(file).Decode(&q)
-	if err != nil {
-		log.Panic("could not decode QandA ", err.Error())
-	}
-
-	return
 }
 
 type SayAction struct {
@@ -125,12 +101,8 @@ func (a SayAction) askQuestion() {
 }
 
 func (a SayAction) getQuestions() Questions {
-
-	var q struct {
-		Questions `json:"QandA"`
-	}
-	load(a.getName(), &q)
-	return q.Questions
+	ConfigLoader(&Config, "say.json")
+	return Config.Questions
 }
 
 type AskAction struct {
@@ -173,19 +145,12 @@ func (a AskAction) askQuestion() {
 }
 
 func (a AskAction) getQuestions() Questions {
-
-	var q struct {
-		Questions `json:"QandA"`
-	}
-	load(a.getName(), &q)
-	return q.Questions
+	ConfigLoader(&Config, "ask.json")
+	return Config.Questions
 }
 
 type HelpAction struct {
 	*session
-	q struct {
-		Questions `json:"QandA"`
-	}
 }
 
 func (a HelpAction) getName() string {
@@ -236,13 +201,8 @@ func (a ChatAction) firstUp() Action {
 }
 
 func (a ChatAction) getQuestions() Questions {
-
-	var q struct {
-		Questions `json:"QandA"`
-	}
-
-	load(a.getName(), &q)
-	return q.Questions
+	ConfigLoader(&Config, "chat.json")
+	return Config.Questions
 }
 
 func (a ChatAction) nextQuestion() *Question {
@@ -269,9 +229,6 @@ func (a ChatAction) askQuestion() {
 
 type ReviewAction struct {
 	*session
-	q struct {
-		Questions `json:"QandA"`
-	}
 }
 
 func (a ReviewAction) getName() string {
@@ -292,14 +249,8 @@ func (a ReviewAction) firstUp() Action {
 }
 
 func (a ReviewAction) getQuestions() Questions {
-
-	var q struct {
-		Questions `json:"QandA"`
-	}
-
-	load(a.getName(), &q)
-
-	return q.Questions
+	ConfigLoader(&Config, "review.json")
+	return Config.Questions
 }
 
 func (a ReviewAction) nextQuestion() *Question {
@@ -342,11 +293,8 @@ func (a StickerChatAction) firstUp() Action {
 }
 
 func (a StickerChatAction) getQuestions() Questions {
-	var q struct {
-		Questions `json:"QandA"`
-	}
-	load(a.getName(), &q)
-	return q.Questions
+	ConfigLoader(&Config, "chat.json")
+	return Config.Questions
 }
 
 func (a StickerChatAction) nextQuestion() *Question {

@@ -1,43 +1,46 @@
 package lib
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
-func test_makeHappyNotes() Notes {
-	return Notes{
-		NewNote(newMsg("/say really happy")),
-		NewNote(newMsg("/say hello all good")),
-		NewNote(newMsg("all going well")),
-		NewNote(newMsg("/say need help to figure stuff out"), help_tag),
-		NewNote(newMsg("/say bad day today, too many lows")),
-	}
+func test_makeHappyWords() Words {
+	w := Words{}
+	w = append(w, strings.Fields("/say really happy")...)
+	w = append(w, strings.Fields("/say hello all good")...)
+	w = append(w, strings.Fields("things very good, went really well today")...)
+	w = append(w, strings.Fields("/say bad day today, too many lows")...)
+	return w
 }
 
-func test_makeNeutralNotes() Notes {
-	return Notes{
-		NewNote(newMsg("/say low happy")),
-		NewNote(newMsg("/say bad happy")),
-		NewNote(newMsg("all going well bad")),
-		NewNote(newMsg("/say help good"), help_tag),
-		NewNote(newMsg("/say low great")),
-	}
+func test_makeNeutralWords() Words {
+	w := Words{}
+	w = append(w, strings.Fields("/say low happy")...)
+	w = append(w, strings.Fields("/say bad happy")...)
+	w = append(w, strings.Fields("all going well bad")...)
+	w = append(w, strings.Fields("/say help good")...)
+	w = append(w, strings.Fields("/say low great")...)
+	return w
+
 }
 
-func test_makeUnhappyNotes() Notes {
-	return Notes{
-		NewNote(newMsg("/say help")),
-		NewNote(newMsg("/say more highs, sick of it!")),
-		NewNote(newMsg("things went really well today")),
-		NewNote(newMsg("/say all good"), help_tag),
-		NewNote(newMsg("/say low again!!")),
-	}
+func test_makeUnhappyWords() Words {
+	w := Words{}
+	w = append(w, strings.Fields("/say help")...)
+	w = append(w, strings.Fields("/say more highs, sick of it!")...)
+	w = append(w, strings.Fields("things went really well today")...)
+	w = append(w, strings.Fields("/say all good help")...)
+	w = append(w, strings.Fields("/say low again!!")...)
+	return w
 }
 
 func TestLearn_Postive(t *testing.T) {
 
 	learn := NewLearner()
 
-	if !learn.isPositive(test_makeHappyNotes()) {
-		t.Error("this should have been recoreded as positive")
+	if !learn.ArePositive(test_makeHappyWords()) {
+		t.Error("this should have been recorded as positive")
 	}
 
 }
@@ -46,8 +49,8 @@ func TestLearn_Postive_WhenBalanced(t *testing.T) {
 
 	learn := NewLearner()
 
-	if !learn.isPositive(test_makeNeutralNotes()) {
-		t.Error("this should have been recoreded as positive when notes are nuteral")
+	if !learn.ArePositive(test_makeNeutralWords()) {
+		t.Error("this should have been recorded as positive when notes are neutral")
 	}
 
 }
@@ -56,8 +59,8 @@ func TestLearn_Negative(t *testing.T) {
 
 	learn := NewLearner()
 
-	if learn.isPositive(test_makeUnhappyNotes()) {
-		t.Error("this should have been recoreded as negitive")
+	if learn.ArePositive(test_makeUnhappyWords()) {
+		t.Error("this should have been recorded as negative")
 	}
 
 }

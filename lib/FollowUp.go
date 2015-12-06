@@ -148,10 +148,10 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 		for i := range fu.users {
 			fu.session.User = fu.users[i].ToBotUser()
 
-			good := learn.isPositive(fu.users[i].notes)
+			pos := learn.ArePositive(fu.users[i].notes.GetWords())
 			keyboard := Keyboard{}
 
-			if !good {
+			if !pos {
 
 				keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
 

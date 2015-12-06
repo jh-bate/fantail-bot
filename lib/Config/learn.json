@@ -1,0 +1,16 @@
+{
+  "positive": [
+    "happy",
+    "great",
+    "won",
+    "good",
+    "well"
+  ],
+  "negative": [
+    "low",
+    "unhappy",
+    "high",
+    "down",
+    "help"
+  ]
+}

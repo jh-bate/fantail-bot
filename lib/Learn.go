@@ -1,10 +1,6 @@
 package lib
 
-import (
-	"strings"
-
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
-)
+import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
 
 const (
 	Postive  Name = "Postive"
@@ -18,46 +14,33 @@ type (
 
 	Name bayesian.Class
 
+	Words []string
+
 	LearningType struct {
 		Name
-		Words []string `json:"words"`
+		Words
 	}
 )
 
-func NewLearningType(name Name) *LearningType {
-	return &LearningType{Name: name}
+func NewLearningType(name Name, words Words) *LearningType {
+	return &LearningType{Name: name, Words: words}
 }
 
 func (this Name) toBayesianClass() bayesian.Class {
 	return bayesian.Class(this)
 }
 
-func (this *LearningType) loadWords() *LearningType {
-
-	if this.Name == Postive {
-		this.Words = []string{
-			"happy",
-			"great",
-			"won",
-			"good",
-		}
-	} else if this.Name == Negative {
-		this.Words = []string{
-			"low",
-			"high",
-			"bad",
-			"depressed",
-			"over it",
-			"sick",
-		}
-	}
-	return this
-}
-
 func NewLearner() *Learn {
 
-	pos := NewLearningType(Postive).loadWords()
-	neg := NewLearningType(Negative).loadWords()
+	var LearnConfig struct {
+		PostiveWords  Words `json:"positive"`
+		NegativeWords Words `json:"negative"`
+	}
+
+	ConfigLoader(&LearnConfig, "learn.json")
+
+	pos := NewLearningType(Postive, LearnConfig.PostiveWords)
+	neg := NewLearningType(Negative, LearnConfig.NegativeWords)
 	mc := &Learn{
 		classifier: bayesian.NewClassifier(pos.Name.toBayesianClass(), neg.Name.toBayesianClass()),
 	}
@@ -68,16 +51,7 @@ func NewLearner() *Learn {
 	return mc
 }
 
-func (this *Learn) isPositive(n Notes) bool {
-
-	var noteText []string
-
-	for i := range n {
-		noteText = append(noteText, strings.Fields(n[i].Text)...)
-	}
-
-	scores, likely, _ := this.classifier.LogScores(noteText)
-
+func (this *Learn) ArePositive(w Words) bool {
+	scores, likely, _ := this.classifier.LogScores(w)
 	return scores[0] > scores[1] && likely == 0
-
 }

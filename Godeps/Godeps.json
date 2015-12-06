@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/jh-bate/fantail-bot",
 	"GoVersion": "go1.5.1",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
@@ -16,6 +19,10 @@
 			"Rev": "78b283ad3339530e700f96c41b960dccecde991c"
 		},
 		{
+			"ImportPath": "github.com/jinzhu/configor",
+			"Rev": "f740b0b16fc10bacdb09fc3fbac9048aa827e952"
+		},
+		{
 			"ImportPath": "github.com/robfig/cron",
 			"Comment": "v1-3-gb024fc5",
 			"Rev": "b024fc5ea0e34bc3f83d9941c8d60b0622bfaca4"
@@ -24,6 +31,10 @@
 			"ImportPath": "github.com/tucnak/telebot",
 			"Comment": "v1.0-29-gab25fcf",
 			"Rev": "ab25fcf6fa1f2886c2797fddc21e82666d768850"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "49c95bdc21843256fb6c4e0d370a05f24a0bf213"
 		}
 	]
 }
