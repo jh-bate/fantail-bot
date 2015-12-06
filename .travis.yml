@@ -1,13 +1,13 @@
 language: go
 
 go:
-	- 1.5
+ - 1.5
 
 services:
-	- redis-server
+  - redis-server
 
 before_script:
-	- go vet -v ./...
+ - go vet -v ./...
 
 script:
-	- go test -v ./...
+ - go test -v ./...
