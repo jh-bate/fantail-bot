@@ -100,7 +100,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 }
 
 func (this *GatherTask) spec() string {
-	//every 5 mins
+	//Every 5 mins
 	return "0 0/5 * * *"
 }
 
@@ -122,7 +122,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 }
 
 func (this *FollowupTask) spec() string {
-	//every 10 mins
+	//Every 10 mins
 	return "0 0/10 * * *"
 }
 
@@ -144,8 +144,8 @@ func (this *CheckInTask) run(fu *FollowUp) func() {
 }
 
 func (this *CheckInTask) spec() string {
-	//every day at 7am
-	return "0 0 6 * * *"
+	//every 12 hours between 7am-8pm
+	return "0 0 7-20/12 * * *"
 }
 
 func (this *LearnFromTask) run(fu *FollowUp) func() {
@@ -183,6 +183,6 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 }
 
 func (this *LearnFromTask) spec() string {
-	//7pm on MON,WED,FRI,SUN
-	return "0 0 19 'MON,WED,FRI,SUN' *"
+	//7am on MON,WED,FRI,SUN
+	return "0 0 6 'MON,WED,FRI,SUN' * *"
 }
