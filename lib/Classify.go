@@ -1,10 +1,6 @@
 package lib
 
-import (
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
-
-	"github.com/jh-bate/fantail-bot/lib/config"
-)
+import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
 
 const (
 	Postive  Name = "Postive"
@@ -41,7 +37,7 @@ func NewClassification() *Classify {
 		NegativeWords ClassificationWords `json:"negative"`
 	}
 
-	config.Load(&LearnConfig, "learn.json")
+	LoadConfig(&LearnConfig, "learn.json")
 
 	pos := NewClassificationType(Postive, LearnConfig.PostiveWords)
 	neg := NewClassificationType(Negative, LearnConfig.NegativeWords)

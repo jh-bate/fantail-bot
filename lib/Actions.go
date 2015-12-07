@@ -3,8 +3,6 @@ package lib
 import (
 	"fmt"
 	"log"
-
-	"github.com/jh-bate/fantail-bot/lib/config"
 )
 
 type Action interface {
@@ -103,7 +101,7 @@ func (a SayAction) askQuestion() {
 }
 
 func (a SayAction) getQuestions() Questions {
-	config.Load(&Config, "say.json")
+	LoadConfig(&Config, "say.json")
 	return Config.Questions
 }
 
@@ -147,7 +145,7 @@ func (a AskAction) askQuestion() {
 }
 
 func (a AskAction) getQuestions() Questions {
-	config.Load(&Config, "ask.json")
+	LoadConfig(&Config, "ask.json")
 	return Config.Questions
 }
 
@@ -203,7 +201,7 @@ func (a ChatAction) firstUp() Action {
 }
 
 func (a ChatAction) getQuestions() Questions {
-	config.Load(&Config, "chat.json")
+	LoadConfig(&Config, "chat.json")
 	return Config.Questions
 }
 
@@ -251,7 +249,7 @@ func (a ReviewAction) firstUp() Action {
 }
 
 func (a ReviewAction) getQuestions() Questions {
-	config.Load(&Config, "review.json")
+	LoadConfig(&Config, "review.json")
 	return Config.Questions
 }
 
@@ -295,7 +293,7 @@ func (a StickerChatAction) firstUp() Action {
 }
 
 func (a StickerChatAction) getQuestions() Questions {
-	config.Load(&Config, "chat.json")
+	LoadConfig(&Config, "chat.json")
 	return Config.Questions
 }
 
