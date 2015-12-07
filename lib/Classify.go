@@ -32,15 +32,15 @@ func (this Name) toBayesianClass() bayesian.Class {
 
 func NewClassification() *Classify {
 
-	var LearnConfig struct {
+	var ClassifyConfig struct {
 		PostiveWords  ClassificationWords `json:"positive"`
 		NegativeWords ClassificationWords `json:"negative"`
 	}
 
-	LoadConfig(&LearnConfig, "learn.json")
+	LoadConfig(&ClassifyConfig, "classify.json")
 
-	pos := NewClassificationType(Postive, LearnConfig.PostiveWords)
-	neg := NewClassificationType(Negative, LearnConfig.NegativeWords)
+	pos := NewClassificationType(Postive, ClassifyConfig.PostiveWords)
+	neg := NewClassificationType(Negative, ClassifyConfig.NegativeWords)
 	classify := &Classify{
 		classifier: bayesian.NewClassifier(pos.Name.toBayesianClass(), neg.Name.toBayesianClass()),
 	}
