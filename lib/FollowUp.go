@@ -27,6 +27,17 @@ type (
 	}
 )
 
+// Scheduling notes:
+//
+// *    *     *     *   *    *        command to be executed
+// -    -     -     -   -    -
+// |    |     |     |   |    |
+// |    |     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+// |    |     |     |   +------- month (1 - 12)
+// |    |     |     +--------- day of month (1 - 31)
+// |    |     +----------- hour (0 - 23)
+// |     +------------- min (0 - 59)
+// +------------- sec (0 - 59)
 func NewFollowUp(s *session) *FollowUp {
 	sched := &FollowUp{
 		session: s,
@@ -172,7 +183,6 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 }
 
 func (this *LearnFromTask) spec() string {
-	//return "@weekly"
-	//every 10 mins
-	return "0 0/10 * * *"
+	//7pm on MON,WED,FRI,SUN
+	return "0 0 19 MON,WED,FRI,SUN *"
 }
