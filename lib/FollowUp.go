@@ -172,5 +172,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 }
 
 func (this *LearnFromTask) spec() string {
-	return "@weekly"
+	//return "@weekly"
+	//every 10 mins
+	return "0 0/10 * * *"
 }
