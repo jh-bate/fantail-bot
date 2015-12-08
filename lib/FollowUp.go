@@ -10,6 +10,17 @@ import (
 type (
 	Task interface {
 		run(f *FollowUp) func()
+		// spec notes:
+		//
+		// *    *     *     *   *    *      command to be executed
+		// -    -     -     -   -    -
+		// |    |     |     |   |    |
+		// |    |     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+		// |    |     |     |   +------- month (1 - 12)
+		// |    |     |     +--------- day of month (1 - 31)
+		// |    |     +----------- hour (0 - 23)
+		// |     +------------- min (0 - 59)
+		// +------------- sec (0 - 59)
 		spec() string
 	}
 
@@ -27,17 +38,6 @@ type (
 	}
 )
 
-// Scheduling notes:
-//
-// *    *     *     *   *    *        command to be executed
-// -    -     -     -   -    -
-// |    |     |     |   |    |
-// |    |     |     |   |    +----- day of week (0 - 6) (Sunday=0)
-// |    |     |     |   +------- month (1 - 12)
-// |    |     |     +--------- day of month (1 - 31)
-// |    |     +----------- hour (0 - 23)
-// |     +------------- min (0 - 59)
-// +------------- sec (0 - 59)
 func NewFollowUp(s *session) *FollowUp {
 	sched := &FollowUp{
 		session: s,
@@ -77,20 +77,20 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			user := fu.users.GetUser(users[i])
+			user := fu.users.GetUser(users[i].Id)
 			if user == nil {
 				user = &User{}
 			}
-			user.id = users[i]
+			user = users[i]
 
-			n, err := fu.session.Storage.Get(string(users[i]))
+			n, err := fu.session.Storage.GetNotes(string(users[i].Id))
 
 			if err != nil {
 				log.Println("Error getting latest ", err.Error())
 				break
 			}
 			if len(n) > 0 {
-				user.notes = n.SortByDate()
+				user.Notes = n.SortByDate()
 			}
 
 			fu.users = user.AddOrUpdate(fu.users)

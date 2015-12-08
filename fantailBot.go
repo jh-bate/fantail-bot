@@ -12,7 +12,7 @@ import (
 type (
 	fantailBot struct {
 		bot   *telebot.Bot
-		store *lib.Storage
+		store lib.Store
 	}
 )
 
@@ -28,7 +28,7 @@ func newFantailBot() *fantailBot {
 		return nil
 	}
 
-	return &fantailBot{bot: bot, store: lib.NewStorage()}
+	return &fantailBot{bot: bot, store: lib.NewRedisStore()}
 }
 
 func main() {

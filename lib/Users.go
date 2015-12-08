@@ -1,33 +1,49 @@
 package lib
 
-import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+import (
+	"time"
+
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+)
 
 type (
 	User struct {
-		id    int
-		notes Notes
+		Id        int         `json:"id"`
+		Learnings []Learnt    `json:"learnings"`
+		Helped    []time.Time `json:"helped"`
+
+		Notes `json:"-"`
 	}
+
+	Learnt struct {
+		On       time.Time `json:"on"`
+		Positive bool      `json:"positive"`
+	}
+
 	Users []*User
 )
 
 func (this *User) FollowUpAbout() Notes {
-	return this.notes.FilterOnTag(help_tag).SortByDate()
+	this.Helped = append(this.Helped, time.Now())
+	return this.Notes.FilterOnTag(help_tag).SortByDate()
 }
 
 func (this *User) IsPostive(days int) bool {
 	classify := NewClassification()
-	return classify.ArePositive(this.notes.ForNextDays(days).GetWords())
+	positive := classify.ArePositive(this.Notes.ForNextDays(days).GetWords())
+	this.Learnings = append(this.Learnings, Learnt{On: time.Now(), Positive: positive})
+	return positive
 }
 
 func (this *User) ToBotUser() telebot.User {
-	return telebot.User{ID: this.id}
+	return telebot.User{ID: this.Id}
 }
 
 func (this *User) AddOrUpdate(users Users) Users {
 	var updated Users
 
 	for i := range users {
-		if users[i].id != this.id {
+		if users[i].Id != this.Id {
 			//rebuild the list from those that don't match the user we are trying to add or update
 			updated = append(updated, users[i])
 		}
@@ -38,7 +54,7 @@ func (this *User) AddOrUpdate(users Users) Users {
 func (this Users) GetUser(id int) *User {
 
 	for i := range this {
-		if this[i].id == id {
+		if this[i].Id == id {
 			return this[i]
 		}
 	}

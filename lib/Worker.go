@@ -13,7 +13,7 @@ type (
 	}
 )
 
-func NewWorker(b *telebot.Bot, s *Storage) *Worker {
+func NewWorker(b *telebot.Bot, s Store) *Worker {
 	sess := newSession(b, s)
 	q := &Worker{session: sess, followup: NewFollowUp(sess)}
 	return q

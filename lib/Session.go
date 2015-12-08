@@ -18,14 +18,14 @@ type (
 	session struct {
 		Bot     *telebot.Bot
 		User    telebot.User
-		Storage *Storage
+		Storage Store
 		in      *Incoming
 	}
 
 	Keyboard [][]string
 )
 
-func newSession(b *telebot.Bot, s *Storage) *session {
+func newSession(b *telebot.Bot, s Store) *session {
 	return &session{Bot: b, Storage: s}
 }
 
@@ -110,7 +110,7 @@ func (s *session) saveWithContext(context []string, tags ...string) {
 		return
 	}
 
-	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
+	err := s.Storage.SaveNote(fmt.Sprintf("%d", s.User.ID), n)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -133,7 +133,7 @@ func (s *session) save(tags ...string) {
 		return
 	}
 
-	err := s.Storage.Save(fmt.Sprintf("%d", s.User.ID), n)
+	err := s.Storage.SaveNote(fmt.Sprintf("%d", s.User.ID), n)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -212,7 +212,7 @@ func daysFromText(txt string) int {
 
 func (s *session) getNotes() Notes {
 	days := daysFromText(s.in.msg.Text)
-	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
+	all, err := s.Storage.GetNotes(fmt.Sprintf("%d", s.User.ID))
 	if err == nil {
 		if days > 0 {
 			return all.ForNextDays(days)
@@ -224,7 +224,7 @@ func (s *session) getNotes() Notes {
 
 func (s *session) getLastChatForTopic(topic string) *Note {
 
-	all, err := s.Storage.Get(fmt.Sprintf("%d", s.User.ID))
+	all, err := s.Storage.GetNotes(fmt.Sprintf("%d", s.User.ID))
 	if err == nil {
 		return all.FilterOnTag(topic).SortByDate()[0]
 	}
