@@ -37,6 +37,38 @@ func TestUser_FollowUp(t *testing.T) {
 
 }
 
+func TestUser_FollowUp_Helped(t *testing.T) {
+	u1 := testUser(111)
+
+	u1.FollowUpAbout()
+
+	if len(u1.Helped) != 1 {
+		t.Error("helped should have been set")
+	}
+
+	if u1.Helped[0].IsZero() {
+		t.Error("the helped date should have been set")
+	}
+}
+
+func TestUser_IsPostive_Learnings(t *testing.T) {
+	u1 := testUser(111)
+
+	pos := u1.IsPostive(1)
+
+	if len(u1.Learnings) != 1 {
+		t.Error("should have learnt something")
+	}
+
+	if u1.Learnings[0].On.IsZero() {
+		t.Error("the learnings date should have been set")
+	}
+
+	if u1.Learnings[0].Positive != pos {
+		t.Error("the learnings should have been same as what was returned from IsPostive")
+	}
+}
+
 func TestUser_AddOrUpdate(t *testing.T) {
 	users := Users{}
 	u1 := testUser(111)
