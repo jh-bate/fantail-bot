@@ -16,7 +16,7 @@ type (
 	}
 
 	Learnt struct {
-		On       time.Time `json:"on"`
+		Date     time.Time `json:"date"`
 		Positive bool      `json:"positive"`
 	}
 
@@ -31,7 +31,7 @@ func (this *User) FollowUpAbout() Notes {
 func (this *User) IsPostive(days int) bool {
 	classify := NewClassification()
 	positive := classify.ArePositive(this.Notes.ForNextDays(days).GetWords())
-	this.Learnings = append(this.Learnings, Learnt{On: time.Now(), Positive: positive})
+	this.Learnings = append(this.Learnings, Learnt{Date: time.Now(), Positive: positive})
 	return positive
 }
 

@@ -6,13 +6,12 @@ import (
 )
 
 func storeSetup(userIds ...string) Store {
+	const test_db = 1
 	os.Setenv("REDIS_URL", "redis://localhost:6379")
-	myStore := NewRedisStore()
+	myStore := NewRedisStore().setDb(STORE_TEST_DB)
 
 	//cleanup first
-	for i := range userIds {
-		myStore.store.Get().Do("DEL", userIds[i])
-	}
+	myStore.pool.Get().Do("FLUSHDB")
 
 	return myStore
 }
@@ -33,7 +32,7 @@ func testData(id int) *User {
 	return u
 }
 
-func TestStore_Save_and_Get(t *testing.T) {
+func TestStore_SaveNote_and_GetNotes(t *testing.T) {
 
 	user := testData(123)
 	store := storeSetup(string(user.Id))
@@ -59,7 +58,7 @@ func TestStore_Save_and_Get(t *testing.T) {
 	}
 }
 
-func TestStore_Update(t *testing.T) {
+func TestStore_UpdateNote(t *testing.T) {
 
 	user := testData(999)
 	store := storeSetup(string(user.Id))
@@ -85,6 +84,93 @@ func TestStore_Update(t *testing.T) {
 
 	if notes.MostRecent().Text != updated.Text {
 		t.Errorf("expected %s got %s ", updated.Text, notes.MostRecent().Text)
+	}
+
+}
+
+func TestStore_SaveUser_and_GetUsers(t *testing.T) {
+
+	user := testData(123)
+	store := storeSetup(string(user.Id))
+
+	//init positive and followup
+	user.IsPostive(1)
+	user.FollowUpAbout()
+
+	err := store.SaveUser(user)
+	if err != nil {
+		t.Error("Error saving the user", err.Error())
+	}
+
+	usrs, err := store.GetUsers()
+
+	if err != nil {
+		t.Fatal("Error getting users", err.Error())
+	}
+
+	if len(usrs) != 1 {
+		t.Error("there should have been one user returned but got ", len(usrs))
+	}
+
+	if usrs[0].Id != user.Id {
+		t.Errorf("expected %d got %d", user.Id, usrs[0].Id)
+	}
+
+	if len(usrs[0].Learnings) != 1 {
+		t.Error("there should have been one learning ", len(usrs[0].Learnings))
+	}
+
+	if len(usrs[0].Helped) != 1 {
+		t.Error("there should have been one help case ", len(usrs[0].Helped))
+	}
+
+}
+
+func TestStore_UpdateUser(t *testing.T) {
+
+	user := testData(999)
+	store := storeSetup(string(user.Id))
+
+	//init positive and followup
+	user.IsPostive(1)
+	user.FollowUpAbout()
+
+	err := store.SaveUser(user)
+	if err != nil {
+		t.Error("Error saving the user", err.Error())
+	}
+
+	//do some updates
+	updates := user
+	updates.IsPostive(1)
+	updates.FollowUpAbout()
+
+	err = store.UpdateUser(user, updates)
+
+	if err != nil {
+		t.Error("Error saving the user", err.Error())
+	}
+
+	usrs, err := store.GetUsers()
+
+	if err != nil {
+		t.Fatal("Error getting users", err.Error())
+	}
+
+	if len(usrs) != 1 {
+		t.Error("there should have been one user returned but got ", len(usrs))
+	}
+
+	if usrs[0].Id != user.Id {
+		t.Errorf("expected %d got %d", user.Id, usrs[0].Id)
+	}
+
+	if len(usrs[0].Learnings) != 2 {
+		t.Error("there should have been two learnings ", len(usrs[0].Learnings))
+	}
+
+	if len(usrs[0].Helped) != 2 {
+		t.Error("there should have been two help case ", len(usrs[0].Helped))
 	}
 
 }

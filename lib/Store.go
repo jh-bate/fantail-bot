@@ -24,19 +24,11 @@ type Store interface {
 }
 
 type RedisStore struct {
-	store *redis.Pool
+	pool *redis.Pool
 }
 
 func NewRedisStore() *RedisStore {
-	a := &RedisStore{}
-	redisUrl := os.Getenv("REDIS_URL")
-
-	if redisUrl == "" {
-		log.Fatal("$REDIS_URL must be set")
-	}
-
-	a.store = newPool()
-	return a
+	return &RedisStore{pool: newPool()}
 }
 
 func newPool() *redis.Pool {
@@ -59,13 +51,27 @@ func newPool() *redis.Pool {
 	}
 }
 
+const (
+	STORE_TEST_DB = iota
+	STORE_PROD_DB
+)
+
+//Allows us to set the database we are using
+func (a *RedisStore) setDb(db int) *RedisStore {
+	_, err := a.pool.Get().Do("Select", db)
+	if err != nil {
+		log.Panic("Error setting the database", err.Error())
+	}
+	return a
+}
+
 func (a *RedisStore) SaveNote(userId string, note *Note) error {
 
 	serialized, err := json.Marshal(note)
 	if err != nil {
 		return err
 	}
-	_, err = a.store.Get().Do("LPUSH", userId, serialized)
+	_, err = a.pool.Get().Do("LPUSH", userId, serialized)
 	return err
 }
 
@@ -75,7 +81,7 @@ func (a *RedisStore) UpdateNote(userId string, original, updated *Note) error {
 	if err != nil {
 		return err
 	}
-	_, err = a.store.Get().Do("LREM", userId, -1, serializedOriginal)
+	_, err = a.pool.Get().Do("LREM", userId, -1, serializedOriginal)
 	if err != nil {
 		return err
 	}
@@ -84,7 +90,7 @@ func (a *RedisStore) UpdateNote(userId string, original, updated *Note) error {
 
 func (a *RedisStore) GetNotes(userId string) (Notes, error) {
 
-	c := a.store.Get()
+	c := a.pool.Get()
 
 	count, err := redis.Int(c.Do("LLEN", userId))
 
@@ -116,15 +122,14 @@ func (a *RedisStore) GetUsers() ([]int, error) {
 }
 */
 
-func userKey(query string) string {
-	const user_pattern = "user_%s"
-	return fmt.Sprintf(user_pattern, query)
+func userKey(id string) string {
+	return fmt.Sprintf("user_%s", id)
 }
 
 func (a *RedisStore) GetUsers() (Users, error) {
-	c := a.store.Get()
+	c := a.pool.Get()
 
-	keys, err := redis.String(c.Do("KEYS", userKey("*")))
+	keys, err := redis.Strings(c.Do("KEYS", userKey("*")))
 
 	if err != nil {
 		return nil, err
@@ -157,7 +162,8 @@ func (a *RedisStore) SaveUser(u *User) error {
 	if err != nil {
 		return err
 	}
-	_, err = a.store.Get().Do("LPUSH", userKey(string(u.Id)), serialized)
+
+	_, err = a.pool.Get().Do("LPUSH", userKey(fmt.Sprintf("%d", u.Id)), serialized)
 	return err
 
 }
@@ -166,7 +172,7 @@ func (a *RedisStore) UpdateUser(original, updated *User) error {
 	if err != nil {
 		return err
 	}
-	_, err = a.store.Get().Do("LREM", userKey(string(original.Id)), -1, serializedOriginal)
+	_, err = a.pool.Get().Do("LREM", userKey(fmt.Sprintf("%d", original.Id)), -1, serializedOriginal)
 	if err != nil {
 		return err
 	}

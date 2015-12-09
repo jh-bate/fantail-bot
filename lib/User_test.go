@@ -60,7 +60,7 @@ func TestUser_IsPostive_Learnings(t *testing.T) {
 		t.Error("should have learnt something")
 	}
 
-	if u1.Learnings[0].On.IsZero() {
+	if u1.Learnings[0].Date.IsZero() {
 		t.Error("the learnings date should have been set")
 	}
 
