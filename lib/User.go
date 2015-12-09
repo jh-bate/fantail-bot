@@ -8,30 +8,41 @@ import (
 
 type (
 	User struct {
-		Id        int         `json:"id"`
-		Learnings []Learnt    `json:"learnings"`
-		Helped    []time.Time `json:"helped"`
+		Id     int        `json:"id"`
+		Learnt []learning `json:"learnt"`
+		Helped []help     `json:"helped"`
 
 		Notes `json:"-"`
 	}
 
-	Learnt struct {
+	learning struct {
 		Date     time.Time `json:"date"`
+		Period   int       `json:"period"`
 		Positive bool      `json:"positive"`
+	}
+
+	help struct {
+		Date    time.Time `json:"date"`
+		AskedOn time.Time `json:"askedOn"`
+		Topic   string    `json:"topic"`
 	}
 
 	Users []*User
 )
 
-func (this *User) FollowUpAbout() Notes {
-	this.Helped = append(this.Helped, time.Now())
-	return this.Notes.FilterOnTag(help_tag).SortByDate()
+func (this *User) NeedsHelp() Notes {
+	helpWith := this.Notes.FilterOnTag(help_tag).SortByDate()
+
+	for i := range helpWith {
+		this.Helped = append(this.Helped, help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})
+	}
+	return helpWith
 }
 
-func (this *User) IsPostive(days int) bool {
+func (this *User) LearnAbout(days int) bool {
 	classify := NewClassification()
 	positive := classify.ArePositive(this.Notes.ForNextDays(days).GetWords())
-	this.Learnings = append(this.Learnings, Learnt{Date: time.Now(), Positive: positive})
+	this.Learnt = append(this.Learnt, learning{Date: time.Now(), Positive: positive, Period: days})
 	return positive
 }
 

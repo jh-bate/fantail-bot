@@ -26,10 +26,10 @@ func TestUser_ToBotUser(t *testing.T) {
 	}
 }
 
-func TestUser_FollowUp(t *testing.T) {
+func TestUser_NeedsHelp(t *testing.T) {
 	u1 := testUser(111)
 
-	r := u1.FollowUpAbout()
+	r := u1.NeedsHelp()
 
 	if len(r) != 1 {
 		t.Error("there should be ONE help note", len(r))
@@ -37,35 +37,47 @@ func TestUser_FollowUp(t *testing.T) {
 
 }
 
-func TestUser_FollowUp_Helped(t *testing.T) {
+func TestUser_NeedsHelp_Helped(t *testing.T) {
 	u1 := testUser(111)
 
-	u1.FollowUpAbout()
+	u1.NeedsHelp()
 
 	if len(u1.Helped) != 1 {
 		t.Error("helped should have been set")
 	}
 
-	if u1.Helped[0].IsZero() {
+	if u1.Helped[0].Date.IsZero() {
+		t.Error("the helped date should have been set")
+	}
+
+	if u1.Helped[0].Date.IsZero() {
+		t.Error("the helped date should have been set")
+	}
+
+	if u1.Helped[0].Date.IsZero() {
 		t.Error("the helped date should have been set")
 	}
 }
 
-func TestUser_IsPostive_Learnings(t *testing.T) {
+func TestUser_LearnAbout_Learnt(t *testing.T) {
 	u1 := testUser(111)
 
-	pos := u1.IsPostive(1)
+	pos := u1.LearnAbout(1)
 
-	if len(u1.Learnings) != 1 {
+	if len(u1.Learnt) != 1 {
 		t.Error("should have learnt something")
 	}
 
-	if u1.Learnings[0].Date.IsZero() {
+	if u1.Learnt[0].Date.IsZero() {
 		t.Error("the learnings date should have been set")
 	}
 
-	if u1.Learnings[0].Positive != pos {
+	if u1.Learnt[0].Positive != pos {
 		t.Error("the learnings should have been same as what was returned from IsPostive")
+	}
+
+	if u1.Learnt[0].Period != 1 {
+		t.Error("the learnings period should have been 1")
 	}
 }
 

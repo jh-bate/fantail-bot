@@ -109,7 +109,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 		log.Println("Running `Help me` ....")
 		for i := range fu.users {
 
-			help := fu.users[i].FollowUpAbout()
+			help := fu.users[i].NeedsHelp()
 
 			if len(help) > 0 {
 				fu.session.User = fu.users[i].ToBotUser()
@@ -157,7 +157,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 		for i := range fu.users {
 			fu.session.User = fu.users[i].ToBotUser()
 
-			pos := fu.users[i].IsPostive(check_for_days)
+			pos := fu.users[i].LearnAbout(check_for_days)
 			keyboard := Keyboard{}
 
 			if !pos {

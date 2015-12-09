@@ -94,8 +94,8 @@ func TestStore_SaveUser_and_GetUsers(t *testing.T) {
 	store := storeSetup(string(user.Id))
 
 	//init positive and followup
-	user.IsPostive(1)
-	user.FollowUpAbout()
+	user.LearnAbout(1)
+	user.NeedsHelp()
 
 	err := store.SaveUser(user)
 	if err != nil {
@@ -116,8 +116,8 @@ func TestStore_SaveUser_and_GetUsers(t *testing.T) {
 		t.Errorf("expected %d got %d", user.Id, usrs[0].Id)
 	}
 
-	if len(usrs[0].Learnings) != 1 {
-		t.Error("there should have been one learning ", len(usrs[0].Learnings))
+	if len(usrs[0].Learnt) != 1 {
+		t.Error("there should have been one learning ", len(usrs[0].Learnt))
 	}
 
 	if len(usrs[0].Helped) != 1 {
@@ -132,8 +132,8 @@ func TestStore_UpdateUser(t *testing.T) {
 	store := storeSetup(string(user.Id))
 
 	//init positive and followup
-	user.IsPostive(1)
-	user.FollowUpAbout()
+	user.LearnAbout(1)
+	user.NeedsHelp()
 
 	err := store.SaveUser(user)
 	if err != nil {
@@ -142,8 +142,8 @@ func TestStore_UpdateUser(t *testing.T) {
 
 	//do some updates
 	updates := user
-	updates.IsPostive(1)
-	updates.FollowUpAbout()
+	updates.LearnAbout(1)
+	updates.NeedsHelp()
 
 	err = store.UpdateUser(user, updates)
 
@@ -165,8 +165,8 @@ func TestStore_UpdateUser(t *testing.T) {
 		t.Errorf("expected %d got %d", user.Id, usrs[0].Id)
 	}
 
-	if len(usrs[0].Learnings) != 2 {
-		t.Error("there should have been two learnings ", len(usrs[0].Learnings))
+	if len(usrs[0].Learnt) != 2 {
+		t.Error("there should have been two learnings ", len(usrs[0].Learnt))
 	}
 
 	if len(usrs[0].Helped) != 2 {
