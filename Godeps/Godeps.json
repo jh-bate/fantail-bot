@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/jh-bate/fantail-bot",
 	"GoVersion": "go1.5.1",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
@@ -18,6 +21,16 @@
 		{
 			"ImportPath": "github.com/jinzhu/configor",
 			"Rev": "f740b0b16fc10bacdb09fc3fbac9048aa827e952"
+		},
+		{
+			"ImportPath": "github.com/onsi/ginkgo",
+			"Comment": "v1.2.0-29-g7f8ab55",
+			"Rev": "7f8ab55aaf3b86885aa55b762e803744d1674700"
+		},
+		{
+			"ImportPath": "github.com/onsi/gomega",
+			"Comment": "v1.0-73-gb071aa6",
+			"Rev": "b071aa62b69453e2389f0a81d4db8a466d228242"
 		},
 		{
 			"ImportPath": "github.com/robfig/cron",

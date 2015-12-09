@@ -1,12 +1,13 @@
-package lib_test
+package testsuite_test
 
 import (
-	. "github.com/jh-bate/fantail-bot/lib"
-
 	. "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/onsi/ginkgo"
 	. "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/onsi/gomega"
+
+	"testing"
 )
 
-var _ = Describe("Lib", func() {
-
-})
+func TestTestsuite(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Testsuite Suite")
+}
