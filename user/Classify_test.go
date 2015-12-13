@@ -1,12 +1,12 @@
-package lib
+package user
 
 import (
 	"strings"
 	"testing"
 )
 
-func test_makeHappyWords() ClassificationWords {
-	w := ClassificationWords{}
+func test_makeHappyWords() []string {
+	var w []string
 	w = append(w, strings.Fields("/say really happy")...)
 	w = append(w, strings.Fields("/say hello all good")...)
 	w = append(w, strings.Fields("things very good, went really well today")...)
@@ -14,8 +14,8 @@ func test_makeHappyWords() ClassificationWords {
 	return w
 }
 
-func test_makeNeutralWords() ClassificationWords {
-	w := ClassificationWords{}
+func test_makeNeutralWords() []string {
+	var w []string
 	w = append(w, strings.Fields("/say low happy")...)
 	w = append(w, strings.Fields("/say bad happy")...)
 	w = append(w, strings.Fields("all going well bad")...)
@@ -25,8 +25,8 @@ func test_makeNeutralWords() ClassificationWords {
 
 }
 
-func test_makeUnhappyWords() ClassificationWords {
-	w := ClassificationWords{}
+func test_makeUnhappyWords() []string {
+	var w []string
 	w = append(w, strings.Fields("/say help")...)
 	w = append(w, strings.Fields("/say more highs, sick of it!")...)
 	w = append(w, strings.Fields("things went really well today")...)

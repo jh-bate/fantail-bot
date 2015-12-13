@@ -1,4 +1,4 @@
-package lib
+package question
 
 import (
 	"encoding/json"
@@ -90,7 +90,7 @@ func TestQuestions_next(t *testing.T) {
 
 	q := loadQuestions()
 
-	n, _ := q.next(q[0].PossibleAnswers[0])
+	n, _ := q.Next(q[0].PossibleAnswers[0])
 
 	if n != q[1] {
 		t.Errorf("expected %v got %v", q[1], n)
@@ -102,7 +102,7 @@ func TestQuestions_nextFrom(t *testing.T) {
 
 	q := loadQuestions()
 
-	n, _ := q.nextFrom(q.First().PossibleAnswers...)
+	n, _ := q.NextFrom(q.First().PossibleAnswers...)
 
 	if n != q[1] {
 		t.Errorf("expected %v got %v", q[1], n)
@@ -115,7 +115,7 @@ func TestQuestion_makeKeyboard(t *testing.T) {
 	q := loadQuestions()
 
 	q1 := q.First()
-	kb := q1.makeKeyboard()
+	kb := q1.MakeKeyboard()
 
 	for i := range q1.PossibleAnswers {
 		if q1.PossibleAnswers[i] != kb[i][0] {

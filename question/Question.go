@@ -1,4 +1,4 @@
-package lib
+package question
 
 import (
 	"log"
@@ -27,7 +27,7 @@ func (this Questions) First() *Question {
 	return nil
 }
 
-func (this Questions) next(prevAnswer string) (*Question, bool) {
+func (this Questions) Next(prevAnswer string) (*Question, bool) {
 	for i := range this {
 		for a := range this[i].RelatesTo.Answers {
 			if strings.EqualFold(this[i].RelatesTo.Answers[a], prevAnswer) {
@@ -38,9 +38,9 @@ func (this Questions) next(prevAnswer string) (*Question, bool) {
 	return nil, false
 }
 
-func (this Questions) nextFrom(prevAnswers ...string) (*Question, bool) {
+func (this Questions) NextFrom(prevAnswers ...string) (*Question, bool) {
 	for i := range prevAnswers {
-		if nxt, sv := this.next(prevAnswers[i]); nxt != nil {
+		if nxt, sv := this.Next(prevAnswers[i]); nxt != nil {
 			log.Println("got it from sticker ...")
 			return nxt, sv
 		}
@@ -48,8 +48,8 @@ func (this Questions) nextFrom(prevAnswers ...string) (*Question, bool) {
 	return nil, false
 }
 
-func (this *Question) makeKeyboard() Keyboard {
-	keyboard := Keyboard{}
+func (this *Question) MakeKeyboard() [][]string {
+	keyboard := [][]string{}
 	for i := range this.PossibleAnswers {
 		keyboard = append(keyboard, []string{this.PossibleAnswers[i]})
 	}

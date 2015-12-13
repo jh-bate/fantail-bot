@@ -1,7 +1,9 @@
-package lib
+package user
 
 import (
 	"time"
+
+	"github.com/jh-bate/fantail-bot/note"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
@@ -12,7 +14,7 @@ type (
 		Learnt []learning `json:"learnt"`
 		Helped []help     `json:"helped"`
 
-		Notes `json:"-"`
+		note.Notes `json:"-"`
 	}
 
 	learning struct {
@@ -30,8 +32,12 @@ type (
 	Users []*User
 )
 
-func (this *User) NeedsHelp() Notes {
-	helpWith := this.Notes.FilterOnTag(help_tag).SortByDate()
+func New() *User {
+	return &User{}
+}
+
+func (this *User) NeedsHelp() note.Notes {
+	helpWith := this.Notes.FilterOnTag(note.HELP_TAG).SortByDate()
 
 	for i := range helpWith {
 		this.Helped = append(this.Helped, help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})

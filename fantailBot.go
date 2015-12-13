@@ -6,41 +6,29 @@ import (
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
-	"github.com/jh-bate/fantail-bot/lib"
+	"github.com/jh-bate/fantail-bot/incoming"
 )
 
-type (
-	fantailBot struct {
-		bot   *telebot.Bot
-		store lib.Store
-	}
-)
+func main() {
 
-func newFantailBot() *fantailBot {
 	botToken := os.Getenv("BOT_TOKEN")
 
 	if botToken == "" {
 		log.Fatal("$BOT_TOKEN must be set")
 	}
 
-	bot, err := telebot.NewBot(botToken)
+	ourBot, err := telebot.NewBot(botToken)
 	if err != nil {
-		return nil
+		log.Fatal("Bot setup failed: ", err.Error())
 	}
 
-	return &fantailBot{bot: bot, store: lib.NewRedisStore()}
-}
-
-func main() {
-
-	fBot := newFantailBot()
 	messages := make(chan telebot.Message)
-	fBot.bot.Listen(messages, 1*time.Second)
+	ourBot.Listen(messages, 1*time.Second)
 
-	w := lib.NewWorker(fBot.bot, fBot.store)
-	log.Println("start followup process ....")
-	w.DoFollowUp()
+	session := incoming.NewSession(ourBot)
 
-	log.Println("start message process ....")
-	w.ProcessMessages(messages)
+	for msg := range messages {
+		session.Respond(msg)
+	}
+
 }
