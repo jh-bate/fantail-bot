@@ -2,9 +2,7 @@ package store_test
 
 import (
 	"encoding/json"
-	"os"
 
-	"github.com/garyburd/redigo/redis"
 	. "github.com/jh-bate/fantail-bot/store"
 
 	. "github.com/onsi/ginkgo"
@@ -28,7 +26,6 @@ var _ = Describe("Store", func() {
 
 	BeforeEach(func() {
 
-		os.Setenv("REDIS_URL", "redis://localhost:6379")
 		store = NewRedisStore().Set(STORE_TEST_DB)
 		store.Pool.Get().Do("FLUSHDB")
 		t1 = TestData{Id: 1, Name: "stuff"}
@@ -64,8 +61,8 @@ var _ = Describe("Store", func() {
 
 			for i := range items {
 				var d TestData
-				serialized, _ := redis.Bytes(items[i], nil)
-				json.Unmarshal(serialized, &d)
+				//serialized, _ := redis.Bytes(items[i].(byte[]), nil)
+				json.Unmarshal(items[i].(byte), &d)
 				data = append(data, &d)
 			}
 

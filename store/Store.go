@@ -13,7 +13,6 @@ type Store interface {
 	Save(name string, v interface{}) error
 	Delete(name string, v interface{}) error
 	ReadAll(name string) ([]interface{}, error)
-	Read(name string, id int) (interface{}, error)
 }
 
 type RedisStore struct {

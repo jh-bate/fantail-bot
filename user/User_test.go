@@ -1,156 +1,157 @@
-package user
+package user_test
 
 import (
-	"testing"
+	"strings"
 	"time"
+
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+	. "github.com/jh-bate/fantail-bot/user"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
-func testUser(Id int) *User {
-	n1 := NewNote(newMsg("to do stuff"), test_tag)
-	n2 := NewNote(newMsg("/say hi"), help_tag)
+var _ = Describe("User", func() {
 
-	return &User{
-		Id:    Id,
-		Notes: Notes{n1, n2},
-	}
-}
+	var (
+		myUser *User
+	)
 
-func TestUser_ToBotUser(t *testing.T) {
+	const (
+		userid = 999
+	)
 
-	u1 := testUser(111)
+	BeforeEach(func() {
+		myUser = New(userid)
+	})
 
-	bu1 := u1.ToBotUser()
+	Describe("When created", func() {
+		It("should have the id set", func() {
+			Expect(myUser.Id).To(Equal(userid))
+		})
 
-	if bu1.ID != u1.Id {
-		t.Error("Ids should match")
-	}
-}
+		It("should be able to convert to a BotUser", func() {
+			botUser := myUser.ToBotUser()
+			Expect(botUser.ID).To(Equal(myUser.Id))
+			var botType telebot.User
+			Expect(botUser).To(BeAssignableToTypeOf(botType))
+		})
+	})
 
-func TestUser_NeedsHelp(t *testing.T) {
-	u1 := testUser(111)
+	Describe("When created", func() {
+		It("should have the id set", func() {
+			Expect(myUser.Id).To(Equal(userid))
+		})
 
-	r := u1.NeedsHelp()
+		It("should be able to convert to a BotUser", func() {
+			botUser := myUser.ToBotUser()
+			Expect(botUser.ID).To(Equal(myUser.Id))
+			var botType telebot.User
+			Expect(botUser).To(BeAssignableToTypeOf(botType))
+		})
+	})
 
-	if len(r) != 1 {
-		t.Error("there should be ONE help note", len(r))
-	}
+})
 
-}
+var _ = Describe("Users", func() {
 
-func TestUser_NeedsHelp_Helped(t *testing.T) {
-	u1 := testUser(111)
+	var (
+		myUsers Users
+		u1      *User
+		u2      *User
+		u3      *User
+	)
 
-	u1.NeedsHelp()
+	const (
+		u1_id = 667
+		u2_id = 8868
+		u3_id = 999
+	)
 
-	if len(u1.Helped) != 1 {
-		t.Error("helped should have been set")
-	}
+	BeforeEach(func() {
+		u1 = New(u1_id)
+		u2 = New(u2_id)
+		u3 = New(u3_id)
+		myUsers = Users{u1, u2, u3}
+	})
 
-	if u1.Helped[0].Date.IsZero() {
-		t.Error("the helped date should have been set")
-	}
+	Describe("When calling GetUser", func() {
+		It("should find the user asked for", func() {
+			user := myUsers.GetUser(u2_id)
+			Expect(user).To(Equal(u2))
+		})
+	})
 
-	if u1.Helped[0].Date.IsZero() {
-		t.Error("the helped date should have been set")
-	}
+	Describe("When calling AddOrUpdate", func() {
+		It("should add a user to the list if new", func() {
+			Expect(len(myUsers)).To(Equal(3))
+			other := New(22899991)
+			myUsers = other.AddOrUpdate(myUsers)
+			Expect(len(myUsers)).To(Equal(4))
+		})
+		It("should update an existing user if they are already in the list", func() {
+			Expect(len(myUsers)).To(Equal(3))
+			u3.Learnt = append(u3.Learnt, Learning{Date: time.Now(), Positive: true, Period: 5})
 
-	if u1.Helped[0].Date.IsZero() {
-		t.Error("the helped date should have been set")
-	}
-}
+			myUsers = u3.AddOrUpdate(myUsers)
+			Expect(len(myUsers)).To(Equal(3))
 
-func TestUser_LearnAbout_Learnt(t *testing.T) {
-	u1 := testUser(111)
+			updated := myUsers.GetUser(u3_id)
+			Expect(len(updated.Learnt)).To(Equal(1))
+		})
+	})
 
-	pos := u1.LearnAbout(1)
+})
 
-	if len(u1.Learnt) != 1 {
-		t.Error("should have learnt something")
-	}
+var _ = Describe("Classify", func() {
 
-	if u1.Learnt[0].Date.IsZero() {
-		t.Error("the learnings date should have been set")
-	}
+	var (
+		classify *Classify
+	)
 
-	if u1.Learnt[0].Positive != pos {
-		t.Error("the learnings should have been same as what was returned from IsPostive")
-	}
+	BeforeEach(func() {
+		classify = NewClassification()
+	})
 
-	if u1.Learnt[0].Period != 1 {
-		t.Error("the learnings period should have been 1")
-	}
-}
+	Describe("When happy words", func() {
 
-func TestUser_AddOrUpdate(t *testing.T) {
-	users := Users{}
-	u1 := testUser(111)
-	users = u1.AddOrUpdate(users)
+		var happy []string
+		happy = append(happy, strings.Fields("/say really happy")...)
+		happy = append(happy, strings.Fields("/say hello all good")...)
+		happy = append(happy, strings.Fields("things very good, went really well today")...)
+		happy = append(happy, strings.Fields("/say bad day today, too many lows")...)
 
-	if len(users) != 1 {
-		t.Error("there should be ONE users but have ", len(users))
-	}
+		It("should be positive", func() {
+			Expect(classify.ArePositive(happy)).To(BeTrue())
+		})
+	})
 
-	if users[0].Id != u1.Id {
-		t.Errorf("expected [%d] found [%d]", u1.Id, users[0].Id)
-	}
+	Describe("When unhappy words", func() {
 
-	u2 := testUser(222)
-	users = u2.AddOrUpdate(users)
+		var unhappy []string
+		unhappy = append(unhappy, strings.Fields("/say help")...)
+		unhappy = append(unhappy, strings.Fields("/say more highs, sick of it!")...)
+		unhappy = append(unhappy, strings.Fields("things went really well today")...)
+		unhappy = append(unhappy, strings.Fields("/say all good help")...)
+		unhappy = append(unhappy, strings.Fields("/say low again!!")...)
 
-	if len(users) != 2 {
-		t.Error("there should be TWO users but have ", len(users))
-	}
+		It("should be negative", func() {
+			Expect(classify.ArePositive(unhappy)).To(BeFalse())
+		})
+	})
 
-	if users[1].Id != u2.Id {
-		t.Errorf("expected [%d] found [%d]", u2.Id, users[1].Id)
-	}
+	Describe("When neutral words", func() {
 
-	u3 := testUser(333)
-	users = u3.AddOrUpdate(users)
+		var neutral []string
+		neutral = append(neutral, strings.Fields("/say low happy")...)
+		neutral = append(neutral, strings.Fields("/say bad happy")...)
+		neutral = append(neutral, strings.Fields("all going well bad")...)
+		neutral = append(neutral, strings.Fields("/say help good")...)
+		neutral = append(neutral, strings.Fields("/say low great")...)
 
-	if len(users) != 3 {
-		t.Error("there should be THREE users but have ", len(users))
-	}
+		It("should be positive", func() {
+			Expect(classify.ArePositive(neutral)).To(BeTrue())
+		})
+	})
 
-	if users[2].Id != u3.Id {
-		t.Errorf("expected [%d] found [%d]", u3.Id, users[2].Id)
-	}
-
-	users = u2.AddOrUpdate(users)
-
-	if len(users) != 3 {
-		t.Error("there should still be THREE users but have ", len(users))
-	}
-
-}
-
-func TestUser_AddOrUpdate_withUpdate(t *testing.T) {
-	users := Users{}
-	u1 := testUser(111)
-	users = u1.AddOrUpdate(users)
-	u2 := testUser(222)
-	users = u2.AddOrUpdate(users)
-	u3 := testUser(333)
-	users = u3.AddOrUpdate(users)
-
-	if len(users) != 3 {
-		t.Error("there should be THREE users but have ", len(users))
-	}
-
-	u3.Notes = Notes{&Note{Added: time.Now().Add(3)}}
-
-	users = u3.AddOrUpdate(users)
-
-	if len(users) != 3 {
-		t.Error("there should be THREE users but have ", len(users))
-	}
-
-	if users[2].Notes[0].Added.YearDay() != u3.Notes[0].Added.YearDay() {
-		t.Errorf("expetced [%s] found [%s]", u3.Notes[0].Added.String(), users[2].Notes[0].Added.String())
-	}
-
-	if len(users[2].Notes) != 1 {
-		t.Errorf("expected one found [%d] recent notes", len(users[2].Notes))
-	}
-
-}
+})

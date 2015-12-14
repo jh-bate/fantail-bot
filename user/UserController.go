@@ -28,12 +28,29 @@ func (this *User) Delete() error {
 	return userStore.Delete(nameForStore(this.Id), this)
 }
 
+//todo this need to be moved out
+func bytes(v interface{}) []byte {
+	switch v := v.(type) {
+	case []byte:
+		return v
+	case string:
+		return []byte(v)
+	}
+	return nil
+}
+
 func GetUsers() (Users, error) {
 	var all Users
-	jsonD, err := userStore.ReadAll(user_store_name + "*")
+	items, err := userStore.ReadAll(user_store_name + "*")
 	if err != nil {
 		return nil, err
 	}
-	json.Unmarshal(jsonD, &all)
+
+	for i := range items {
+		var u User
+		json.Unmarshal(bytes(items[i]), &u)
+		all = append(all, &u)
+	}
+
 	return all, nil
 }
