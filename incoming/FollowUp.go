@@ -73,17 +73,18 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 		users, err := user.GetUsers()
 		if err != nil {
 			log.Println("Trying to run scheduled task ", err.Error())
-			log.Println("Will bail ...")
+			log.Println("bailing ...")
 			return
 		}
 
 		for i := range users {
 
-			user := users.GetUser(users[i].Id)
-			//if user == nil {
-			//	user = &user.
-			//}
-			user = users[i]
+			log.Println("gettnig info for ", users[i].Id)
+			taskUser := users.GetUser(users[i].Id)
+			if taskUser == nil {
+				taskUser = user.New(users[i].Id)
+			}
+			taskUser = users[i]
 
 			notes, err := note.GetNotes(string(users[i].Id))
 
@@ -92,10 +93,10 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				break
 			}
 			if len(notes) > 0 {
-				user.Notes = notes.OldestFirst()
+				taskUser.Notes = notes.OldestFirst()
 			}
 
-			fu.Users = user.AddOrUpdate(fu.Users)
+			fu.Users = taskUser.AddOrUpdate(fu.Users)
 		}
 		return
 	}
@@ -137,6 +138,8 @@ func (this *CheckInTask) run(fu *FollowUp) func() {
 		log.Println("Running `you there?` ....")
 		for i := range fu.Users {
 
+			log.Println("check in with ", fu.Users[i].Id)
+
 			keyboard := Keyboard{}
 			keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
 
@@ -162,7 +165,9 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 		log.Println("Running `learning task` ....")
 		for i := range fu.Users {
 
+			log.Println("learn about ", fu.Users[i].Id)
 			pos := fu.Users[i].LearnAbout(check_for_days)
+			log.Println("learnt they are ", pos)
 			keyboard := Keyboard{}
 
 			if !pos {
@@ -191,5 +196,5 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 func (this *LearnFromTask) spec() string {
 	//7am on MON,WED,FRI,SUN
-	return "0 0 6 1,3,5,7 * *"
+	return "0 0 6 * * MON,WED,FRI,SUN"
 }
