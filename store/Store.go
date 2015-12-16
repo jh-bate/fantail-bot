@@ -28,7 +28,7 @@ func newPool() *redis.Pool {
 	redisUrl := os.Getenv("REDIS_URL")
 
 	if redisUrl == "" {
-		log.Println("REDIS_URL wasn't set")
+		log.Println("REDIS_URL wasn't set, running as localhosts")
 		redisUrl = "redis://localhost:6379"
 	}
 	return &redis.Pool{
