@@ -29,9 +29,6 @@ func NewSession(ourBot *telebot.Bot) *Session {
 
 	monitor = NewFollowUp(s)
 	monitor.Start()
-	//starts followup
-	//inits our bot
-	//allow incoming message procesing
 	return s
 }
 
