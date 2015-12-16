@@ -61,8 +61,7 @@ var _ = Describe("Store", func() {
 
 			for i := range items {
 				var d TestData
-				//serialized, _ := redis.Bytes(items[i].(byte[]), nil)
-				json.Unmarshal(items[i].(byte), &d)
+				json.Unmarshal(items[i].([]byte), &d)
 				data = append(data, &d)
 			}
 
