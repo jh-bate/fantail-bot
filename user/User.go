@@ -1,7 +1,9 @@
-package lib
+package user
 
 import (
 	"time"
+
+	"github.com/jh-bate/fantail-bot/note"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
@@ -9,19 +11,19 @@ import (
 type (
 	User struct {
 		Id     int        `json:"id"`
-		Learnt []learning `json:"learnt"`
-		Helped []help     `json:"helped"`
+		Learnt []Learning `json:"learnt"`
+		Helped []Help     `json:"helped"`
 
-		Notes `json:"-"`
+		note.Notes `json:"-"`
 	}
 
-	learning struct {
+	Learning struct {
 		Date     time.Time `json:"date"`
 		Period   int       `json:"period"`
 		Positive bool      `json:"positive"`
 	}
 
-	help struct {
+	Help struct {
 		Date    time.Time `json:"date"`
 		AskedOn time.Time `json:"askedOn"`
 		Topic   string    `json:"topic"`
@@ -30,19 +32,23 @@ type (
 	Users []*User
 )
 
-func (this *User) NeedsHelp() Notes {
-	helpWith := this.Notes.FilterOnTag(help_tag).SortByDate()
+func New(id int) *User {
+	return &User{Id: id}
+}
+
+func (this *User) NeedsHelp() note.Notes {
+	helpWith := this.Notes.FilterOnTag(note.HELP_TAG).OldestFirst()
 
 	for i := range helpWith {
-		this.Helped = append(this.Helped, help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})
+		this.Helped = append(this.Helped, Help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})
 	}
 	return helpWith
 }
 
 func (this *User) LearnAbout(days int) bool {
 	classify := NewClassification()
-	positive := classify.ArePositive(this.Notes.ForNextDays(days).GetWords())
-	this.Learnt = append(this.Learnt, learning{Date: time.Now(), Positive: positive, Period: days})
+	positive := classify.ArePositive(this.Notes.NewerThan(days).GetWords())
+	this.Learnt = append(this.Learnt, Learning{Date: time.Now(), Positive: positive, Period: days})
 	return positive
 }
 

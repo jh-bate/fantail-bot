@@ -1,6 +1,9 @@
-package lib
+package user
 
-import "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
+import (
+	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/jbrukh/bayesian"
+	"github.com/jh-bate/fantail-bot/config"
+)
 
 const (
 	Postive  Name = "Postive"
@@ -14,16 +17,14 @@ type (
 
 	Name bayesian.Class
 
-	ClassificationWords []string
-
 	ClassificationType struct {
 		Name
-		ClassificationWords
+		Words []string
 	}
 )
 
-func NewClassificationType(name Name, words ClassificationWords) *ClassificationType {
-	return &ClassificationType{Name: name, ClassificationWords: words}
+func NewClassificationType(name Name, words []string) *ClassificationType {
+	return &ClassificationType{Name: name, Words: words}
 }
 
 func (this Name) toBayesianClass() bayesian.Class {
@@ -33,11 +34,11 @@ func (this Name) toBayesianClass() bayesian.Class {
 func NewClassification() *Classify {
 
 	var ClassifyConfig struct {
-		PostiveWords  ClassificationWords `json:"positive"`
-		NegativeWords ClassificationWords `json:"negative"`
+		PostiveWords  []string `json:"positive"`
+		NegativeWords []string `json:"negative"`
 	}
 
-	LoadConfig(&ClassifyConfig, "classify.json")
+	config.Load(&ClassifyConfig, "classify.json")
 
 	pos := NewClassificationType(Postive, ClassifyConfig.PostiveWords)
 	neg := NewClassificationType(Negative, ClassifyConfig.NegativeWords)
@@ -45,13 +46,13 @@ func NewClassification() *Classify {
 		classifier: bayesian.NewClassifier(pos.Name.toBayesianClass(), neg.Name.toBayesianClass()),
 	}
 
-	classify.classifier.Learn(pos.ClassificationWords, pos.toBayesianClass())
-	classify.classifier.Learn(neg.ClassificationWords, neg.toBayesianClass())
+	classify.classifier.Learn(pos.Words, pos.toBayesianClass())
+	classify.classifier.Learn(neg.Words, neg.toBayesianClass())
 
 	return classify
 }
 
-func (this *Classify) ArePositive(w ClassificationWords) bool {
+func (this *Classify) ArePositive(w []string) bool {
 	scores, likely, _ := this.classifier.LogScores(w)
 	return scores[0] > scores[1] && likely == 0
 }

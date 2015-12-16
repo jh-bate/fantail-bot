@@ -1,8 +1,11 @@
-package lib
+package incoming
 
 import (
 	"fmt"
 	"log"
+
+	"github.com/jh-bate/fantail-bot/note"
+	"github.com/jh-bate/fantail-bot/user"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/robfig/cron"
 )
@@ -32,43 +35,42 @@ type (
 	LearnFromTask struct{}
 
 	FollowUp struct {
-		c *cron.Cron
-		*session
-		users Users
+		*cron.Cron
+		*Session
+		user.Users
 	}
 )
 
-func NewFollowUp(s *session) *FollowUp {
-	sched := &FollowUp{
-		session: s,
-		c:       cron.New(),
-		users:   Users{},
+func NewFollowUp(s *Session) *FollowUp {
+	f := &FollowUp{
+		Session: s,
+		Cron:    cron.New(),
+		Users:   user.Users{},
 	}
-	sched.setup([]Task{&GatherTask{}, &FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
-
-	return sched
+	f.setup([]Task{&GatherTask{}, &FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
+	return f
 }
 
 func (this *FollowUp) setup(t Tasks) {
 	for i := range t {
-		this.c.AddFunc(t[i].spec(), t[i].run(this))
+		this.Cron.AddFunc(t[i].spec(), t[i].run(this))
 	}
 }
 
 func (this *FollowUp) Start() {
-	this.c.Start()
+	this.Cron.Start()
 	return
 }
 
 func (this *FollowUp) Stop() {
-	this.c.Stop()
+	this.Cron.Stop()
 	return
 }
 
 func (this *GatherTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running gather info ....")
-		users, err := fu.session.Storage.GetUsers()
+		users, err := user.GetUsers()
 		if err != nil {
 			log.Println("Trying to run scheduled task ", err.Error())
 			log.Println("Will bail ...")
@@ -77,23 +79,23 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			user := fu.users.GetUser(users[i].Id)
-			if user == nil {
-				user = &User{}
-			}
+			user := users.GetUser(users[i].Id)
+			//if user == nil {
+			//	user = &user.
+			//}
 			user = users[i]
 
-			n, err := fu.session.Storage.GetNotes(string(users[i].Id))
+			notes, err := note.GetNotes(string(users[i].Id))
 
 			if err != nil {
 				log.Println("Error getting latest ", err.Error())
 				break
 			}
-			if len(n) > 0 {
-				user.Notes = n.SortByDate()
+			if len(notes) > 0 {
+				user.Notes = notes.OldestFirst()
 			}
 
-			fu.users = user.AddOrUpdate(fu.users)
+			fu.Users = user.AddOrUpdate(fu.Users)
 		}
 		return
 	}
@@ -107,14 +109,18 @@ func (this *GatherTask) spec() string {
 func (this *FollowupTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `Help me` ....")
-		for i := range fu.users {
+		for i := range fu.Users {
 
-			help := fu.users[i].NeedsHelp()
+			help := fu.Users[i].NeedsHelp()
 
 			if len(help) > 0 {
-				fu.session.User = fu.users[i].ToBotUser()
-				helpTxt := help.ToString()
-				fu.session.send(fmt.Sprintf("Hey, so these are the things you wanted help with /n/n%s", helpTxt))
+				fu.send(
+					fu.Users[i].ToBotUser(),
+					fmt.Sprintf(
+						"Hey, so these are the things you wanted help with /n/n%s",
+						help.ToString(),
+					),
+				)
 			}
 		}
 		return
@@ -129,13 +135,13 @@ func (this *FollowupTask) spec() string {
 func (this *CheckInTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `you there?` ....")
-		for i := range fu.users {
-			fu.session.User = fu.users[i].ToBotUser()
+		for i := range fu.Users {
 
 			keyboard := Keyboard{}
 			keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
 
-			fu.session.sendWithKeyboard(
+			fu.sendWithKeyboard(
+				fu.Users[i].ToBotUser(),
 				fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action),
 				keyboard,
 			)
@@ -154,17 +160,17 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 	return func() {
 		log.Println("Running `learning task` ....")
-		for i := range fu.users {
-			fu.session.User = fu.users[i].ToBotUser()
+		for i := range fu.Users {
 
-			pos := fu.users[i].LearnAbout(check_for_days)
+			pos := fu.Users[i].LearnAbout(check_for_days)
 			keyboard := Keyboard{}
 
 			if !pos {
 
 				keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
 
-				fu.session.sendWithKeyboard(
+				fu.sendWithKeyboard(
+					fu.Users[i].ToBotUser(),
 					"Hey, looks like things might not be going as well as you would like?",
 					keyboard,
 				)
@@ -173,7 +179,8 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 			keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
 
-			fu.session.sendWithKeyboard(
+			fu.sendWithKeyboard(
+				fu.Users[i].ToBotUser(),
 				"Hey, it looks like your doing well!!",
 				keyboard,
 			)

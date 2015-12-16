@@ -1,4 +1,4 @@
-package lib
+package note
 
 import (
 	"fmt"
@@ -6,45 +6,55 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
-
-const said_tag = say_action
-const chat_tag = chat_action
-const help_tag = "HELP"
 
 type (
 	Note struct {
-		UserId    int
-		Added     time.Time
-		Updated   time.Time
-		Remind    time.Time
-		Completed time.Time
-		Tag       string
-		Context   []string
-		Text      string
+		UserId  int
+		Added   time.Time
+		Updated time.Time
+		Deleted time.Time
+		Tag     string
+		Context []string
+		Text    string
 	}
 
 	Notes []*Note
 )
 
-func (this *Note) RemindToday() bool {
-	today := time.Now()
+const (
+	//tags we add to the notes
+	SAID_TAG = "SAY"
+	CHAT_TAG = "CHAT"
+	HELP_TAG = "HELP"
+)
 
-	if this.Remind.Before(today) == false {
-		return this.Remind.Year() == today.Year() &&
-			this.Remind.YearDay() == today.YearDay()
+func New(txt string, fromId int, date time.Time, tags ...string) *Note {
+
+	answer := txt
+	cmdTag := tagFromMsg(answer)
+
+	if answer != "" && cmdTag != "" {
+		//e.g. remove '/say' from the message
+		if strings.Contains(answer, cmdTag) {
+			answer = strings.TrimSpace(strings.Split(answer, cmdTag)[1])
+		}
 	}
-	return true
+
+	return &Note{
+		UserId: fromId,
+		Added:  date,
+		Text:   answer,
+		Tag:    strings.Join(append(tags, cmdTag), ","),
+	}
 }
 
 func (this *Note) IsCurrent() bool {
-	return this.Completed.IsZero()
+	return this.Deleted.IsZero()
 }
 
 func (this *Note) Complete() {
-	this.Completed = time.Now()
+	this.Deleted = time.Now()
 	return
 }
 
@@ -62,10 +72,14 @@ func (this *Note) ToString() string {
 	return fmt.Sprintf("On %s you said '%s'", this.Added.Format("Mon Jan 2 03:04pm"), this.Text)
 }
 
+func (this *Note) IsEmpty() bool {
+	return this.Text == "" && this.Tag == ""
+}
+
 func (this Notes) FilterOnTag(tag string) Notes {
 	n := Notes{}
 	for i := range this {
-		if this[i].Completed.IsZero() && strings.Contains(strings.ToLower(this[i].Tag), strings.ToLower(tag)) {
+		if this[i].Deleted.IsZero() && strings.Contains(strings.ToLower(this[i].Tag), strings.ToLower(tag)) {
 			n = append(n, this[i])
 		}
 	}
@@ -75,15 +89,15 @@ func (this Notes) FilterOnTag(tag string) Notes {
 func (this Notes) FilterOnTxt(txt string) Notes {
 	n := Notes{}
 	for i := range this {
-		if this[i].Completed.IsZero() && strings.Contains(strings.ToLower(this[i].Text), strings.ToLower(txt)) {
+		if this[i].Deleted.IsZero() && strings.Contains(strings.ToLower(this[i].Text), strings.ToLower(txt)) {
 			n = append(n, this[i])
 		}
 	}
 	return n
 }
 
-func (this Notes) GetWords() ClassificationWords {
-	var w ClassificationWords
+func (this Notes) GetWords() []string {
+	var w []string
 	for i := range this {
 		w = append(w, strings.Fields(this[i].Text)...)
 		w = append(w, strings.Fields(this[i].Tag)...)
@@ -91,16 +105,12 @@ func (this Notes) GetWords() ClassificationWords {
 	return w
 }
 
-func (this Notes) ForNextDays(days int) Notes {
+func (this Notes) NewerThan(daysAgo int) Notes {
 	var r Notes
-	t := time.Now()
-
-	t.AddDate(0, 0, days)
-
-	log.Println("getting all before ", t.Format(time.Stamp))
+	daysAgoDate := time.Now().AddDate(0, 0, -daysAgo)
 
 	for i := range this {
-		if this[i].Remind.Before(t) {
+		if this[i].Added.After(daysAgoDate) {
 			r = append(r, this[i])
 		}
 	}
@@ -131,21 +141,17 @@ func (this Notes) ToString() string {
 	return str
 }
 
-func (this Notes) SortByDate() Notes {
+func (this Notes) OldestFirst() Notes {
 	sort.Sort(ByDate(this))
 	return this
 }
 
 func (this Notes) MostRecent() *Note {
 	if len(this) > 0 {
-		this.SortByDate()
-		return this[0]
+		this.OldestFirst()
+		return this[len(this)-1]
 	}
 	return &Note{}
-}
-
-func (this Note) IsEmpty() bool {
-	return this.Text == "" && this.Tag == ""
 }
 
 func tagFromMsg(msgTxt string) string {
@@ -156,24 +162,4 @@ func tagFromMsg(msgTxt string) string {
 		}
 	}
 	return ""
-}
-
-func NewNote(msg telebot.Message, tags ...string) *Note {
-
-	answer := msg.Text
-	cmdTag := tagFromMsg(answer)
-
-	if answer != "" && cmdTag != "" {
-		//e.g. remove '/say' from the message
-		if strings.Contains(answer, cmdTag) {
-			answer = strings.TrimSpace(strings.Split(answer, cmdTag)[1])
-		}
-	}
-
-	return &Note{
-		UserId: msg.Sender.ID,
-		Added:  msg.Time(),
-		Text:   answer,
-		Tag:    strings.Join(append(tags, cmdTag), ","),
-	}
 }
