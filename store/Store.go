@@ -28,8 +28,8 @@ func newPool() *redis.Pool {
 	redisUrl := os.Getenv("REDIS_URL")
 
 	if redisUrl == "" {
-		log.Panic("REDIS_URL wasn't set")
-		return nil
+		log.Println("REDIS_URL wasn't set")
+		redisUrl = "redis://localhost:6379"
 	}
 	return &redis.Pool{
 		MaxIdle:     3,
