@@ -7,35 +7,35 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-type Message struct {
+type Payload struct {
 	Sender       telebot.User
 	Text         string
 	Date         time.Time
 	Action       string
 	HasSubmisson bool
 	Sticker      struct {
-		Has bool
-		Id  string
+		Exists bool
+		Id     string
 	}
 }
 
-func New(msg telebot.Message) *Message {
-	return &Message{
+func New(msg telebot.Message) *Payload {
+	return &Payload{
 		Sender:       msg.Sender,
 		Text:         msg.Text,
 		Date:         msg.Time(),
 		Action:       setAction(msg.Text),
 		HasSubmisson: hasSubmisson(msg.Text),
 		Sticker: struct {
-			Has bool
-			Id  string
+			Exists bool
+			Id     string
 		}{
-			Has: msg.Sticker.Exists(),
-			Id:  msg.Sticker.FileID,
+			Exists: msg.Sticker.Exists(),
+			Id:     msg.Sticker.FileID,
 		}}
 }
 
-func (this *Message) HasAction() bool {
+func (this *Payload) HasAction() bool {
 	return this.Action != ""
 }
 

@@ -36,7 +36,7 @@ func NewSession(ourBot *telebot.Bot) *Session {
 }
 
 func (s *Session) Respond(msg telebot.Message) {
-	a := NewAction(New(msg), s.actionRunAs)
+	a := NewAction(New(msg), s.actionRunAs, s)
 	s.actionRunAs = a.getName()
 	a.firstUp().askQuestion()
 }

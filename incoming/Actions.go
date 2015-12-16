@@ -40,33 +40,33 @@ var Config struct {
 	question.Questions `json:"QandA"`
 }
 
-func NewAction(msg *Message, runas string) Action {
+func NewAction(data *Payload, runas string, session *Session) Action {
 
 	msgAction := ""
 
-	if msg.HasAction() {
-		msgAction = msg.Action
+	if data.HasAction() {
+		msgAction = data.Action
 	} else {
 		log.Println("run as", runas)
 		msgAction = runas
 	}
 
 	if msgAction == say_action {
-		return SayAction{Message: msg}
+		return SayAction{Payload: data, Session: session}
 	} else if msgAction == ask_action {
-		return AskAction{Message: msg}
+		return AskAction{Payload: data, Session: session}
 	} else if msgAction == review_action {
-		return &ReviewAction{Message: msg}
+		return &ReviewAction{Payload: data, Session: session}
 	} else if msgAction == chat_action {
-		return &ChatAction{Message: msg}
-	} else if msg.Sticker.Has {
-		return &StickerChatAction{Message: msg}
+		return &ChatAction{Payload: data, Session: session}
+	} else if data.Sticker.Exists {
+		return &StickerChatAction{Payload: data, Session: session}
 	}
-	return &HelpAction{Message: msg}
+	return &HelpAction{Payload: data, Session: session}
 }
 
 type SayAction struct {
-	*Message
+	*Payload
 	*Session
 }
 
@@ -113,7 +113,7 @@ func (a SayAction) getQuestions() question.Questions {
 }
 
 type AskAction struct {
-	*Message
+	*Payload
 	*Session
 }
 
@@ -160,7 +160,7 @@ func (a AskAction) getQuestions() question.Questions {
 }
 
 type HelpAction struct {
-	*Message
+	*Payload
 	*Session
 }
 
@@ -198,7 +198,7 @@ func (a HelpAction) askQuestion() {
 
 type ChatAction struct {
 	*Session
-	*Message
+	*Payload
 }
 
 func (a ChatAction) getName() string {
@@ -246,7 +246,7 @@ func (a ChatAction) askQuestion() {
 }
 
 type ReviewAction struct {
-	*Message
+	*Payload
 	*Session
 }
 
@@ -299,7 +299,7 @@ func (a ReviewAction) askQuestion() {
 type StickerChatAction struct {
 	*Session
 	sticker.Stickers
-	*Message
+	*Payload
 }
 
 func (a StickerChatAction) getName() string {
@@ -323,7 +323,7 @@ func (a StickerChatAction) nextQuestion() *question.Question {
 
 	q := a.getQuestions()
 
-	if a.Sticker.Has {
+	if a.Sticker.Exists {
 
 		sticker := a.Stickers.Find(a.Sticker.Id)
 

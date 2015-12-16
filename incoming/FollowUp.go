@@ -92,7 +92,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				break
 			}
 			if len(notes) > 0 {
-				user.Notes = notes.SortByDate()
+				user.Notes = notes.OldestFirst()
 			}
 
 			fu.Users = user.AddOrUpdate(fu.Users)
