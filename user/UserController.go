@@ -2,30 +2,25 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/jh-bate/fantail-bot/store"
 )
 
 var userStore store.Store
 
-const user_store_name = "user_"
+const user_store_name = "users"
 
 func init() {
 	userStore = store.NewRedisStore()
 	return
 }
 
-func nameForStore(id int) string {
-	return fmt.Sprintf("%s%d", user_store_name, id)
-}
-
 func (this *User) Save() error {
-	return userStore.Save(nameForStore(this.Id), this)
+	return userStore.Save(user_store_name, this)
 }
 
 func (this *User) Delete() error {
-	return userStore.Delete(nameForStore(this.Id), this)
+	return userStore.Delete(user_store_name, this)
 }
 
 //todo this need to be moved out
@@ -41,7 +36,7 @@ func bytes(v interface{}) []byte {
 
 func GetUsers() (Users, error) {
 	var all Users
-	items, err := userStore.ReadAll(user_store_name + "*")
+	items, err := userStore.ReadAll(user_store_name)
 	if err != nil {
 		return nil, err
 	}

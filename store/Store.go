@@ -89,11 +89,7 @@ func (a *RedisStore) ReadAll(name string) ([]interface{}, error) {
 
 	c := a.Pool.Get()
 
-	log.Println("reading from", name)
-
 	count, err := redis.Int(c.Do("LLEN", name))
-
-	log.Println("found", count)
 
 	if err != nil {
 		return nil, err
