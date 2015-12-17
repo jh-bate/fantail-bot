@@ -20,7 +20,10 @@ type RedisStore struct {
 }
 
 func NewRedisStore() *RedisStore {
-	return &RedisStore{Pool: newPool()}
+	store := &RedisStore{Pool: newPool()}
+	//default to this ...
+	store.Set(STORE_PROD_DB)
+	return store
 }
 
 func newPool() *redis.Pool {
