@@ -48,12 +48,13 @@ func newPool() *redis.Pool {
 }
 
 const (
-	STORE_TEST_DB = iota
-	STORE_PROD_DB
+	STORE_TEST_DB = 0
+	STORE_PROD_DB = 1
 )
 
 //Allows us to set the database we are using
 func (a *RedisStore) Set(db int) *RedisStore {
+	log.Println("setting db as", db)
 	_, err := a.Pool.Get().Do("Select", db)
 	if err != nil {
 		log.Panic("Error setting the database", err.Error())
@@ -63,12 +64,12 @@ func (a *RedisStore) Set(db int) *RedisStore {
 
 func (a *RedisStore) Save(name string, v interface{}) error {
 
-	json.Marshal(v)
-
 	serialized, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
+
+	log.Println("saving...", string(serialized), "into", name)
 
 	_, err = a.Pool.Get().Do("LPUSH", name, serialized)
 	return err
@@ -87,6 +88,8 @@ func (a *RedisStore) Delete(name string, v interface{}) error {
 func (a *RedisStore) ReadAll(name string) ([]interface{}, error) {
 
 	c := a.Pool.Get()
+
+	log.Println("reading from", name)
 
 	count, err := redis.Int(c.Do("LLEN", name))
 
