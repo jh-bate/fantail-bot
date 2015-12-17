@@ -79,7 +79,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			log.Println("gettnig info for ", users[i].Id)
+			log.Println("getting info for ", users[i].Id)
 			taskUser := users.GetUser(users[i].Id)
 			if taskUser == nil {
 				taskUser = user.New(users[i].Id)

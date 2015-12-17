@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
+	"github.com/jh-bate/fantail-bot/user"
 )
 
 const (
@@ -33,6 +34,11 @@ func NewSession(ourBot *telebot.Bot) *Session {
 }
 
 func (s *Session) Respond(msg telebot.Message) {
+
+	//TODO should not just keep saving...
+	sessionUser := user.New(msg.Sender.ID)
+	sessionUser.Save()
+
 	a := NewAction(New(msg), s.actionRunAs, s)
 	s.actionRunAs = a.getName()
 	a.firstUp().askQuestion()

@@ -47,7 +47,7 @@ func NewAction(data *Payload, runas string, session *Session) Action {
 	if data.HasAction() {
 		msgAction = data.Action
 	} else {
-		log.Println("run as", runas)
+		log.Println("running as ...", runas)
 		msgAction = runas
 	}
 
