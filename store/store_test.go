@@ -2,6 +2,7 @@ package store_test
 
 import (
 	"encoding/json"
+	"log"
 
 	. "github.com/jh-bate/fantail-bot/store"
 
@@ -28,8 +29,8 @@ var _ = Describe("Store", func() {
 
 		store = NewRedisStore().Set(STORE_TEST_DB)
 		store.Pool.Get().Do("FLUSHDB")
-		t1 = TestData{Id: 1, Name: "stuff"}
-		t2 = TestData{Id: 2, Name: "moar stuff"}
+		t1 = TestData{Id: 9991129, Name: "stuff"}
+		t2 = TestData{Id: 62767862, Name: "moar stuff"}
 	})
 
 	Describe("When save", func() {
@@ -55,15 +56,13 @@ var _ = Describe("Store", func() {
 
 			items, err := store.ReadAll(test_data)
 
+			log.Println("found ", string(items))
+
 			Expect(err).To(BeNil())
 
 			var data []*TestData
 
-			for i := range items {
-				var d TestData
-				json.Unmarshal(items[i].([]byte), &d)
-				data = append(data, &d)
-			}
+			json.Unmarshal(items, &data)
 
 			Expect(len(data)).To(Equal(2))
 		})

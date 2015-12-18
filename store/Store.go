@@ -12,7 +12,7 @@ import (
 type Store interface {
 	Save(name string, v interface{}) error
 	Delete(name string, v interface{}) error
-	ReadAll(name string) ([]interface{}, error)
+	ReadAll(name string) ([]byte, error)
 }
 
 type RedisStore struct {
@@ -85,7 +85,18 @@ func (a *RedisStore) Delete(name string, v interface{}) error {
 	return err
 }
 
-func (a *RedisStore) ReadAll(name string) ([]interface{}, error) {
+//todo this need to be moved out
+func bytes(v interface{}) []byte {
+	switch v := v.(type) {
+	case []byte:
+		return v
+	case string:
+		return []byte(v)
+	}
+	return nil
+}
+
+func (a *RedisStore) ReadAll(name string) ([]byte, error) {
 
 	c := a.Pool.Get()
 
@@ -94,5 +105,17 @@ func (a *RedisStore) ReadAll(name string) ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return redis.Values(c.Do("LRANGE", name, 0, count))
+	vals, err := redis.Values(c.Do("LRANGE", name, 0, count))
+	if err != nil {
+		return nil, err
+	}
+	data := []byte("[")
+	for i := range vals {
+		if string(data) != "[" {
+			data = append(data, []byte(",")...)
+		}
+		data = append(data, bytes(vals[i])...)
+	}
+	data = append(data, []byte("]")...)
+	return data, nil
 }

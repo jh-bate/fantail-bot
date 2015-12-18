@@ -16,22 +16,12 @@ func init() {
 }
 
 func (this *User) Save() error {
+	this.Delete()
 	return userStore.Save(user_store_name, this)
 }
 
 func (this *User) Delete() error {
 	return userStore.Delete(user_store_name, this)
-}
-
-//todo this need to be moved out
-func bytes(v interface{}) []byte {
-	switch v := v.(type) {
-	case []byte:
-		return v
-	case string:
-		return []byte(v)
-	}
-	return nil
 }
 
 func GetUsers() (Users, error) {
@@ -41,11 +31,7 @@ func GetUsers() (Users, error) {
 		return nil, err
 	}
 
-	for i := range items {
-		var u User
-		json.Unmarshal(bytes(items[i]), &u)
-		all = append(all, &u)
-	}
+	json.Unmarshal(items, &all)
 
 	return all, nil
 }
