@@ -29,7 +29,6 @@ type (
 
 	Tasks []Task
 
-	//GatherTask    struct{}
 	FollowupTask  struct{}
 	CheckInTask   struct{}
 	LearnFromTask struct{}
@@ -42,6 +41,7 @@ type (
 
 func LoadUsersAndNotes() user.Users {
 
+	log.Println("getting users ...")
 	users, err := user.GetUsers()
 	if err != nil {
 		log.Println("Trying to run scheduled task ", err.Error())
@@ -50,6 +50,7 @@ func LoadUsersAndNotes() user.Users {
 	}
 
 	for i := range users {
+		log.Println("getting notes... ", users[i].Id)
 		notes, err := note.GetNotes(string(users[i].Id))
 
 		if err != nil {
@@ -57,6 +58,7 @@ func LoadUsersAndNotes() user.Users {
 			break
 		}
 		if len(notes) > 0 {
+			log.Println("order notes... ", users[i].Id)
 			users[i].Notes = notes.OldestFirst()
 		}
 	}
@@ -67,7 +69,6 @@ func NewFollowUp(s *Session) *FollowUp {
 	f := &FollowUp{
 		Session: s,
 		Cron:    cron.New(),
-		//Users:   user.Users{},
 	}
 	f.setup([]Task{&FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
 	return f
@@ -88,48 +89,6 @@ func (this *FollowUp) Stop() {
 	this.Cron.Stop()
 	return
 }
-
-/*func (this *GatherTask) run(fu *FollowUp) func() {
-	return func() {
-		log.Println("Running gather info ....")
-		users, err := user.GetUsers()
-		if err != nil {
-			log.Println("Trying to run scheduled task ", err.Error())
-			log.Println("bailing ...")
-			return
-		}
-
-		for i := range users {
-
-			log.Println("loading... ", users[i].Id)
-			taskUser := users.GetUser(users[i].Id)
-			if taskUser == nil {
-				taskUser = user.New(users[i].Id)
-			}
-			taskUser = users[i]
-
-			notes, err := note.GetNotes(string(users[i].Id))
-
-			if err != nil {
-				log.Println("Error getting latest ", err.Error())
-				break
-			}
-			if len(notes) > 0 {
-				taskUser.Notes = notes.OldestFirst()
-			}
-
-			log.Printf("loaded %v", users[i])
-
-			fu.Users = taskUser.AddOrUpdate(fu.Users)
-		}
-		return
-	}
-}
-
-func (this *GatherTask) spec() string {
-	//Every 5 mins
-	return "0 0/5 * * *"
-}*/
 
 func (this *FollowupTask) run(fu *FollowUp) func() {
 	return func() {
