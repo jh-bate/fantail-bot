@@ -79,7 +79,7 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 
 		for i := range users {
 
-			log.Println("getting info for ", users[i].Id)
+			log.Println("loading... ", users[i].Id)
 			taskUser := users.GetUser(users[i].Id)
 			if taskUser == nil {
 				taskUser = user.New(users[i].Id)
@@ -96,6 +96,8 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 				taskUser.Notes = notes.OldestFirst()
 			}
 
+			log.Printf("loaded %v", users[i])
+
 			fu.Users = taskUser.AddOrUpdate(fu.Users)
 		}
 		return
@@ -111,7 +113,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `Help me` ....")
 		for i := range fu.Users {
-
+			log.Println("needs help...", fu.Users[i].Id)
 			help := fu.Users[i].NeedsHelp()
 
 			if len(help) > 0 {
@@ -135,10 +137,10 @@ func (this *FollowupTask) spec() string {
 
 func (this *CheckInTask) run(fu *FollowUp) func() {
 	return func() {
-		log.Println("Running `you there?` ....")
+		log.Println("checking in ....")
 		for i := range fu.Users {
 
-			log.Println("check in with ", fu.Users[i].Id)
+			log.Println("check in... ", fu.Users[i].Id)
 
 			keyboard := Keyboard{}
 			keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
@@ -162,12 +164,12 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 	const check_for_days = 3
 
 	return func() {
-		log.Println("Running `learning task` ....")
+		log.Println("learning...")
 		for i := range fu.Users {
 
-			log.Println("learn about ", fu.Users[i].Id)
+			log.Println("learning about... ", fu.Users[i].Id)
 			pos := fu.Users[i].LearnAbout(check_for_days)
-			log.Println("learnt they are ", pos)
+			log.Println("learnt they are positive=", pos)
 			keyboard := Keyboard{}
 
 			if !pos {
@@ -196,5 +198,6 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 func (this *LearnFromTask) spec() string {
 	//7am on MON,WED,FRI,SUN
-	return "0 0 6 * * MON,WED,FRI,SUN"
+	//return "0 0 6 * * MON,WED,FRI,SUN"
+	return "0 0/10 * * *"
 }
