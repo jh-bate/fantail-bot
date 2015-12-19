@@ -85,7 +85,6 @@ func (a *RedisStore) Delete(name string, v interface{}) error {
 	return err
 }
 
-//todo this need to be moved out
 func bytes(v interface{}) []byte {
 	switch v := v.(type) {
 	case []byte:

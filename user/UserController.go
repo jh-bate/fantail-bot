@@ -16,7 +16,6 @@ func init() {
 }
 
 func (this *User) Save() error {
-	this.Delete()
 	return userStore.Save(user_store_name, this)
 }
 
@@ -34,4 +33,19 @@ func GetUsers() (Users, error) {
 	json.Unmarshal(items, &all)
 
 	return all, nil
+}
+
+func GetUser(id int) (*User, error) {
+
+	all, err := GetUsers()
+	if err != nil {
+		return nil, err
+	}
+	for i := range all {
+		if all[i].Id == id {
+			return all[i], nil
+		}
+	}
+
+	return nil, nil
 }

@@ -38,9 +38,13 @@ func New(id int) *User {
 
 func (this *User) NeedsHelp() note.Notes {
 	helpWith := this.Notes.FilterOnTag(note.HELP_TAG).OldestFirst()
-
+	didHelp := false
 	for i := range helpWith {
+		didHelp = true
 		this.Helped = append(this.Helped, Help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})
+	}
+	if didHelp {
+		this.Save()
 	}
 	return helpWith
 }
@@ -49,6 +53,7 @@ func (this *User) LearnAbout(days int) bool {
 	classify := NewClassification()
 	positive := classify.ArePositive(this.Notes.NewerThan(days).GetWords())
 	this.Learnt = append(this.Learnt, Learning{Date: time.Now(), Positive: positive, Period: days})
+	this.Save()
 	return positive
 }
 
