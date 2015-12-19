@@ -29,7 +29,7 @@ type (
 
 	Tasks []Task
 
-	GatherTask    struct{}
+	//GatherTask    struct{}
 	FollowupTask  struct{}
 	CheckInTask   struct{}
 	LearnFromTask struct{}
@@ -37,17 +37,39 @@ type (
 	FollowUp struct {
 		*cron.Cron
 		*Session
-		user.Users
 	}
 )
+
+func LoadUsersAndNotes() user.Users {
+
+	users, err := user.GetUsers()
+	if err != nil {
+		log.Println("Trying to run scheduled task ", err.Error())
+		log.Println("bailing ...")
+		return user.Users{}
+	}
+
+	for i := range users {
+		notes, err := note.GetNotes(string(users[i].Id))
+
+		if err != nil {
+			log.Println("Error getting latest ", err.Error())
+			break
+		}
+		if len(notes) > 0 {
+			users[i].Notes = notes.OldestFirst()
+		}
+	}
+	return users
+}
 
 func NewFollowUp(s *Session) *FollowUp {
 	f := &FollowUp{
 		Session: s,
 		Cron:    cron.New(),
-		Users:   user.Users{},
+		//Users:   user.Users{},
 	}
-	f.setup([]Task{&GatherTask{}, &FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
+	f.setup([]Task{&FollowupTask{}, &CheckInTask{}, &LearnFromTask{}})
 	return f
 }
 
@@ -67,7 +89,7 @@ func (this *FollowUp) Stop() {
 	return
 }
 
-func (this *GatherTask) run(fu *FollowUp) func() {
+/*func (this *GatherTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running gather info ....")
 		users, err := user.GetUsers()
@@ -107,18 +129,21 @@ func (this *GatherTask) run(fu *FollowUp) func() {
 func (this *GatherTask) spec() string {
 	//Every 5 mins
 	return "0 0/5 * * *"
-}
+}*/
 
 func (this *FollowupTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("Running `Help me` ....")
-		for i := range fu.Users {
-			log.Println("needs help...", fu.Users[i].Id)
-			help := fu.Users[i].NeedsHelp()
+
+		users := LoadUsersAndNotes()
+
+		for i := range users {
+			log.Println("needs help...", users[i].Id)
+			help := users[i].NeedsHelp()
 
 			if len(help) > 0 {
 				fu.send(
-					fu.Users[i].ToBotUser(),
+					users[i].ToBotUser(),
 					fmt.Sprintf(
 						"Hey, so these are the things you wanted help with /n/n%s",
 						help.ToString(),
@@ -138,15 +163,18 @@ func (this *FollowupTask) spec() string {
 func (this *CheckInTask) run(fu *FollowUp) func() {
 	return func() {
 		log.Println("checking in ....")
-		for i := range fu.Users {
 
-			log.Println("check in... ", fu.Users[i].Id)
+		users := LoadUsersAndNotes()
+
+		for i := range users {
+
+			log.Println("check in... ", users[i].Id)
 
 			keyboard := Keyboard{}
 			keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
 
 			fu.sendWithKeyboard(
-				fu.Users[i].ToBotUser(),
+				users[i].ToBotUser(),
 				fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action),
 				keyboard,
 			)
@@ -165,10 +193,13 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 	return func() {
 		log.Println("learning...")
-		for i := range fu.Users {
 
-			log.Println("learning about... ", fu.Users[i].Id)
-			pos := fu.Users[i].LearnAbout(check_for_days)
+		users := LoadUsersAndNotes()
+
+		for i := range users {
+
+			log.Println("learning about... ", users[i].Id)
+			pos := users[i].LearnAbout(check_for_days)
 			log.Println("learnt they are positive=", pos)
 			keyboard := Keyboard{}
 
@@ -177,7 +208,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 				keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
 
 				fu.sendWithKeyboard(
-					fu.Users[i].ToBotUser(),
+					users[i].ToBotUser(),
 					"Hey, looks like things might not be going as well as you would like?",
 					keyboard,
 				)
@@ -187,7 +218,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 			keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
 
 			fu.sendWithKeyboard(
-				fu.Users[i].ToBotUser(),
+				users[i].ToBotUser(),
 				"Hey, it looks like your doing well!!",
 				keyboard,
 			)
