@@ -188,6 +188,5 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 
 func (this *LearnFromTask) spec() string {
 	//7am on MON,WED,FRI,SUN
-	//return "0 0 6 * * MON,WED,FRI,SUN"
-	return "0 0/10 * * *"
+	return "0 0 6 * * MON,WED,FRI,SUN"
 }
