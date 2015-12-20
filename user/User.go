@@ -10,9 +10,9 @@ import (
 
 type (
 	User struct {
-		Id     int        `json:"id"`
-		Learnt []Learning `json:"learnt"`
-		Helped []Help     `json:"helped"`
+		Id     int                    `json:"id"`
+		Learnt map[time.Time]Learning `json:"learnt"`
+		Helped map[time.Time]Help     `json:"helped"`
 
 		note.Notes `json:"-"`
 	}
@@ -41,10 +41,11 @@ func (this *User) NeedsHelp() note.Notes {
 	didHelp := false
 	for i := range helpWith {
 		didHelp = true
-		this.Helped = append(this.Helped, Help{Date: time.Now(), Topic: helpWith[i].Text, AskedOn: helpWith[i].Added})
+		now := time.Now()
+		this.Helped[now] = Help{Date: now, Topic: helpWith[i].Text, AskedOn: helpWith[i].Added}
 	}
 	if didHelp {
-		this.Save()
+		this.Upsert()
 	}
 	return helpWith
 }
@@ -52,8 +53,9 @@ func (this *User) NeedsHelp() note.Notes {
 func (this *User) LearnAbout(days int) bool {
 	classify := NewClassification()
 	positive := classify.ArePositive(this.Notes.NewerThan(days).GetWords())
-	this.Learnt = append(this.Learnt, Learning{Date: time.Now(), Positive: positive, Period: days})
-	this.Save()
+	now := time.Now()
+	this.Learnt[now] = Learning{Date: now, Positive: positive, Period: days}
+	this.Upsert()
 	return positive
 }
 

@@ -15,7 +15,26 @@ func init() {
 	return
 }
 
-func (this *User) Save() error {
+func (this *User) Upsert() error {
+
+	curr, err := GetUser(this.Id)
+	if err != nil {
+		return err
+	}
+	if curr != nil {
+		//learnings
+		for key, value := range curr.Learnt {
+			if _, ok := this.Learnt[key]; !ok {
+				this.Learnt[key] = value
+			}
+		}
+		//helped
+		for key, value := range curr.Helped {
+			if _, ok := this.Helped[key]; !ok {
+				this.Helped[key] = value
+			}
+		}
+	}
 	return userStore.Save(user_store_name, this)
 }
 

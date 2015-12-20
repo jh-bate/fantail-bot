@@ -33,18 +33,9 @@ func NewSession(ourBot *telebot.Bot) *Session {
 	return s
 }
 
-func checkUserExists(id int) {
-	sessionUser, _ := user.GetUser(id)
-	if sessionUser == nil {
-		sessionUser = user.New(id)
-		sessionUser.Save()
-	}
-}
-
 func (s *Session) Respond(msg telebot.Message) {
 
-	//TODO should not just keep saving...
-	checkUserExists(msg.Sender.ID)
+	user.New(msg.Sender.ID).Upsert()
 
 	a := NewAction(New(msg), s.actionRunAs, s)
 	s.actionRunAs = a.getName()
