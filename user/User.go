@@ -63,18 +63,6 @@ func (this *User) ToBotUser() telebot.User {
 	return telebot.User{ID: this.Id}
 }
 
-func (this *User) AddOrUpdate(users Users) Users {
-	var updated Users
-
-	for i := range users {
-		if users[i].Id != this.Id {
-			//rebuild the list from those that don't match the user we are trying to add or update
-			updated = append(updated, users[i])
-		}
-	}
-	return append(updated, this)
-}
-
 func (this Users) GetUser(id int) *User {
 
 	for i := range this {

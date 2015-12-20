@@ -2,7 +2,6 @@ package user_test
 
 import (
 	"strings"
-	"time"
 
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 	. "github.com/jh-bate/fantail-bot/user"
@@ -81,26 +80,6 @@ var _ = Describe("Users", func() {
 			Expect(user).To(Equal(u2))
 		})
 	})
-
-	Describe("When calling AddOrUpdate", func() {
-		It("should add a user to the list if new", func() {
-			Expect(len(myUsers)).To(Equal(3))
-			other := New(22899991)
-			myUsers = other.AddOrUpdate(myUsers)
-			Expect(len(myUsers)).To(Equal(4))
-		})
-		It("should update an existing user if they are already in the list", func() {
-			Expect(len(myUsers)).To(Equal(3))
-			u3.Learnt = append(u3.Learnt, Learning{Date: time.Now(), Positive: true, Period: 5})
-
-			myUsers = u3.AddOrUpdate(myUsers)
-			Expect(len(myUsers)).To(Equal(3))
-
-			updated := myUsers.GetUser(u3_id)
-			Expect(len(updated.Learnt)).To(Equal(1))
-		})
-	})
-
 })
 
 var _ = Describe("Classify", func() {
