@@ -3,7 +3,6 @@ package user_test
 import (
 	"strings"
 
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 	. "github.com/jh-bate/fantail-bot/user"
 
 	. "github.com/onsi/ginkgo"
@@ -29,25 +28,6 @@ var _ = Describe("User", func() {
 			Expect(myUser.Id).To(Equal(userid))
 		})
 
-		It("should be able to convert to a BotUser", func() {
-			botUser := myUser.ToBotUser()
-			Expect(botUser.ID).To(Equal(myUser.Id))
-			var botType telebot.User
-			Expect(botUser).To(BeAssignableToTypeOf(botType))
-		})
-	})
-
-	Describe("When created", func() {
-		It("should have the id set", func() {
-			Expect(myUser.Id).To(Equal(userid))
-		})
-
-		It("should be able to convert to a BotUser", func() {
-			botUser := myUser.ToBotUser()
-			Expect(botUser.ID).To(Equal(myUser.Id))
-			var botType telebot.User
-			Expect(botUser).To(BeAssignableToTypeOf(botType))
-		})
 	})
 
 })

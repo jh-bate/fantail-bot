@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/jh-bate/fantail-bot/note"
-
-	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
 type (
@@ -57,10 +55,6 @@ func (this *User) LearnAbout(days int) bool {
 	this.Learnt[now] = Learning{Date: now, Positive: positive, Period: days}
 	this.Upsert()
 	return positive
-}
-
-func (this *User) ToBotUser() telebot.User {
-	return telebot.User{ID: this.Id}
 }
 
 func (this Users) GetUser(id int) *User {

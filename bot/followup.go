@@ -1,4 +1,4 @@
-package incoming
+package bot
 
 import (
 	"fmt"
@@ -102,7 +102,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 
 			if len(help) > 0 {
 				fu.send(
-					users[i].ToBotUser(),
+					users[i].Id,
 					fmt.Sprintf(
 						"Hey, so these are the things you wanted help with /n/n%s",
 						help.ToString(),
@@ -129,13 +129,13 @@ func (this *CheckInTask) run(fu *FollowUp) func() {
 
 			log.Println("check in... ", users[i].Id)
 
-			keyboard := Keyboard{}
-			keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
+			//keyboard := Keyboard{}
+			//keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
 
-			fu.sendWithKeyboard(
-				users[i].ToBotUser(),
+			fu.send(
+				users[i].Id,
 				fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action),
-				keyboard,
+				//keyboard,
 			)
 		}
 	}
@@ -160,26 +160,26 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 			log.Println("learning about... ", users[i].Id)
 			pos := users[i].LearnAbout(check_for_days)
 			log.Println("learnt they are positive=", pos)
-			keyboard := Keyboard{}
+			//keyboard := Keyboard{}
 
 			if !pos {
 
-				keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
+				//keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
 
-				fu.sendWithKeyboard(
-					users[i].ToBotUser(),
+				fu.send(
+					users[i].Id,
 					"Hey, looks like things might not be going as well as you would like?",
-					keyboard,
+					//keyboard,
 				)
 				break
 			}
 
-			keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
+			//keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
 
-			fu.sendWithKeyboard(
-				users[i].ToBotUser(),
+			fu.send(
+				users[i].Id,
 				"Hey, it looks like your doing well!!",
-				keyboard,
+				//keyboard,
 			)
 
 		}
