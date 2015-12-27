@@ -17,10 +17,10 @@ type telegram_bot struct {
 var tBot *telegram_bot
 
 func init() {
-	botToken := os.Getenv("BOT_TOKEN")
+	botToken := os.Getenv("TELEGRAM_TOKEN")
 
 	if botToken == "" {
-		log.Fatal("$BOT_TOKEN must be set")
+		log.Fatal("$TELEGRAM_TOKEN must be set")
 	}
 	ourBot, err := telebot.NewBot(botToken)
 	if err != nil {
