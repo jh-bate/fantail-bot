@@ -8,7 +8,9 @@ import (
 
 type (
 	User struct {
-		Id     int                    `json:"id"`
+		Id int `json:"id"`
+		//don't want to persist this detail in the store
+		Name   string                 `json:"-"`
 		Learnt map[time.Time]Learning `json:"learnt"`
 		Helped map[time.Time]Help     `json:"helped"`
 

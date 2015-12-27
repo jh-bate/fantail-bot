@@ -117,7 +117,7 @@ func (a ReviewAction) Payload() *Payload {
 }
 
 func (a ReviewAction) Run() {
-	log.Println("doFirsting review ...")
+	log.Println("do review ...")
 
 	notes, _ := note.GetNotes(fmt.Sprintf("%d", a.payload.Sender))
 

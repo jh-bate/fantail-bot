@@ -23,6 +23,11 @@
 			"Rev": "f740b0b16fc10bacdb09fc3fbac9048aa827e952"
 		},
 		{
+			"ImportPath": "github.com/nlopes/slack",
+			"Comment": "v0.0.1-69-g9153359",
+			"Rev": "9153359e4c6e3dd6fecd68332164321b5efd543f"
+		},
+		{
 			"ImportPath": "github.com/onsi/ginkgo",
 			"Comment": "v1.2.0-29-g7f8ab55",
 			"Rev": "7f8ab55aaf3b86885aa55b762e803744d1674700"
@@ -41,6 +46,10 @@
 			"ImportPath": "github.com/tucnak/telebot",
 			"Comment": "v1.0-29-gab25fcf",
 			"Rev": "ab25fcf6fa1f2886c2797fddc21e82666d768850"
+		},
+		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "5d0a0f8cd486626821d2ba44d471ab1c9271d38f"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",

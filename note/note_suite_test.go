@@ -1,8 +1,8 @@
 package note_test
 
 import (
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/onsi/ginkgo"
+	. "github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/onsi/gomega"
 
 	"testing"
 )

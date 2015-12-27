@@ -10,11 +10,13 @@ import (
 	"github.com/jh-bate/fantail-bot/Godeps/_workspace/src/github.com/tucnak/telebot"
 )
 
-type telegram struct {
+type telegram_bot struct {
 	t *telebot.Bot
 }
 
-func newTelegramBot() *telegram {
+var tBot *telegram_bot
+
+func init() {
 	botToken := os.Getenv("BOT_TOKEN")
 
 	if botToken == "" {
@@ -24,10 +26,10 @@ func newTelegramBot() *telegram {
 	if err != nil {
 		log.Fatal("Bot setup failed: ", err.Error())
 	}
-	return &telegram{t: ourBot}
+	tBot = &telegram_bot{t: ourBot}
 }
 
-func (b *telegram) Listen(subscription chan<- *bot.Payload) {
+func (b *telegram_bot) Listen(subscription chan<- *bot.Payload) {
 
 	messages := make(chan telebot.Message)
 	b.t.Listen(messages, 1*time.Second)
@@ -38,16 +40,15 @@ func (b *telegram) Listen(subscription chan<- *bot.Payload) {
 
 }
 
-func (b *telegram) SendMessage(recipientId int, message string) error {
+func (b *telegram_bot) SendMessage(recipientId int, message string) error {
 	return b.t.SendMessage(telebot.User{ID: recipientId}, message, nil)
 }
 
 func main() {
 
-	telegramBot := newTelegramBot()
-	session := bot.NewSession(telegramBot)
+	session := bot.NewSession(tBot)
 	sub := make(chan *bot.Payload)
-	telegramBot.Listen(sub)
+	tBot.Listen(sub)
 
 	for payload := range sub {
 		session.Respond(payload)
