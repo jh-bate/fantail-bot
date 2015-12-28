@@ -54,7 +54,7 @@ func GetUsers() (Users, error) {
 	return all, nil
 }
 
-func GetUser(id int) (*User, error) {
+func GetUser(id string) (*User, error) {
 
 	all, err := GetUsers()
 	if err != nil {

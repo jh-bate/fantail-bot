@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/jh-bate/fantail-bot/bot"
@@ -35,13 +37,19 @@ func (b *telegram_bot) Listen(subscription chan<- *bot.Payload) {
 	b.t.Listen(messages, 1*time.Second)
 
 	for msg := range messages {
-		subscription <- bot.New(msg.Sender.ID, msg.Text, msg.Time())
+		subscription <- bot.New(fmt.Sprintf("%d", msg.Sender.ID), msg.Sender.FirstName, msg.Text, msg.Time())
 	}
 
 }
 
-func (b *telegram_bot) SendMessage(recipientId int, message string) error {
-	return b.t.SendMessage(telebot.User{ID: recipientId}, message, nil)
+func (b *telegram_bot) SendMessage(recipientId, message string) error {
+
+	id, err := strconv.Atoi(recipientId)
+	if err != nil {
+		return err
+	}
+
+	return b.t.SendMessage(telebot.User{ID: id}, message, nil)
 }
 
 func main() {

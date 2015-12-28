@@ -102,7 +102,7 @@ func (this *FollowupTask) run(fu *FollowUp) func() {
 
 			if len(help) > 0 {
 				fu.send(
-					users[i].Id,
+					users[i],
 					fmt.Sprintf(
 						"Hey, so these are the things you wanted help with /n/n%s",
 						help.ToString(),
@@ -133,7 +133,7 @@ func (this *CheckInTask) run(fu *FollowUp) func() {
 			//keyboard = append(keyboard, []string{"/say all good thanks"}, []string{"/chat sounds like good idea"})
 
 			fu.send(
-				users[i].Id,
+				users[i],
 				fmt.Sprintf("Long time no chat! Wanna %s or %s something?", chat_action, say_action),
 				//keyboard,
 			)
@@ -167,7 +167,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 				//keyboard = append(keyboard, []string{"/say yeah things aren't going well"}, []string{"/say actually it is going well"})
 
 				fu.send(
-					users[i].Id,
+					users[i],
 					"Hey, looks like things might not be going as well as you would like?",
 					//keyboard,
 				)
@@ -177,7 +177,7 @@ func (this *LearnFromTask) run(fu *FollowUp) func() {
 			//keyboard = append(keyboard, []string{"/say yeah I am doing well!"}, []string{"/say actually its not going well"})
 
 			fu.send(
-				users[i].Id,
+				users[i],
 				"Hey, it looks like your doing well!!",
 				//keyboard,
 			)

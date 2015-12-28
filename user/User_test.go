@@ -16,7 +16,7 @@ var _ = Describe("User", func() {
 	)
 
 	const (
-		userid = 999
+		userid = "999"
 	)
 
 	BeforeEach(func() {
@@ -42,9 +42,9 @@ var _ = Describe("Users", func() {
 	)
 
 	const (
-		u1_id = 667
-		u2_id = 8868
-		u3_id = 999
+		u1_id = "667"
+		u2_id = "8868"
+		u3_id = "999"
 	)
 
 	BeforeEach(func() {

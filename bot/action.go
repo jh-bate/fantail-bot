@@ -60,7 +60,7 @@ func nextQuestion(a Action) *question.Question {
 
 	next, save := Config.Questions.Next(payload.Text)
 	if save {
-		n := note.New(payload.Text, payload.Sender, payload.Date, a.Name(), next.RelatesTo.SaveTag)
+		n := note.New(payload.Text, payload.User.Id, payload.Date, a.Name(), next.RelatesTo.SaveTag)
 		n.Save()
 	}
 	return next
@@ -86,13 +86,13 @@ func (a SayAction) Payload() *Payload {
 
 func (a SayAction) Run() {
 	if a.payload.HasSubmisson {
-		n := note.New(a.payload.Text, a.payload.Sender, a.payload.Date)
+		n := note.New(a.payload.Text, a.payload.User.Id, a.payload.Date)
 		n.Save()
 		return
 	}
 	if q := nextQuestion(a); q != nil {
-		a.Session.send(a.payload.Sender, q.Context...)
-		a.Session.send(a.payload.Sender, q.QuestionText)
+		a.Session.send(a.payload.User, q.Context...)
+		a.Session.send(a.payload.User, q.QuestionText)
 		//a.sendWithKeyboard(a.Sender, q.QuestionText, q.MakeKeyboard())
 	}
 	return
@@ -119,12 +119,12 @@ func (a ReviewAction) Payload() *Payload {
 func (a ReviewAction) Run() {
 	log.Println("do review ...")
 
-	notes, _ := note.GetNotes(fmt.Sprintf("%d", a.payload.Sender))
+	notes, _ := note.GetNotes(a.payload.User.Id)
 
 	saidTxt := fmt.Sprintf("You said: \n\n %s", notes.FilterOnTag(note.SAID_TAG).ToString())
-	a.Session.send(a.payload.Sender, saidTxt)
+	a.Session.send(a.payload.User, saidTxt)
 	talkedTxt := fmt.Sprintf("We talked about: \n\n %s", notes.FilterOnTag(note.CHAT_TAG).ToString())
-	a.Session.send(a.payload.Sender, talkedTxt)
+	a.Session.send(a.payload.User, talkedTxt)
 	return
 }
 
@@ -147,16 +147,15 @@ func (a HelpAction) Payload() *Payload {
 
 func (a HelpAction) Run() {
 	log.Println("help first up")
-	helpInfo := fmt.Sprintf("%s %s %s %s %s %s ",
-		//fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.Sender.FirstName),
+	helpInfo := fmt.Sprintf("%s %s %s %s %s %s",
+		fmt.Sprintf("Hey %s! We can't do it all but we can:\n\n", a.payload.User.Name),
 		"Hey! We can't do it all but we can:\n\n",
 		chat_action+" - to have a *quick chat* about what your up-to \n\n",
 		say_action_hint+" - to say *anything* thats on your mind \n\n",
 		ask_action_hint+" - to ask *anything* thats on your mind \n\n",
 		review_action_hint+" - to review what has been happening \n\n",
-		"Stickers - we have those to help express yourself!! \n\n [Get them here](https://telegram.me/addstickers/betes)",
 	)
-	a.Session.send(a.payload.Sender, helpInfo)
+	a.Session.send(a.payload.User, helpInfo)
 	return
 }
 
@@ -179,8 +178,8 @@ func (a ChatAction) Payload() *Payload {
 
 func (a ChatAction) Run() {
 	if q := nextQuestion(a); q != nil {
-		a.Session.send(a.payload.Sender, q.Context...)
-		a.Session.send(a.payload.Sender, q.QuestionText)
+		a.Session.send(a.payload.User, q.Context...)
+		a.Session.send(a.payload.User, q.QuestionText)
 		//a.sendWithKeyboard(a.Sender, q.QuestionText, q.MakeKeyboard())
 	}
 	return
@@ -206,13 +205,13 @@ func (a AskAction) Payload() *Payload {
 
 func (a AskAction) Run() {
 	if a.payload.HasSubmisson {
-		n := note.New(a.payload.Text, a.payload.Sender, a.payload.Date, note.HELP_TAG)
+		n := note.New(a.payload.Text, a.payload.User.Id, a.payload.Date, note.HELP_TAG)
 		n.Save()
 		return
 	}
 	if q := nextQuestion(a); q != nil {
-		a.Session.send(a.payload.Sender, q.Context...)
-		a.Session.send(a.payload.Sender, q.QuestionText)
+		a.Session.send(a.payload.User, q.Context...)
+		a.Session.send(a.payload.User, q.QuestionText)
 		//a.sendWithKeyboard(a.Sender, q.QuestionText, q.MakeKeyboard())
 	}
 	return

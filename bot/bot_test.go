@@ -21,16 +21,17 @@ var _ = Describe("Payload", func() {
 	const (
 		standard_msg_text  = "my message"
 		submisson_msg_text = "/action and stuff"
-		msg_userid         = 9992476
+		msg_userid         = "9992476"
+		msg_user_name      = "Me"
 	)
 
 	BeforeEach(func() {
 
 		stdTime = time.Now().Add(-2)
-		stdPayload = New(msg_userid, standard_msg_text, stdTime)
+		stdPayload = New(msg_userid, msg_user_name, standard_msg_text, stdTime)
 
 		submissionTime = time.Now().Add(-5)
-		submissionPayload = New(msg_userid, submisson_msg_text, submissionTime)
+		submissionPayload = New(msg_userid, msg_user_name, submisson_msg_text, submissionTime)
 
 	})
 
@@ -82,7 +83,7 @@ var _ = Describe("Action", func() {
 
 	BeforeEach(func() {
 
-		payload = New(999, "/say hi!", time.Now())
+		payload = New("999", "You", "/say hi!", time.Now())
 
 		action = NewAction(
 			payload,

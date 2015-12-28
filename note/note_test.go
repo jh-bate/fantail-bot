@@ -17,7 +17,7 @@ var _ = Describe("Note", func() {
 
 	const (
 		test_note_text   = "testing testing 123"
-		test_note_userid = 999
+		test_note_userid = "999"
 	)
 
 	BeforeEach(func() {
@@ -93,7 +93,7 @@ var _ = Describe("Notes", func() {
 		test_note_text   = "testing testing 123"
 		test_note_text_2 = "testing testing 456"
 		test_note_text_3 = "testing testing 8910"
-		test_note_userid = 999
+		test_note_userid = "999"
 	)
 
 	BeforeEach(func() {

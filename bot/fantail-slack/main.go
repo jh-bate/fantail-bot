@@ -42,7 +42,7 @@ func (b *slack_bot) Listen(subscription chan<- *bot.Payload) {
 				fmt.Printf("Message: %v\n", ev)
 				when, err := time.Parse(time.RFC3339, ev.Msg.Timestamp)
 				if err == nil {
-					subscription <- bot.New(777, ev.Msg.Text, when)
+					subscription <- bot.New(ev.Msg.User, ev.Msg.Name, ev.Msg.Text, when)
 				}
 
 			default:
@@ -55,8 +55,8 @@ func (b *slack_bot) Listen(subscription chan<- *bot.Payload) {
 
 }
 
-func (b *slack_bot) SendMessage(recipientId int, message string) error {
-	b.rtm.SendMessage(b.rtm.NewOutgoingMessage(message, "test"))
+func (b *slack_bot) SendMessage(recipientId string, message string) error {
+	b.rtm.SendMessage(b.rtm.NewOutgoingMessage(message, recipientId))
 	return nil
 }
 

@@ -8,7 +8,7 @@ import (
 
 type (
 	User struct {
-		Id int `json:"id"`
+		Id string `json:"id"`
 		//don't want to persist this detail in the store
 		Name   string                 `json:"-"`
 		Learnt map[time.Time]Learning `json:"learnt"`
@@ -32,7 +32,7 @@ type (
 	Users []*User
 )
 
-func New(id int) *User {
+func New(id string) *User {
 	return &User{Id: id}
 }
 
@@ -59,7 +59,7 @@ func (this *User) LearnAbout(days int) bool {
 	return positive
 }
 
-func (this Users) GetUser(id int) *User {
+func (this Users) GetUser(id string) *User {
 
 	for i := range this {
 		if this[i].Id == id {

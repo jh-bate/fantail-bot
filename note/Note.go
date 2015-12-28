@@ -10,7 +10,7 @@ import (
 
 type (
 	Note struct {
-		UserId  int
+		UserId  string
 		Added   time.Time
 		Updated time.Time
 		Deleted time.Time
@@ -29,7 +29,7 @@ const (
 	HELP_TAG = "HELP"
 )
 
-func New(txt string, fromId int, date time.Time, tags ...string) *Note {
+func New(txt, senderId string, date time.Time, tags ...string) *Note {
 
 	answer := txt
 	cmdTag := tagFromMsg(answer)
@@ -42,7 +42,7 @@ func New(txt string, fromId int, date time.Time, tags ...string) *Note {
 	}
 
 	return &Note{
-		UserId: fromId,
+		UserId: senderId,
 		Added:  date,
 		Text:   answer,
 		Tag:    strings.Join(append(tags, cmdTag), ","),

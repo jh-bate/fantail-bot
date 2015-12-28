@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -9,16 +10,16 @@ import (
 
 //basic incomming payload for text based messages
 type Payload struct {
-	Sender       int
+	User         *user.User
 	Text         string
 	Date         time.Time
 	Action       string
 	HasSubmisson bool
 }
 
-func New(senderId int, msgText string, date time.Time) *Payload {
+func New(senderId, senderName, msgText string, date time.Time) *Payload {
 	return &Payload{
-		Sender:       senderId,
+		User:         &user.User{Id: senderId, Name: senderName},
 		Text:         msgText,
 		Date:         date,
 		Action:       setAction(msgText),
@@ -67,22 +68,22 @@ func NewSession(b Bot) *Session {
 
 func (s *Session) Respond(data *Payload) {
 
-	user.New(data.Sender).Upsert()
+	user.New(data.User.Id).Upsert()
 
 	a := NewAction(data, s.actionRunAs, s)
 	s.actionRunAs = a.Name()
 	a.Run()
 }
 
-func (s *Session) send(recipientId int, msgs ...string) {
+func (s *Session) send(recipient *user.User, msgs ...string) {
 
 	for i := range msgs {
 
 		msg := msgs[i]
-		/*if strings.Contains(msg, "%s") {
-			msg = fmt.Sprintf(msg, recipient.FirstName)
-		}*/
-		s.bot.SendMessage(recipientId, msg)
+		if strings.Contains(msg, "%s") {
+			msg = fmt.Sprintf(msg, recipient.Name)
+		}
+		s.bot.SendMessage(recipient.Id, msg)
 	}
 	return
 }
