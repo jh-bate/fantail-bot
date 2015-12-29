@@ -2,7 +2,6 @@ package note
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/jh-bate/fantail-bot/store"
 )
@@ -15,11 +14,11 @@ func init() {
 }
 
 func (this *Note) Save() error {
-	return noteStore.Save(fmt.Sprintf("%d", this.UserId), this)
+	return noteStore.Save(this.UserId, this)
 }
 
 func (this *Note) Delete() error {
-	return noteStore.Delete(fmt.Sprintf("%d", this.UserId), this)
+	return noteStore.Delete(this.UserId, this)
 }
 
 func GetNotes(userid string) (Notes, error) {
