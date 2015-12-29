@@ -1,1 +1,1 @@
-worker: fantail-bot
+worker: bot/fantail-telegram/fantail-telegram

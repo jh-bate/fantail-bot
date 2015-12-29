@@ -1,5 +1,5 @@
 .env
 
-fantailBot
+bot/fantail-telegram/fantail-telegram
 
-fantail-bot
+bot/fantail-slack/fantail-slack
